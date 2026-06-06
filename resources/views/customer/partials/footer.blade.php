@@ -38,10 +38,10 @@
             <div class="flex-1">
                 <p class="text-white font-bold text-sm mb-5">Menu</p>
                 <ul class="space-y-3">
-                    <li><a href="{{ route('customer.beranda') }}" class="text-sm text-[#bdbdbd] hover:text-[#00e5ff] transition-colors">Beranda</a></li>
-                    <li><a href="{{ route('customer.tentang') }}" class="text-sm text-[#bdbdbd] hover:text-[#00e5ff] transition-colors">Tentang Kami</a></li>
-                    <li><a href="{{ route('customer.katalog') }}" class="text-sm text-[#bdbdbd] hover:text-[#00e5ff] transition-colors">Katalog</a></li>
-                    <li><a href="{{ route('customer.pemesanan') }}" class="text-sm text-[#bdbdbd] hover:text-[#00e5ff] transition-colors">Buat Pesanan</a></li>
+                    <li><a href="{{ route('customer.beranda') }}" class="footer-navlink text-sm text-[#bdbdbd] hover:text-[#00e5ff] transition-colors">Beranda</a></li>
+                    <li><a href="{{ route('customer.tentang') }}" class="footer-navlink text-sm text-[#bdbdbd] hover:text-[#00e5ff] transition-colors">Tentang Kami</a></li>
+                    <li><a href="{{ route('customer.katalog') }}" class="footer-navlink text-sm text-[#bdbdbd] hover:text-[#00e5ff] transition-colors">Katalog</a></li>
+                    <li><a href="{{ route('customer.pemesanan') }}" class="footer-navlink text-sm text-[#bdbdbd] hover:text-[#00e5ff] transition-colors">Buat Pesanan</a></li>
                 </ul>
             </div>
 
@@ -98,3 +98,18 @@
         </div>
     </div>
 </footer>
+
+<script>
+document.addEventListener('click', function (e) {
+    var link = e.target.closest('.footer-navlink');
+    if (!link) return;
+
+    var currentPath = window.location.pathname.replace(/\/+$/, '');
+    var linkPath = new URL(link.href).pathname.replace(/\/+$/, '');
+
+    if (currentPath === linkPath) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+});
+</script>
