@@ -659,7 +659,7 @@ function pemesananForm(catalogProduct = null) {
         </div>
         <h1 class="text-2xl font-bold text-gray-900 mb-2">Masuk untuk Memesan</h1>
         <p class="text-gray-500 mb-8 max-w-md mx-auto">Silakan login atau daftar akun terlebih dahulu untuk dapat membuat pesanan jersey custom.</p>
-        <a href="?auth=login"
+        <a href="{{ request()->fullUrlWithQuery(['auth' => 'login']) }}"
            class="inline-flex items-center gap-2 px-8 py-3 bg-blue-900 text-white text-sm font-semibold rounded-lg hover:bg-blue-800 transition-colors">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
             Login / Daftar

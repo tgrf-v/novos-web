@@ -214,12 +214,12 @@
                     </svg>
                     <div x-show="open" x-cloak @mouseenter="open = true"
                         class="absolute right-0 top-full mt-2 w-44 bg-white border border-gray-100 rounded-xl shadow-lg py-2 z-[70]">
-                        <a href="#" @click.prevent="open = false; sidebarOpen = true; tab = 'login'"
+                        <a href="#" @click.prevent="open = false; openSidebar('login')"
                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1a237e] transition-colors">
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
                             Masuk
                         </a>
-                        <a href="#" @click.prevent="open = false; sidebarOpen = true; tab = 'register'"
+                        <a href="#" @click.prevent="open = false; openSidebar('register')"
                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1a237e] transition-colors">
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
                             Daftar
@@ -462,16 +462,17 @@
             warnTimer: null,
 
             init() {
+                @guest
                 var params = new URLSearchParams(window.location.search);
                 var auth = params.get('auth');
                 if (auth === 'login' || auth === 'register') {
-                    this.tab = auth;
-                    this.sidebarOpen = true;
+                    this.openSidebar(auth);
                     if (history.replaceState) {
                         var url = window.location.protocol + '//' + window.location.host + window.location.pathname + window.location.hash;
                         history.replaceState(null, '', url);
                     }
                 }
+                @endguest
             },
 
             submitForm(formEl) {
@@ -487,6 +488,15 @@
             dismissWarn() {
                 this.showWarning = false;
                 clearTimeout(this.warnTimer);
+            },
+
+            openSidebar(tab) {
+                this.agreeTerms = false;
+                this.agreePrivacy = false;
+                this.agreeMarketing = false;
+                this.showWarning = false;
+                this.tab = tab;
+                this.sidebarOpen = true;
             }
         }
     }

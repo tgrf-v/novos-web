@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $role = auth()->user()->role->name;
+        $role = auth()->user()->role?->name;
 
         return match($role) {
             'Super Admin' => redirect('/superadmin/dashboard'),
