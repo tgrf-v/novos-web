@@ -9,6 +9,10 @@ Route::middleware(['auth', 'role:Super Admin,Manager,Admin,Design,Produksi'])->g
     Route::get('/internal/summary', function () {
         return view('internal.summary');
     });
+
+    Route::get('/internal/daftarpesanan', function () {
+        return view('internal.daftar-pesanan');
+    });
 });
 
 Route::middleware('auth')->group(function () {
