@@ -21,6 +21,10 @@ Route::middleware(['auth', 'role:Super Admin,Manager,Admin,Design,Produksi'])->g
     Route::get('/internal/chat', function () {
         return view('internal.chat');
     })->name('internal.chat');
+
+    Route::get('/internal/stress-test', function () {
+        return view('internal.stress-test');
+    });
 });
 
 Route::middleware('auth')->group(function () {
