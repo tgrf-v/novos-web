@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $role = auth()->user()->role->name;
+        $role = auth()->user()->role?->name;
 
         return match($role) {
             'Super Admin' => redirect('/superadmin/dashboard'),
@@ -36,7 +36,7 @@ class AuthenticatedSessionController extends Controller
             'Admin'       => redirect('/admin/dashboard'),
             'Design'      => redirect('/design/dashboard'),
             'Produksi'    => redirect('/produksi/dashboard'),
-            default       => redirect('/dashboard'), // Customer
+            default       => redirect('/customer/beranda'), // Customer
         };
     }
 
