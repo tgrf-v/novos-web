@@ -29,3 +29,4 @@ Route::middleware('auth')->group(function () {
         return view('internal.produksi');
     })->name('produksi.produksi');
 });
+

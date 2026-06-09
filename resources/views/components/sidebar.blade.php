@@ -1,112 +1,37 @@
-<aside class="sidebar bg-base-200 min-h-screen w-64 p-4">
-    <ul class="menu">
+<aside class="w-64 bg-white min-h-screen border-r border-gray-200 flex flex-col shrink-0">
+    <!-- Logo Area -->
+    <div class="h-16 flex items-center px-6 border-b border-gray-200">
+        <a href="{{ url('/admin/dashboard') }}" class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-[#1a237e] rounded-lg flex items-center justify-center">
+                <span class="text-white font-bold text-lg">N</span>
+            </div>
+            <span class="text-xl font-bold text-gray-900">Novos</span>
+        </a>
+    </div>
+
+    <!-- Menu Items -->
+    <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
         @php
-            $userRole = Auth::check() ? Auth::user()->role->name : null;
+            $menus = [
+                ['label' => 'Dashboard', 'url' => url('admin/dashboard'), 'icon' => 'layout-dashboard', 'active' => request()->is('admin/dashboard')],
+                ['label' => 'Summary', 'url' => url('internal/summary'), 'icon' => 'pie-chart', 'active' => request()->is('internal/summary')],
+                ['label' => 'Daftar Pesanan', 'url' => url('internal/daftarpesanan'), 'icon' => 'shopping-bag', 'active' => request()->is('internal/daftarpesanan*') || request()->is('internal/detail-pesanan*') || request()->is('internal/chat*')],
+                ['label' => 'Design', 'url' => url('design/dashboard'), 'icon' => 'pen-tool', 'active' => request()->is('design*')],
+                ['label' => 'Produksi', 'url' => url('produksi/dashboard'), 'icon' => 'scissors', 'active' => request()->is('produksi*')],
+                ['label' => 'Stress Test', 'url' => url('internal/stress-test'), 'icon' => 'activity', 'active' => request()->is('internal/stress-test')],
+                ['label' => 'Laporan', 'url' => url('internal/laporan'), 'icon' => 'file-text', 'active' => request()->is('internal/laporan')],
+                ['label' => 'Kelola Pengguna', 'url' => url('admin/kelola-pengguna'), 'icon' => 'users', 'active' => request()->is('admin/kelola-pengguna*')],
+            ];
         @endphp
 
-        @if(in_array($userRole, ['Admin', 'Manager', 'Super Admin']))
-            @php
-                $dashboardActive = request()->routeIs('admin.dashboard') || request()->routeIs('superadmin.dashboard') || request()->routeIs('manager.dashboard');
-            @endphp
-            <li>
-                <a href="{{ route('admin.dashboard') }}" class="{{ $dashboardActive ? 'active' : '' }}">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5 {{ $dashboardActive ? '' : 'text-blue-600' }}"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.summary') }}" class="{{ request()->routeIs('admin.summary') ? 'active' : '' }}">
-                    <i data-lucide="trending-up" class="w-5 h-5 {{ request()->routeIs('admin.summary') ? '' : 'text-blue-600' }}"></i>
-                    Summary
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.daftar-pesanan') }}" class="{{ request()->routeIs('admin.daftar-pesanan') ? 'active' : '' }}">
-                    <i data-lucide="clipboard-list" class="w-5 h-5 {{ request()->routeIs('admin.daftar-pesanan') ? '' : 'text-blue-600' }}"></i>
-                    Daftar Pesanan
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.design') }}" class="{{ request()->routeIs('admin.design') ? 'active' : '' }}">
-                    <i data-lucide="palette" class="w-5 h-5 {{ request()->routeIs('admin.design') ? '' : 'text-blue-600' }}"></i>
-                    Design
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.produksi') }}" class="{{ request()->routeIs('admin.produksi') ? 'active' : '' }}">
-                    <i data-lucide="factory" class="w-5 h-5 {{ request()->routeIs('admin.produksi') ? '' : 'text-blue-600' }}"></i>
-                    Produksi
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.stress-test') }}" class="{{ request()->routeIs('admin.stress-test') ? 'active' : '' }}">
-                    <i data-lucide="sparkles" class="w-5 h-5 {{ request()->routeIs('admin.stress-test') ? '' : 'text-blue-600' }}"></i>
-                    Stress Test
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.laporan') }}" class="{{ request()->routeIs('admin.laporan') ? 'active' : '' }}">
-                    <i data-lucide="file-text" class="w-5 h-5 {{ request()->routeIs('admin.laporan') ? '' : 'text-blue-600' }}"></i>
-                    Laporan
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('admin.kelola-pengguna') }}" class="{{ request()->routeIs('admin.kelola-pengguna') ? 'active' : '' }}">
-                    <i data-lucide="users" class="w-5 h-5 {{ request()->routeIs('admin.kelola-pengguna') ? '' : 'text-blue-600' }}"></i>
-                    Kelola Pengguna
-                </a>
-            </li>
-        @endif
+        @foreach($menus as $menu)
+            <a href="{{ $menu['url'] }}" 
+               class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ $menu['active'] ? 'bg-[#1a237e] text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                <i data-lucide="{{ $menu['icon'] }}" class="w-5 h-5 {{ $menu['active'] ? 'text-white' : '' }}"></i>
+                <span class="font-medium">{{ $menu['label'] }}</span>
+            </a>
+        @endforeach
+    </nav>
 
-        @if($userRole === 'Design' || $userRole === 'Super Admin')
-            <li>
-                <a href="{{ route('design.dashboard') }}" class="{{ request()->routeIs('design.dashboard') ? 'active' : '' }}">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5 {{ request()->routeIs('design.dashboard') ? '' : 'text-blue-600' }}"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('design.daftar-pesanan') }}" class="{{ request()->routeIs('design.daftar-pesanan') ? 'active' : '' }}">
-                    <i data-lucide="clipboard-list" class="w-5 h-5 {{ request()->routeIs('design.daftar-pesanan') ? '' : 'text-blue-600' }}"></i>
-                    Daftar Pesanan
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('design.design') }}" class="{{ request()->routeIs('design.design') ? 'active' : '' }}">
-                    <i data-lucide="palette" class="w-5 h-5 {{ request()->routeIs('design.design') ? '' : 'text-blue-600' }}"></i>
-                    Design
-                </a>
-            </li>
-        @endif
-
-        @if($userRole === 'Produksi' || $userRole === 'Super Admin')
-            <li>
-                <a href="{{ route('produksi.dashboard') }}" class="{{ request()->routeIs('produksi.dashboard') ? 'active' : '' }}">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5 {{ request()->routeIs('produksi.dashboard') ? '' : 'text-blue-600' }}"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('produksi.daftar-pesanan') }}" class="{{ request()->routeIs('produksi.daftar-pesanan') ? 'active' : '' }}">
-                    <i data-lucide="clipboard-list" class="w-5 h-5 {{ request()->routeIs('produksi.daftar-pesanan') ? '' : 'text-blue-600' }}"></i>
-                    Daftar Pesanan
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('produksi.produksi') }}" class="{{ request()->routeIs('produksi.produksi') ? 'active' : '' }}">
-                    <i data-lucide="factory" class="w-5 h-5 {{ request()->routeIs('produksi.produksi') ? '' : 'text-blue-600' }}"></i>
-                    Produksi
-                </a>
-            </li>
-        @endif
-
-        @if($userRole === 'Customer')
-            <li>
-                <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5 {{ request()->routeIs('dashboard') ? '' : 'text-blue-600' }}"></i>
-                    Dashboard
-                </a>
-            </li>
-        @endif
-    </ul>
+    <!-- (Footer profile removed) -->
 </aside>
