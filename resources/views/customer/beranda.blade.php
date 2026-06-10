@@ -98,17 +98,17 @@
         <div class="flex flex-col justify-center py-20 md:py-0">
 
             {{-- headline --}}
-            <h1 class="text-5xl md:text-[56px] font-bold leading-tight text-white mb-5 max-w-2xl">
+            <h1 class="text-5xl md:text-[56px] font-bold leading-tight text-white mb-5 max-w-2xl" data-aos="fade-up" data-aos-delay="100">
                 Pesan Jersey Custom Impianmu
             </h1>
 
             {{-- deskripsi --}}
-            <p class="text-base md:text-lg text-[#c8d6e0] max-w-xl mb-10 leading-relaxed">
+            <p class="text-base md:text-lg text-[#c8d6e0] max-w-xl mb-10 leading-relaxed" data-aos="fade-up" data-aos-delay="200">
                 Desain bebas, kualitas premium, pengerjaan cepat dan tepat waktu
             </p>
 
             {{-- CTA inline --}}
-            <div class="flex flex-wrap items-center gap-3">
+            <div class="flex flex-wrap items-center gap-3" data-aos="fade-up" data-aos-delay="300">
                 <a href="{{ route('customer.pemesanan') }}"
                    class="px-8 py-3.5 bg-[#00e5ff] text-[#1a237e] text-sm font-bold rounded-[4px] hover:bg-[#00d0ea] transition-all shadow-lg shadow-[#00e5ff]/20">
                     Buat Pesanan Sekarang
@@ -117,7 +117,7 @@
         </div>
 
         {{-- Kanan: Visual Showcase --}}
-        <div class="flex items-center justify-center py-16 md:py-0 relative">
+        <div class="flex items-center justify-center py-16 md:py-0 relative" data-aos="zoom-in" data-aos-delay="400">
             {{-- background glow --}}
             <div class="absolute w-[400px] h-[400px] bg-[#00e5ff] opacity-[0.08] rounded-full blur-3xl"></div>
 
