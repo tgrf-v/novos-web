@@ -27,6 +27,14 @@ Route::middleware(['auth', 'role:Super Admin,Manager,Admin,Design,Produksi'])->g
         return view('internal.stress-test');
     });
 
+    Route::get('/internal/design', function () {
+        return view('internal.design');
+    });
+
+    Route::get('/internal/produksi', function () {
+        return view('internal.produksi');
+    });
+
     Route::get('/internal/laporan', [LaporanController::class, 'index'])->name('internal.laporan');
     Route::get('/internal/laporan/export/csv', [LaporanController::class, 'exportCsv'])->name('internal.laporan.csv');
     Route::get('/internal/laporan/export/excel', [LaporanController::class, 'exportExcel'])->name('internal.laporan.excel');
