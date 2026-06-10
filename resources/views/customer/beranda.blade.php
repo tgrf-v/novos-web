@@ -169,7 +169,7 @@
         <div class="w-full h-0.5 bg-gradient-to-r from-[#00e5ff] to-transparent mb-8"></div>
 
         {{-- horizontal scroll --}}
-        <div x-ref="scroll" id="product-scroll" @scroll="updateScroll()" class="flex gap-6 overflow-x-auto pb-4 no-scrollbar scroll-smooth">
+        <div x-ref="scroll" id="product-scroll" @scroll="updateScroll()" class="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar scroll-smooth">
             @foreach([
                 ['Sepak Bola', 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&q=80', 'Jersey Tim Premium',   'Rp 150.000'],
                 ['Basket',     'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&q=80', 'Jersey Basket Pro',     'Rp 175.000'],
@@ -227,7 +227,7 @@
         <div class="w-full h-0.5 bg-gradient-to-r from-[#00e5ff] to-transparent mb-8"></div>
 
         {{-- horizontal scroll --}}
-        <div x-ref="scroll2" id="product-scroll2" @scroll="updateScroll2()" class="flex gap-6 overflow-x-auto pb-4 no-scrollbar scroll-smooth">
+        <div x-ref="scroll2" id="product-scroll2" @scroll="updateScroll2()" class="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar scroll-smooth">
             @foreach([
                 ['Sepak Bola', 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&q=80', 'Jersey Tim Premium',   'Rp 150.000'],
                 ['Basket',     'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&q=80', 'Jersey Basket Pro',     'Rp 175.000'],
