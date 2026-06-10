@@ -12,14 +12,14 @@
         {{-- Center: Nav links --}}
         <div class="hidden md:flex items-center gap-8">
             <a href="{{ route('customer.beranda') }}"
-               class="text-sm font-medium transition-colors {{ request()->routeIs('customer.beranda') ? 'font-semibold text-[#1a237e] relative pb-1 after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2.5px] after:bg-[#00e5ff] after:rounded-full' : 'text-[#616161] hover:text-[#1a237e]' }}">Beranda</a>
+               class="nav-link text-sm font-medium transition-colors {{ request()->routeIs('customer.beranda') ? 'font-semibold text-[#1a237e] nav-link-active' : 'text-[#616161] hover:text-[#1a237e]' }}">Beranda</a>
 
             <a href="{{ route('customer.tentang') }}"
-               class="text-sm font-medium transition-colors {{ request()->routeIs('customer.tentang') ? 'font-semibold text-[#1a237e] relative pb-1 after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2.5px] after:bg-[#00e5ff] after:rounded-full' : 'text-[#616161] hover:text-[#1a237e]' }}">Tentang Kami</a>
+               class="nav-link text-sm font-medium transition-colors {{ request()->routeIs('customer.tentang') ? 'font-semibold text-[#1a237e] nav-link-active' : 'text-[#616161] hover:text-[#1a237e]' }}">Tentang Kami</a>
 
             <div x-data="{ katalogOpen: false }" @mouseenter="katalogOpen = true" @mouseleave="katalogOpen = false" class="relative">
                 <a href="{{ route('customer.katalog') }}"
-                   class="text-sm font-medium transition-colors {{ request()->routeIs('customer.katalog') ? 'font-semibold text-[#1a237e] relative pb-1 after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2.5px] after:bg-[#00e5ff] after:rounded-full' : 'text-[#616161] hover:text-[#1a237e]' }}">Katalog</a>
+                   class="nav-link text-sm font-medium transition-colors {{ request()->routeIs('customer.katalog') ? 'font-semibold text-[#1a237e] nav-link-active' : 'text-[#616161] hover:text-[#1a237e]' }}">Katalog</a>
                 <div x-show="katalogOpen" x-cloak @mouseenter="katalogOpen = true" @mouseleave="katalogOpen = false"
                      class="absolute top-full left-0 pt-2 w-64 z-50">
                     <div class="bg-white rounded-xl shadow-lg border border-gray-100 py-2"
@@ -50,7 +50,7 @@
             </div>
 
             <a href="{{ route('customer.pemesanan') }}"
-               class="text-sm font-medium transition-colors {{ request()->routeIs('customer.pemesanan') ? 'font-semibold text-[#1a237e] relative pb-1 after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[2.5px] after:bg-[#00e5ff] after:rounded-full' : 'text-[#616161] hover:text-[#1a237e]' }}">Buat Pesanan</a>
+               class="nav-link text-sm font-medium transition-colors {{ request()->routeIs('customer.pemesanan') ? 'font-semibold text-[#1a237e] nav-link-active' : 'text-[#616161] hover:text-[#1a237e]' }}">Buat Pesanan</a>
         </div>
 
         {{-- Right: Auth --}}
@@ -446,6 +446,28 @@
 </nav>
 
 <style>
+    .nav-link {
+        position: relative;
+        padding-bottom: 4px;
+    }
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #00e5ff;
+        border-radius: 999px;
+        transition: width 0.25s ease;
+    }
+    .nav-link:hover::after {
+        width: 100%;
+    }
+    .nav-link-active::after {
+        width: 100% !important;
+    }
+
     @keyframes shake {
         0%, 100% { transform: translateX(0); }
         10%, 50%, 90% { transform: translateX(-6px); }
