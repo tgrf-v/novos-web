@@ -45,12 +45,6 @@
         {{-- Kiri: Content Panel --}}
         <div class="flex flex-col justify-center py-20 md:py-0">
 
-            {{-- sub-headline badge --}}
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur border border-[#00e5ff]/25 w-fit mb-7">
-                <span class="text-[#00e5ff] text-xs">✦</span>
-                <span class="text-[#00e5ff] text-xs font-medium tracking-wide">Jersey Olahraga Custom Berkualitas</span>
-            </div>
-
             {{-- headline --}}
             <h1 class="text-5xl md:text-[56px] font-extrabold leading-tight text-white mb-5 max-w-2xl">
                 Pesan Jersey Custom Impianmu
