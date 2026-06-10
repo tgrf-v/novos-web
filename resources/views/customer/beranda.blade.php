@@ -113,27 +113,42 @@
 </section>
 
 {{-- ============================================================ --}}
-{{-- 2. PRODUK UNGGULAN — Dark Theme + Hover Glow --}}
+{{-- 2. PRODUK UNGGULAN --}}
 {{-- ============================================================ --}}
-<section class="bg-[#1a1a2e] py-20">
+<section x-data="{ scrolledLeft: false, scrolledRight: false, updateScroll() { let el = $refs.scroll; this.scrolledLeft = el.scrollLeft > 5; this.scrolledRight = (el.scrollLeft + el.clientWidth) >= (el.scrollWidth - 5); }, scrollLeft() { let el = $refs.scroll; el.scrollBy({ left: -320, behavior: 'smooth' }); }, scrollRight() { let el = $refs.scroll; el.scrollBy({ left: 320, behavior: 'smooth' }); } }" class="bg-white py-20">
     <div class="max-w-[1200px] mx-auto px-6">
 
-        {{-- heading --}}
-        <div class="mb-10">
-            <p class="text-xs font-semibold text-[#00e5ff] tracking-[0.2em] uppercase mb-2">Koleksi Kami</p>
-            <h2 class="text-4xl font-bold text-white mb-2">Produk Unggulan</h2>
-            <p class="text-[#9e9e9e]">Jersey terlaris pilihan customer kami</p>
+        <div class="flex items-end justify-between mb-2">
+            <h2 class="text-3xl font-bold text-[#1a237e]">Produk Terlaris</h2>
+            <div class="flex items-center gap-1">
+                <a href="{{ route('customer.katalog') }}" class="text-sm font-semibold text-black border-b border-black transition-colors">
+                    Lihat Semua
+                </a>
+                <button @click="scrollLeft()"
+                    :class="scrolledLeft ? 'text-black hover:text-gray-500 cursor-pointer' : 'text-gray-300 cursor-default'"
+                    class="px-1 transition-colors font-thin text-2xl leading-none">
+                    &lt;
+                </button>
+                <button @click="scrollRight()"
+                    :class="!scrolledRight ? 'text-black hover:text-gray-500 cursor-pointer' : 'text-gray-300 cursor-default'"
+                    class="px-1 transition-colors font-thin text-2xl leading-none">
+                    &gt;
+                </button>
+            </div>
         </div>
+        <div class="w-full h-0.5 bg-gradient-to-r from-[#00e5ff] to-transparent mb-8"></div>
 
         {{-- horizontal scroll --}}
-        <div class="flex gap-6 overflow-x-auto pb-4 no-scrollbar">
+        <div x-ref="scroll" id="product-scroll" @scroll="updateScroll()" class="flex gap-6 overflow-x-auto pb-4 no-scrollbar scroll-smooth">
             @foreach([
                 ['Sepak Bola', 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&q=80', 'Jersey Tim Premium',   'Rp 150.000'],
                 ['Basket',     'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&q=80', 'Jersey Basket Pro',     'Rp 175.000'],
                 ['Futsal',     'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=400&q=80', 'Jersey Futsal Elite',   'Rp 135.000'],
                 ['Custom',     'https://images.unsplash.com/photo-1552674605-15c2145efa38?w=400&q=80', 'Jersey Custom Full',    'Rp 200.000'],
+                ['Training',   'https://images.unsplash.com/photo-1596728325488-58c87691e9af?w=400&q=80', 'Jersey Training Pro',   'Rp 160.000'],
+                ['Running',    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80', 'Jersey Running Elite',  'Rp 180.000'],
             ] as $p)
-            <div class="product-card-glow flex-shrink-0 w-[280px] group relative rounded-2xl bg-[#16213e]/60 backdrop-blur-sm border border-white/5 p-5">
+            <div class="product-card-glow flex-shrink-0 w-[280px] group relative rounded-2xl bg-white border border-gray-100 shadow-sm p-5">
 
                 {{-- image area --}}
                 <div class="relative flex items-center justify-center min-h-[200px]">
@@ -149,12 +164,12 @@
 
                 {{-- body --}}
                 <div class="text-center mt-4">
-                    <h3 class="text-white text-sm font-bold">{{ $p[2] }}</h3>
-                    <p class="text-[#757575] text-xs mt-1">Mulai dari</p>
+                    <h3 class="text-[#1a237e] text-sm font-bold">{{ $p[2] }}</h3>
+                    <p class="text-[#9e9e9e] text-xs mt-1">Mulai dari</p>
                     <p class="text-[#00e5ff] text-2xl font-extrabold mt-1">{{ $p[3] }}</p>
                     <a href="{{ route('customer.pemesanan') }}"
-                       class="block w-full mt-4 py-2.5 border border-white/20 text-white text-sm font-semibold rounded-xl
-                              hover:bg-white/10 hover:border-white/40 transition-all">
+                       class="block w-full mt-4 py-2.5 border-2 border-[#1a237e] text-[#1a237e] text-sm font-semibold rounded-xl
+                              hover:bg-[#1a237e] hover:text-white transition-all">
                         Pesan Sekarang
                     </a>
                 </div>
