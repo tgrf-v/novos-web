@@ -4,8 +4,6 @@
 
 @push('styles')
 <style>
-    .carousel-dot-active  { display:inline-block; width:24px; height:8px; border-radius:4px; background:#00e5ff; }
-    .carousel-dot-inactive{ display:inline-block; width:8px;  height:8px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.6); }
     .card-product { box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06); transition: box-shadow .25s ease; }
     .card-product:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.12), 0 4px 10px rgba(0,0,0,0.08); }
     .card-testi { box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: box-shadow .25s ease; }
@@ -20,51 +18,75 @@
 @section('content')
 
 {{-- ============================================================ --}}
-{{-- 1. HERO --}}
+{{-- 1. HERO - Asymmetric Split Layout --}}
 {{-- ============================================================ --}}
-<section class="relative w-full bg-gradient-to-br from-[#1a237e] to-[#0d0d2b] overflow-hidden" style="min-height:560px">
+<section class="relative w-full bg-gradient-to-br from-[#1e3a5f] to-[#0f2040] overflow-hidden" style="min-height:600px">
 
     {{-- mesh overlay --}}
-    <div class="absolute inset-0 opacity-[0.04]"
+    <div class="absolute inset-0 opacity-[0.03]"
          style="background-image:radial-gradient(circle,#fff 1px,transparent 1px);background-size:20px 20px"></div>
 
+    <div class="absolute -top-40 -right-40 w-[500px] h-[500px] bg-[#00e5ff] opacity-[0.05] rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-32 -left-32 w-[400px] h-[400px] bg-[#00e5ff] opacity-[0.05] rounded-full blur-3xl"></div>
+
     {{-- content --}}
-    <div class="relative z-10 flex flex-col items-center justify-center text-center px-6 pt-24 pb-20">
+    <div class="relative z-10 max-w-[1200px] mx-auto px-6 grid md:grid-cols-2 gap-8 items-center" style="min-height:600px">
 
-        {{-- chip --}}
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur border border-[#00e5ff]/25 mb-7">
-            <span class="text-[#00e5ff] text-xs">✦</span>
-            <span class="text-[#00e5ff] text-xs font-medium tracking-wide">Jersey Olahraga Custom Berkualitas</span>
+        {{-- Kiri: Content Panel --}}
+        <div class="flex flex-col justify-center py-20 md:py-0">
+
+            {{-- sub-headline badge --}}
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur border border-[#00e5ff]/25 w-fit mb-7">
+                <span class="text-[#00e5ff] text-xs">✦</span>
+                <span class="text-[#00e5ff] text-xs font-medium tracking-wide">Jersey Olahraga Custom Berkualitas</span>
+            </div>
+
+            {{-- headline --}}
+            <h1 class="text-5xl md:text-[56px] font-extrabold leading-tight text-white mb-5 max-w-2xl">
+                Pesan Jersey Custom Impianmu
+            </h1>
+
+            {{-- deskripsi --}}
+            <p class="text-base md:text-lg text-[#c8d6e0] max-w-xl mb-10 leading-relaxed">
+                Desain bebas, kualitas premium, pengerjaan cepat dan tepat waktu
+            </p>
+
+            {{-- CTA inline --}}
+            <div class="flex flex-wrap items-center gap-3">
+                <a href="{{ route('customer.pemesanan') }}"
+                   class="px-8 py-3.5 bg-[#00e5ff] text-[#1a237e] text-sm font-bold rounded-[4px] hover:bg-[#00d0ea] transition-all shadow-lg shadow-[#00e5ff]/20">
+                    Buat Pesanan Sekarang
+                </a>
+                <a href="{{ route('customer.katalog') }}"
+                   class="px-8 py-3.5 border-2 border-white/60 text-white text-sm font-semibold rounded-[4px] hover:bg-white/10 hover:border-white transition-all">
+                    Lihat Katalog
+                </a>
+            </div>
         </div>
 
-        {{-- headline --}}
-        <h1 class="text-5xl md:text-[56px] font-extrabold leading-tight text-white mb-5 max-w-3xl">
-            Pesan Jersey Custom Impianmu
-        </h1>
+        {{-- Kanan: Visual Showcase --}}
+        <div class="flex items-center justify-center py-16 md:py-0 relative">
+            {{-- background glow untuk gambar --}}
+            <div class="absolute w-[400px] h-[400px] bg-[#00e5ff] opacity-[0.08] rounded-full blur-3xl"></div>
 
-        {{-- sub --}}
-        <p class="text-base md:text-lg text-[#b0bec5] max-w-xl mb-9">
-            Desain bebas, kualitas premium, pengerjaan cepat dan tepat waktu
-        </p>
+            {{-- primary image (depan) --}}
+            <div class="relative z-10 group">
+                <img src="{{ asset('images/jersey-depan.png') }}"
+                     alt="Jersey Custom Tampak Depan"
+                     class="w-full max-w-[380px] h-auto object-contain drop-shadow-2xl
+                            -rotate-[15deg] transition-all duration-700 ease-out
+                            group-hover:-rotate-[10deg] group-hover:scale-[1.02]">
+            </div>
 
-        {{-- CTA --}}
-        <div class="flex flex-wrap items-center justify-center gap-3">
-            <a href="{{ route('customer.pemesanan') }}"
-               class="px-8 py-3 bg-[#00e5ff] text-[#1a237e] text-sm font-bold rounded-[4px] hover:bg-[#00d0ea] transition-all shadow-lg shadow-[#00e5ff]/20">
-                Buat Pesanan Sekarang
-            </a>
-            <a href="{{ route('customer.katalog') }}"
-               class="px-8 py-3 border-2 border-white text-white text-sm font-semibold rounded-[4px] hover:bg-white/10 transition-all">
-                Lihat Katalog
-            </a>
+            {{-- secondary floating image (belakang) --}}
+            <div class="absolute -bottom-4 -left-4 z-0 opacity-60 hidden md:block">
+                <img src="{{ asset('images/jersey-belakang.png') }}"
+                     alt="Jersey Custom Tampak Belakang"
+                     class="w-[160px] h-auto object-contain drop-shadow-lg
+                            rotate-[10deg] transition-all duration-700 ease-out
+                            group-hover:rotate-[6deg] opacity-40 saturate-0">
+            </div>
         </div>
-    </div>
-
-    {{-- carousel dots --}}
-    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2">
-        <span class="carousel-dot-active"></span>
-        <span class="carousel-dot-inactive"></span>
-        <span class="carousel-dot-inactive"></span>
     </div>
 </section>
 

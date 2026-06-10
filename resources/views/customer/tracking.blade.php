@@ -104,44 +104,122 @@
             </div>
         </div>
 
-        {{-- ACC Desain Section --}}
-        <div x-show="showAcc" class="bg-white rounded-xl border border-gray-200 p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Konfirmasi Desain</h3>
-            <p class="text-sm text-gray-500 mb-4">Desain jersey Anda sudah selesai. Silakan periksa dan berikan persetujuan atau ajukan revisi.</p>
+        {{-- ACC Desain Section (Hero Grid) --}}
+        <div x-show="showAcc" x-cloak x-transition:enter.duration.300>
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div class="grid md:grid-cols-[70%_30%]">
+                    {{-- Kiri: Gambar Mockup --}}
+                    <div class="p-6 md:p-8 border-b md:border-b-0 md:border-r border-gray-100">
+                        <div class="grid sm:grid-cols-2 gap-4 h-full">
+                            {{-- Tampak Depan --}}
+                            <div class="relative group cursor-zoom-in rounded-xl overflow-hidden bg-gray-50 border border-gray-200 min-h-[260px]"
+                                 @click="openLightbox('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&q=80')">
+                                <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&q=80"
+                                     alt="Tampak Depan"
+                                     class="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
+                                    <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-12 h-12 bg-white/90 rounded-full flex items-center justify-center backdrop-blur-sm">
+                                        <svg class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                                    </div>
+                                </div>
+                                <span class="absolute top-3 left-3 px-2 py-0.5 bg-white/80 backdrop-blur-sm text-[10px] font-semibold text-gray-600 rounded-md">2D Mockup</span>
+                                <span class="absolute top-3 right-3 px-2 py-0.5 bg-black/40 backdrop-blur-sm text-[10px] font-semibold text-white rounded-md">Depan</span>
+                            </div>
 
-            {{-- Design Preview --}}
-            <div class="grid sm:grid-cols-2 gap-4 mb-6">
-                <div class="bg-gray-50 rounded-lg border border-gray-200 p-4 flex items-center justify-center min-h-[200px]">
-                    <div class="text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-gray-300 mb-2"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23Z"/></svg>
-                        <p class="text-sm text-gray-400">Tampak Depan</p>
+                            {{-- Tampak Belakang --}}
+                            <div class="relative group cursor-zoom-in rounded-xl overflow-hidden bg-gray-50 border border-gray-200 min-h-[260px]"
+                                 @click="openLightbox('https://images.unsplash.com/photo-1552674605-15c2145efa38?w=800&q=80')">
+                                <img src="https://images.unsplash.com/photo-1552674605-15c2145efa38?w=600&q=80"
+                                     alt="Tampak Belakang"
+                                     class="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-105">
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
+                                    <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-12 h-12 bg-white/90 rounded-full flex items-center justify-center backdrop-blur-sm">
+                                        <svg class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                                    </div>
+                                </div>
+                                <span class="absolute top-3 left-3 px-2 py-0.5 bg-white/80 backdrop-blur-sm text-[10px] font-semibold text-gray-600 rounded-md">Resolusi Tinggi</span>
+                                <span class="absolute top-3 right-3 px-2 py-0.5 bg-black/40 backdrop-blur-sm text-[10px] font-semibold text-white rounded-md">Belakang</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="bg-gray-50 rounded-lg border border-gray-200 p-4 flex items-center justify-center min-h-[200px]">
-                    <div class="text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-gray-300 mb-2"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23Z"/></svg>
-                        <p class="text-sm text-gray-400">Tampak Belakang</p>
+
+                    {{-- Kanan: Panel Informasi & Tombol --}}
+                    <div class="p-6 md:p-8 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2">Konfirmasi Desain</h3>
+                            <p class="text-sm text-gray-500 leading-relaxed">Desain jersey Anda sudah selesai. Silakan periksa detailnya dan berikan persetujuan atau ajukan revisi jika ada yang perlu diperbaiki.</p>
+
+                            {{-- Info ringkas --}}
+                            <div class="mt-5 space-y-2.5">
+                                <div class="flex items-center gap-2.5 text-sm text-gray-600">
+                                    <svg class="w-4 h-4 text-green-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Bahan: <strong>Dryfit Premium</strong></span>
+                                </div>
+                                <div class="flex items-center gap-2.5 text-sm text-gray-600">
+                                    <svg class="w-4 h-4 text-green-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Ukuran: <strong>S - 3XL</strong></span>
+                                </div>
+                                <div class="flex items-center gap-2.5 text-sm text-gray-600">
+                                    <svg class="w-4 h-4 text-green-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Sablon: <strong>Rubber PVC</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Tombol --}}
+                        <div class="mt-6 space-y-3">
+                            <button @click="accDesign"
+                                class="relative overflow-hidden w-full px-6 py-3 bg-blue-900 text-white rounded-xl font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center gap-2 group/btn">
+                                <span class="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent"></span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                ACC Desain
+                            </button>
+
+                            <button @click="toggleRevision"
+                                class="w-full px-6 py-3 border-2 border-gray-300 text-gray-600 rounded-xl font-semibold hover:border-gray-400 hover:text-gray-800 transition-colors flex items-center justify-center gap-2">
+                                <svg :class="revisionOpen ? 'rotate-180' : ''" class="w-4 h-4 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                                Minta Revisi
+                            </button>
+
+                            {{-- Inline Revision Form --}}
+                            <div x-show="revisionOpen" x-cloak x-collapse.duration.300 class="space-y-3 pt-1">
+                                <textarea x-model="revisionNote"
+                                    placeholder="Jelaskan bagian mana yang perlu direvisi"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-900 focus:border-blue-900 outline-none transition-shadow resize-none"
+                                    rows="3"></textarea>
+                                <div class="flex gap-2">
+                                    <button @click="sendRevision"
+                                        class="flex-1 px-4 py-2.5 bg-blue-900 text-white text-sm rounded-xl font-semibold hover:bg-blue-800 transition-colors">
+                                        Kirim Revisi
+                                    </button>
+                                    <button @click="revisionOpen = false; revisionNote = ''"
+                                        class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-600 text-sm rounded-xl font-semibold hover:bg-gray-50 transition-colors">
+                                        Batal
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            {{-- Action Buttons --}}
-            <div class="flex flex-col sm:flex-row gap-3">
-                <button
-                    @click="accDesign"
-                    class="flex-1 px-6 py-3 bg-blue-900 text-white rounded-xl font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center gap-2"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    ACC Desain
-                </button>
-                <button
-                    @click="requestRevision"
-                    class="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-600 rounded-xl font-semibold hover:border-gray-400 hover:text-gray-800 transition-colors flex items-center justify-center gap-2"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-                    Minta Revisi
-                </button>
-            </div>
+        {{-- Lightbox Fullscreen --}}
+        <div x-show="lightboxOpen" x-cloak
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="closeLightbox"
+             class="fixed inset-0 z-[999] bg-black/90 flex items-center justify-center p-4 cursor-zoom-out">
+            <button @click="closeLightbox" class="absolute top-6 right-6 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <img :src="lightboxImage" alt="Preview Desain"
+                 class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
+                 @click.stop>
         </div>
     </div>
 </div>
@@ -165,6 +243,10 @@ function trackingForm() {
     return {
         searched: false,
         animateProgress: false,
+        lightboxOpen: false,
+        lightboxImage: '',
+        revisionOpen: false,
+        revisionNote: '',
         searchQuery: 'NVS-20240601-001',
         order: {
             id: 'NVS-20240601-001',
@@ -261,30 +343,43 @@ function trackingForm() {
             });
         },
 
-        requestRevision() {
+        openLightbox(img) {
+            this.lightboxImage = img;
+            this.lightboxOpen = true;
+            document.body.style.overflow = 'hidden';
+        },
+
+        closeLightbox() {
+            this.lightboxOpen = false;
+            this.lightboxImage = '';
+            document.body.style.overflow = '';
+        },
+
+        toggleRevision() {
+            this.revisionOpen = !this.revisionOpen;
+            if (!this.revisionOpen) this.revisionNote = '';
+        },
+
+        sendRevision() {
+            if (!this.revisionNote.trim()) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Catatan kosong',
+                    text: 'Silakan tulis catatan revisi terlebih dahulu.',
+                    confirmButtonColor: '#1e3a5f',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
             Swal.fire({
-                title: 'Minta Revisi',
-                text: 'Tuliskan catatan revisi untuk tim desain',
-                input: 'textarea',
-                inputPlaceholder: 'Contoh: warna utama diganti biru, logo diperbesar...',
-                showCancelButton: true,
+                icon: 'success',
+                title: 'Revisi Dikirim!',
+                text: 'Catatan revisi Anda telah dikirim ke tim desain.',
                 confirmButtonColor: '#1e3a5f',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Kirim',
-                cancelButtonText: 'Batal',
-                inputValidator: (value) => {
-                    if (!value) return 'Catatan revisi harus diisi';
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Revisi Dikirim!',
-                        text: 'Catatan revisi Anda telah dikirim ke tim desain.',
-                        confirmButtonColor: '#1e3a5f',
-                        confirmButtonText: 'OK'
-                    });
-                }
+                confirmButtonText: 'OK'
+            }).then(() => {
+                this.revisionOpen = false;
+                this.revisionNote = '';
             });
         }
     }
