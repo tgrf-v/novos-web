@@ -125,19 +125,33 @@
                     >
                 </div>
 
-                {{-- Jenis Olahraga --}}
+                {{-- Jenis Kerah --}}
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Jenis Olahraga <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Jenis Kerah <span class="text-red-500">*</span></label>
                     <select
-                        x-model="form.olahraga"
+                        x-model="form.kerah"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-blue-900 outline-none transition-shadow bg-white"
                     >
-                        <option value="">Pilih Jenis Olahraga</option>
-                        <option value="Sepak Bola">Sepak Bola</option>
-                        <option value="Futsal">Futsal</option>
-                        <option value="Basket">Basket</option>
-                        <option value="Voli">Voli</option>
-                        <option value="Running">Running</option>
+                        <option value="">Pilih Jenis Kerah</option>
+                        <option value="Crew Neck">Crew Neck (Bulat)</option>
+                        <option value="Polo">Polo (Kerah)</option>
+                        <option value="V-Neck">V-Neck</option>
+                        <option value="Mock Neck">Mock Neck</option>
+                    </select>
+                </div>
+
+                {{-- Bahan Jersey --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Bahan Jersey <span class="text-red-500">*</span></label>
+                    <select
+                        x-model="form.bahan"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-blue-900 outline-none transition-shadow bg-white"
+                    >
+                        <option value="">Pilih Bahan Jersey</option>
+                        <option value="Dryfit Premium">Dryfit Premium</option>
+                        <option value="Dryfit Reguler">Dryfit Reguler</option>
+                        <option value="PE">PE (Polyester)</option>
+                        <option value="Cotton Combed">Cotton Combed</option>
                     </select>
                 </div>
 
@@ -349,8 +363,12 @@
                             <span class="font-medium text-gray-900" x-text="form.team_name || '-'"></span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-500">Olahraga</span>
-                            <span class="font-medium text-gray-900" x-text="form.olahraga || '-'"></span>
+                            <span class="text-gray-500">Kerah</span>
+                            <span class="font-medium text-gray-900" x-text="form.kerah || '-'"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Bahan</span>
+                            <span class="font-medium text-gray-900" x-text="form.bahan || '-'"></span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-500">Jumlah</span>
@@ -461,8 +479,12 @@
                         <span class="font-medium text-gray-900" x-text="form.team_name || '-'"></span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-gray-500">Olahraga</span>
-                        <span class="font-medium text-gray-900" x-text="form.olahraga || '-'"></span>
+                        <span class="text-gray-500">Kerah</span>
+                        <span class="font-medium text-gray-900" x-text="form.kerah || '-'"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Bahan</span>
+                        <span class="font-medium text-gray-900" x-text="form.bahan || '-'"></span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-500">Jumlah</span>
@@ -512,7 +534,8 @@ function pemesananForm(catalogProduct = null) {
         catalogProduct: catalogProduct,
         form: {
             team_name: 'FC Garuda',
-            olahraga: 'Sepak Bola',
+            kerah: 'Crew Neck',
+            bahan: 'Dryfit Premium',
             jumlah: 10,
             warna_utama: '#1e3a5f',
             warna_sekunder: '#ffffff',
@@ -529,8 +552,6 @@ function pemesananForm(catalogProduct = null) {
         init() {
             if (this.catalogProduct) {
                 this.jenis = 'katalog';
-                // Hindari menimpa nama tim (team_name) dengan nama produk jersey
-                this.form.olahraga = this.catalogProduct.kategori;
                 if (this.catalogProduct.harga) {
                     this.basePricePerPcs = parseInt(this.catalogProduct.harga);
                 }
@@ -570,7 +591,7 @@ function pemesananForm(catalogProduct = null) {
         },
 
         get validateStep2() {
-            return this.form.team_name.trim() !== '';
+            return this.form.team_name.trim() !== '' && this.form.kerah !== '' && this.form.bahan !== '';
         },
 
         get validateStep3() {
