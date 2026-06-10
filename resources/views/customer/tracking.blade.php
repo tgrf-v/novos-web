@@ -112,10 +112,10 @@
                     <div class="p-6 md:p-8 border-b md:border-b-0 md:border-r border-gray-100">
                         <div class="grid sm:grid-cols-2 gap-4 h-full">
                             {{-- Tampak Depan --}}
-                            <div class="relative group cursor-zoom-in rounded-xl overflow-hidden bg-gray-50 border border-gray-200 min-h-[260px]"
-                                 @click="openLightbox('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&q=80')">
-                                <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=600&q=80"
-                                     alt="Tampak Depan"
+                             <div class="relative group cursor-zoom-in rounded-xl overflow-hidden bg-gray-50 border border-gray-200 min-h-[260px]"
+                                  @click="openLightbox('{{ asset('images/jersey-depan.png') }}')">
+                                 <img src="{{ asset('images/jersey-depan.png') }}"
+                                      alt="Tampak Depan"
                                      class="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-105">
                                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
                                     <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-12 h-12 bg-white/90 rounded-full flex items-center justify-center backdrop-blur-sm">
@@ -127,10 +127,10 @@
                             </div>
 
                             {{-- Tampak Belakang --}}
-                            <div class="relative group cursor-zoom-in rounded-xl overflow-hidden bg-gray-50 border border-gray-200 min-h-[260px]"
-                                 @click="openLightbox('https://images.unsplash.com/photo-1552674605-15c2145efa38?w=800&q=80')">
-                                <img src="https://images.unsplash.com/photo-1552674605-15c2145efa38?w=600&q=80"
-                                     alt="Tampak Belakang"
+                             <div class="relative group cursor-zoom-in rounded-xl overflow-hidden bg-gray-50 border border-gray-200 min-h-[260px]"
+                                  @click="openLightbox('{{ asset('images/jersey-belakang.png') }}')">
+                                 <img src="{{ asset('images/jersey-belakang.png') }}"
+                                      alt="Tampak Belakang"
                                      class="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-105">
                                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
                                     <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-12 h-12 bg-white/90 rounded-full flex items-center justify-center backdrop-blur-sm">
