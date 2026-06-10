@@ -10,11 +10,9 @@
 @section('internal-content')
 <div x-data="kelolaProdukApp()" x-init="initApp()" class="space-y-6">
 
-    <!-- LIST VIEW -->
-    <div x-show="viewState === 'list'" x-transition>
-        
-        <!-- Header Actions -->
-        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <!-- Tabel Data -->
+    <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
             <div class="flex flex-wrap items-center gap-3 flex-1">
                 <!-- Search -->
                 <div class="relative w-full md:max-w-xs">
@@ -41,87 +39,91 @@
                 </button>
             </div>
         </div>
-
-        <!-- Tabel Data -->
-        <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            <div class="overflow-x-auto w-full">
-                <table class="table w-full">
-                    <thead>
-                        <tr class="bg-gray-50 text-gray-700 font-bold border-b border-gray-200">
-                            <th class="w-16 text-center">ID</th>
-                            <th>Foto</th>
-                            <th>Nama Jersey</th>
-                            <th>Kategori</th>
-                            <th>Harga</th>
-                            <th class="text-center">Hero Utama</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm">
-                        <template x-for="(prod, index) in filteredProducts" :key="prod.id">
-                            <tr class="hover:bg-gray-50 border-b border-gray-100 transition">
-                                <td class="text-center text-gray-500 font-medium" x-text="prod.id"></td>
-                                <td>
-                                    <div class="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
-                                        <template x-if="prod.image">
-                                            <img :src="prod.image" class="object-cover w-full h-full" alt="Foto">
-                                        </template>
-                                        <template x-if="!prod.image">
-                                            <i data-lucide="image" class="w-5 h-5 text-gray-400"></i>
-                                        </template>
-                                    </div>
-                                </td>
-                                <td class="font-bold text-gray-900" x-text="prod.name"></td>
-                                <td>
-                                    <span class="px-2.5 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-semibold" x-text="getCategoryName(prod.category_id)"></span>
-                                </td>
-                                <td class="font-semibold text-emerald-600" x-text="formatRupiah(prod.price)"></td>
-                                <td class="text-center">
-                                    <!-- Toggle Switch Hero -->
-                                    <label class="cursor-pointer inline-flex items-center">
-                                        <input type="checkbox" class="toggle toggle-primary toggle-sm" 
-                                               :checked="prod.is_featured" 
-                                               @change="toggleFeatured(prod.id)">
-                                    </label>
-                                    <div x-show="prod.is_featured" class="text-[10px] font-bold text-[#1a237e] mt-1">AKTIF</div>
-                                </td>
-                                <td class="text-center">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <button @click="openEditForm(prod)" class="btn btn-xs btn-square bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 border-0 rounded-md" title="Edit">
-                                            <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                        <button @click="confirmDelete(prod.id)" class="btn btn-xs btn-square bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border-0 rounded-md" title="Hapus">
-                                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </template>
-                        <tr x-show="filteredProducts.length === 0">
-                            <td colspan="7" class="text-center py-8 text-gray-500 font-medium">
-                                Tidak ada produk ditemukan.
+        
+        <div class="overflow-x-auto">
+            <table class="table w-full">
+                <thead>
+                    <tr class="bg-gray-50 text-gray-700 font-bold border-b border-gray-200">
+                        <th class="w-16 text-center">ID</th>
+                        <th>Foto</th>
+                        <th>Nama Jersey</th>
+                        <th>Kategori</th>
+                        <th>Harga</th>
+                        <th class="text-center">Hero Utama</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    <template x-for="(prod, index) in filteredProducts" :key="prod.id">
+                        <tr class="hover:bg-gray-50 border-b border-gray-100 transition">
+                            <td class="text-center text-gray-500 font-medium" x-text="prod.id"></td>
+                            <td>
+                                <div class="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
+                                    <template x-if="prod.image">
+                                        <img :src="prod.image" class="object-cover w-full h-full" alt="Foto">
+                                    </template>
+                                    <template x-if="!prod.image">
+                                        <i data-lucide="image" class="w-5 h-5 text-gray-400"></i>
+                                    </template>
+                                </div>
+                            </td>
+                            <td class="font-bold text-gray-900" x-text="prod.name"></td>
+                            <td>
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-semibold" x-text="getCategoryName(prod.category_id)"></span>
+                            </td>
+                            <td class="font-semibold text-emerald-600" x-text="formatRupiah(prod.price)"></td>
+                            <td class="text-center">
+                                <label class="cursor-pointer inline-flex items-center">
+                                    <input type="checkbox" class="toggle toggle-primary toggle-sm" 
+                                           :checked="prod.is_featured" 
+                                           @change="toggleFeatured(prod.id)">
+                                </label>
+                                <div x-show="prod.is_featured" class="text-[10px] font-bold text-[#1a237e] mt-1">AKTIF</div>
+                            </td>
+                            <td class="text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <button @click="openEditForm(prod)" class="btn btn-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 hover:text-indigo-700 border-0 rounded-md flex items-center gap-1">
+                                        <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Edit
+                                    </button>
+                                    <button @click="confirmDelete(prod.id)" class="btn btn-xs bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border-0 rounded-md flex items-center gap-1">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Hapus
+                                    </button>
+                                </div>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
-            </div>
+                    </template>
+                    <tr x-show="filteredProducts.length === 0">
+                        <td colspan="7" class="text-center py-8 text-gray-500 font-medium">
+                            Tidak ada produk ditemukan.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- FORM VIEW -->
-    <div x-show="viewState === 'form'" x-transition x-cloak>
-        <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden max-w-3xl mx-auto">
-            <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+    <!-- Modal Form -->
+    <style>
+        #modal_tambah_produk::backdrop {
+            background: transparent !important;
+            background-color: transparent !important;
+        }
+    </style>
+    <dialog id="modal_tambah_produk" class="modal backdrop:bg-transparent">
+        <div class="modal-box max-w-3xl bg-white shadow-2xl">
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex items-center justify-between -mx-6 -mt-6 mb-6">
                 <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
                     <i data-lucide="box" class="w-5 h-5 text-[#1a237e]"></i>
                     <span x-text="formMode === 'create' ? 'Tambah Produk Baru' : 'Edit Produk'"></span>
                 </h3>
+                <button @click="closeForm()" class="btn btn-ghost btn-sm btn-circle">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
             
-            <div class="p-6">
+            <div class="p-1">
                 <form @submit.prevent="saveProduct" class="space-y-5">
                     
-                    <!-- Nama & Kategori -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="space-y-1.5">
                             <label class="text-sm font-semibold text-gray-700">Nama Produk <span class="text-red-500">*</span></label>
@@ -138,7 +140,6 @@
                         </div>
                     </div>
 
-                    <!-- Harga & Warna Tema -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="space-y-1.5">
                             <label class="text-sm font-semibold text-gray-700">Harga (Rp) <span class="text-red-500">*</span></label>
@@ -149,18 +150,16 @@
                             <div class="flex items-center gap-3">
                                 <input type="color" x-model="formData.theme_color" required class="w-10 h-10 rounded cursor-pointer border border-gray-300 p-0.5">
                                 <span class="text-sm font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded border border-gray-200" x-text="formData.theme_color || '#000000'"></span>
-                                <div class="text-xs text-gray-500 flex-1">Warna pendaran saat produk jadi model utama.</div>
+                                <div class="text-xs text-gray-500 flex-1">Warna latar saat produk jadi model utama.</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Deskripsi -->
                     <div class="space-y-1.5">
                         <label class="text-sm font-semibold text-gray-700">Deskripsi Produk</label>
                         <textarea x-model="formData.description" class="textarea textarea-bordered w-full rounded-lg border-gray-300 focus:border-[#1a237e] focus:ring-[#1a237e]/20" rows="3" placeholder="Detail bahan, printing, dsb..."></textarea>
                     </div>
 
-                    <!-- Foto -->
                     <div class="space-y-1.5">
                         <label class="text-sm font-semibold text-gray-700">Foto Jersey (Format .png transparan disarankan)</label>
                         <input type="file" @change="handleFileUpload" accept="image/*" class="file-input file-input-bordered w-full rounded-lg border-gray-300 focus:border-[#1a237e] focus:ring-[#1a237e]/20 text-sm">
@@ -169,7 +168,6 @@
                         </div>
                     </div>
 
-                    <!-- Actions -->
                     <div class="pt-5 border-t border-gray-100 flex items-center justify-end gap-3 mt-6">
                         <button type="button" @click="closeForm()" class="btn btn-outline border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded-lg">
                             Batal
@@ -182,17 +180,18 @@
                 </form>
             </div>
         </div>
-    </div>
+        <form method="dialog" class="modal-backdrop bg-transparent" @click="closeForm()">
+            <button>close</button>
+        </form>
+    </dialog>
 
 </div>
 
 <script>
 function kelolaProdukApp() {
     return {
-        viewState: 'list', // 'list' or 'form'
-        formMode: 'create', // 'create' or 'edit'
+        formMode: 'create',
         
-        // Dummy Categories
         categories: [
             { id: 1, name: 'Sepak Bola' },
             { id: 2, name: 'Futsal' },
@@ -203,7 +202,6 @@ function kelolaProdukApp() {
             { id: 7, name: 'E-Sports' }
         ],
         
-        // Dummy Products
         products: [],
         
         filters: {
@@ -223,7 +221,6 @@ function kelolaProdukApp() {
         },
         
         initApp() {
-            // Load from localStorage or use defaults
             const stored = localStorage.getItem('nvs_dummy_products');
             if (stored) {
                 this.products = JSON.parse(stored);
@@ -295,7 +292,7 @@ function kelolaProdukApp() {
                 imagePreview: null,
                 is_featured: false
             };
-            this.viewState = 'form';
+            document.getElementById('modal_tambah_produk').showModal();
             this.renderIcons();
         },
         
@@ -311,13 +308,12 @@ function kelolaProdukApp() {
                 imagePreview: product.image,
                 is_featured: product.is_featured
             };
-            this.viewState = 'form';
+            document.getElementById('modal_tambah_produk').showModal();
             this.renderIcons();
         },
         
         closeForm() {
-            this.viewState = 'list';
-            this.renderIcons();
+            document.getElementById('modal_tambah_produk').close();
         },
         
         handleFileUpload(event) {
@@ -376,7 +372,6 @@ function kelolaProdukApp() {
                 }
             }
             
-            // If saved as featured, unfeature others
             if (this.formData.is_featured) {
                 this.unfeatureOthers(this.formData.id || Math.max(...this.products.map(p=>p.id)));
             }
