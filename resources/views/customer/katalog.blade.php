@@ -1,6 +1,57 @@
 @extends('layouts.customer')
 
 @section('content')
+<style>
+    @keyframes cardFadeIn {
+        from { opacity: 0; transform: translateY(20px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .animate-card {
+        opacity: 0;
+        animation: cardFadeIn 0.45s ease-out forwards;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-12px); }
+    }
+    @keyframes float-slow {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+    }
+    .animate-float { animation: float 4s ease-in-out infinite; }
+    .animate-float-slow { animation: float-slow 5s ease-in-out infinite; }
+
+    [data-aos] {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+    [data-aos].aos-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    [data-aos="fade-in"] {
+        opacity: 0;
+        transform: none;
+    }
+    [data-aos="fade-in"].aos-visible {
+        opacity: 1;
+    }
+    [data-aos="zoom-in"] {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    [data-aos="zoom-in"].aos-visible {
+        opacity: 1;
+        transform: scale(1);
+    }
+    [data-aos-delay="100"].aos-visible { transition-delay: 0.1s; }
+    [data-aos-delay="200"].aos-visible { transition-delay: 0.2s; }
+    [data-aos-delay="300"].aos-visible { transition-delay: 0.3s; }
+    [data-aos-delay="400"].aos-visible { transition-delay: 0.4s; }
+    [data-aos-delay="500"].aos-visible { transition-delay: 0.5s; }
+</style>
 <script>
 function katalogData() {
     return {
@@ -97,8 +148,8 @@ function katalogData() {
         </div>
         <div class="absolute inset-0 opacity-[0.03] z-[1]"
              style="background-image:radial-gradient(circle,#fff 1px,transparent 1px);background-size:20px 20px"></div>
-        <div class="absolute -top-40 -right-40 w-[500px] h-[500px] bg-[#00e5ff] opacity-[0.05] rounded-full blur-3xl z-[1]"></div>
-        <div class="absolute -bottom-32 -left-32 w-[400px] h-[400px] bg-[#00e5ff] opacity-[0.05] rounded-full blur-3xl z-[1]"></div>
+        <div class="absolute -top-40 -right-40 w-[500px] h-[500px] bg-[#00e5ff] opacity-[0.05] rounded-full blur-3xl z-[1] animate-float"></div>
+        <div class="absolute -bottom-32 -left-32 w-[400px] h-[400px] bg-[#00e5ff] opacity-[0.05] rounded-full blur-3xl z-[1] animate-float-slow"></div>
         <div class="relative z-10 max-w-[1200px] mx-auto px-6 flex items-center" style="min-height:400px">
             <div class="max-w-2xl">
                 <h1 class="text-4xl md:text-[56px] font-bold leading-tight text-white mb-5" data-aos="fade-up" data-aos-delay="100">
@@ -138,8 +189,8 @@ function katalogData() {
 
             {{-- Product Grid --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <template x-for="product in pagedProducts" :key="product.id">
-                    <div @click="window.location.href = '{{ route('customer.pemesanan') }}?produk=' + encodeURIComponent(product.name) + '&kategori=' + encodeURIComponent(product.category) + '&harga=' + (product.price ?? '') + '&gambar=' + encodeURIComponent(product.image ?? '')" class="group cursor-pointer bg-gray-50">
+                <template x-for="(product, index) in pagedProducts" :key="`${product.id}-${currentPage}`">
+                    <div @click="window.location.href = '{{ route('customer.pemesanan') }}?produk=' + encodeURIComponent(product.name) + '&kategori=' + encodeURIComponent(product.category) + '&harga=' + (product.price ?? '') + '&gambar=' + encodeURIComponent(product.image ?? '')" :style="`animation-delay: ${index * 0.06}s`" class="group cursor-pointer bg-gray-50 animate-card">
                         {{-- Image --}}
                         <div class="p-2">
                             <div class="relative w-full overflow-hidden" style="aspect-ratio:3/4">
@@ -242,4 +293,23 @@ function katalogData() {
     </div>
 </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('aos-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('[data-aos]').forEach(function(el) {
+        observer.observe(el);
+    });
+});
+</script>
+@endpush
 @endsection
