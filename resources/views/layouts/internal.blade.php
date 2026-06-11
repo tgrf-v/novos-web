@@ -20,8 +20,23 @@
         * { font-family: 'Poppins', sans-serif; }
         [x-cloak] { display: none !important; }
     </style>
+    {{-- Migrate old cookie name (sidebar.open) → sidebar_open to fix PHP dot-conversion bug --}}
+    <script>
+        (function () {
+            var oldVal = document.cookie.match(/(?:^|;\s*)sidebar\.open=([^;]*)/);
+            if (oldVal) {
+                var val = oldVal[1];
+                // Delete the old cookie
+                document.cookie = 'sidebar.open=; path=/; max-age=0';
+                // Write new cookie only if sidebar_open not already set
+                if (!document.cookie.match(/(?:^|;\s*)sidebar_open=/)) {
+                    document.cookie = 'sidebar_open=' + val + '; path=/; SameSite=Lax; max-age=' + (60 * 60 * 24 * 365);
+                }
+            }
+        })();
+    </script>
 </head>
-<body class="bg-[#f5f5f5] text-[#212121] antialiased flex h-screen overflow-hidden">
+<body class="bg-[#f5f5f5] text-[#212121] antialiased flex h-screen overflow-hidden" x-data>
 
     <!-- Sidebar -->
     @include('components.sidebar')
@@ -31,9 +46,15 @@
         
         <!-- Topbar -->
         <header class="py-4 flex items-center justify-between px-8 shrink-0">
-            <!-- Title & Date -->
-            <div>
-                @yield('topbar-left')
+            <!-- Left Section -->
+            <div class="flex items-center gap-3">
+                <button @click="$dispatch('sidebar-toggle')" class="text-gray-500 hover:text-[#1a237e]">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <!-- Title & Date -->
+                <div>
+                    @yield('topbar-left')
+                </div>
             </div>
 
             <!-- Right Section: Chat, Notifikasi, Profil -->
