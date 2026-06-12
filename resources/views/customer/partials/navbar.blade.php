@@ -1,7 +1,7 @@
 {{-- ============================================================ --}}
 {{-- NAVBAR CUSTOMER --}}
 {{-- ============================================================ --}}
-<nav x-data="{ lastScroll: 0, hidden: false }"
+<nav x-data="{ lastScroll: 0, hidden: false, mobileOpen: false }"
      @scroll.window="let y = window.scrollY; if (y > lastScroll && y > 80) { hidden = true } else if (y < lastScroll) { hidden = false }; lastScroll = y"
      :class="hidden ? '-translate-y-full' : 'translate-y-0'"
      class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[1440px] h-16 bg-white shadow-[0_1px_4px_rgba(0,0,0,0.06)] z-50 transition-transform duration-300">
@@ -118,7 +118,7 @@
                         {{-- Dashboard (khusus internal) --}}
                         @if(Auth::user()->role?->name !== 'Customer')
                         <div class="border-t border-gray-100 my-1"></div>
-                        <a href="{{ url('/staf/dashboard') }}"
+                        <a href="{{ route('staf.dashboard') }}"
                            class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1a237e] transition-colors">
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                             Dashboard
@@ -422,15 +422,25 @@
         </div>
 
         {{-- Mobile hamburger --}}
-        <button id="mobile-menu-btn" class="md:hidden p-2 text-[#616161] hover:text-[#1a237e]">
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2 text-[#616161] hover:text-[#1a237e]">
+            <svg :class="{'hidden': mobileOpen, 'inline-flex': ! mobileOpen}" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <svg :class="{'hidden': ! mobileOpen, 'inline-flex': mobileOpen}" class="hidden w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
     </div>
 
     {{-- Mobile menu dropdown --}}
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-[#f0f0f0] px-6 py-4 space-y-3">
+    <div x-show="mobileOpen" x-cloak
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-2"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 -translate-y-2"
+         class="md:hidden bg-white border-t border-[#f0f0f0] px-6 py-4 space-y-3">
         <a href="{{ route('beranda') }}" class="block text-sm font-medium {{ request()->routeIs('beranda') ? 'text-[#1a237e] font-semibold' : 'text-[#616161]' }}">Beranda</a>
         <a href="{{ route('tentang') }}" class="block text-sm font-medium {{ request()->routeIs('tentang') ? 'text-[#1a237e] font-semibold' : 'text-[#616161]' }}">Tentang Kami</a>
 
@@ -505,10 +515,6 @@
 </style>
 
 <script>
-    document.getElementById('mobile-menu-btn')?.addEventListener('click', function() {
-        document.getElementById('mobile-menu').classList.toggle('hidden');
-    });
-
     function authSidebar() {
         return {
             sidebarOpen: false,
