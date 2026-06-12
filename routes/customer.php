@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 // Public routes
-Route::get('/tentang', function () {
+Route::get('/tentang-kami', function () {
     return view('customer.tentang');
 })->name('tentang');
 
