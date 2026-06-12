@@ -272,6 +272,91 @@
 
     {{-- Scripts --}}
     <script>
+        const __users = @json($users);
+        let filteredUsers = [...__users];
+
+        function renderStats() {
+            document.getElementById('totalUsers').textContent = __users.length;
+            document.getElementById('totalManager').textContent = __users.filter(u => u.role === 'Manager').length;
+            document.getElementById('totalAdmin').textContent = __users.filter(u => u.role === 'Admin').length;
+            document.getElementById('totalProduksiDesign').textContent = __users.filter(u => u.role === 'Produksi' || u.role === 'Design').length;
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('userTableBody');
+            const total = document.getElementById('totalDisplay');
+            if (!data.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-10 text-center text-gray-500">Tidak ada pengguna ditemukan.</td></tr>';
+                total.textContent = '0';
+                document.querySelector('[id^="Menampilkan"]').textContent = 'Menampilkan 0 dari 0 pengguna';
+                return;
+            }
+            tbody.innerHTML = data.map(u => {
+                const roleBadge = {
+                    'Manager': 'purple', 'Admin': 'blue', 'Design': 'orange', 'Produksi': 'green'
+                }[u.role] || 'gray';
+                const initials = u.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                return `<tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-[#1a237e] flex items-center justify-center text-white text-xs font-bold shrink-0">${initials}</div>
+                            <span class="font-medium text-gray-900">${u.name}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-gray-500">${u.username}</td>
+                    <td class="px-6 py-4 text-gray-600">${u.email}</td>
+                    <td class="px-6 py-4"><x-badge type="${roleBadge}">${u.role}</x-badge></td>
+                    <td class="px-6 py-4"><x-badge type="green">${u.status}</x-badge></td>
+                    <td class="px-6 py-4 text-gray-500">${u.created_at}</td>
+                    <td class="px-6 py-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <button onclick="openDetail(${u.id})" class="p-1.5 rounded-lg text-gray-400 hover:text-[#1a237e] hover:bg-gray-100 transition-colors" title="Detail">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                            <button onclick="openEdit(${u.id})" class="p-1.5 rounded-lg text-gray-400 hover:text-[#1a237e] hover:bg-gray-100 transition-colors" title="Edit">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                            </button>
+                            <button onclick="confirmHapus(${u.id}, '${u.name}')" class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="Hapus">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+            total.textContent = data.length;
+        }
+
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const role = document.getElementById('roleFilter').value;
+            filteredUsers = __users.filter(u => {
+                return u.name.toLowerCase().includes(search)
+                    && (!role || u.role === role);
+            });
+            renderTable(filteredUsers);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderStats();
+            renderTable(__users);
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+            document.getElementById('roleFilter').addEventListener('change', applyFilters);
+        });
+
+        function refreshData() {
+            Swal.fire({
+                title: 'Memperbarui...',
+                text: 'Menyegarkan data pengguna.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 800);
+                }
+            });
+        }
+
         function openModal(id) {
             document.getElementById(id).classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -320,20 +405,6 @@
                             popup: 'rounded-2xl'
                         }
                     });
-                }
-            });
-        }
-
-        function refreshData() {
-            Swal.fire({
-                title: 'Memperbarui...',
-                text: 'Menyegarkan data pengguna.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                    setTimeout(() => {
-                        Swal.close();
-                    }, 800);
                 }
             });
         }
