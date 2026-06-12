@@ -9,9 +9,6 @@
 
 @section('internal-content')
 @php
-$orders = [];
-$assignees = [];
-
 function avatar($name, $color) {
     $initials = collect(explode(' ', $name))->map(fn($w) => substr($w, 0, 1))->take(2)->implode('');
     $colors = ['purple' => 'bg-purple-500', 'blue' => 'bg-blue-500', 'orange' => 'bg-orange-500', 'green' => 'bg-green-500', 'gray' => 'bg-gray-400'];

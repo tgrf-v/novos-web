@@ -1,9 +1,6 @@
 @extends('layouts.internal')
 
 @php
-$order = [];
-$badgeType = 'gray';
-$badgeLabel = '-';
 $noteColors = ['bg-green-500','bg-yellow-500','bg-blue-500','bg-purple-500'];
 function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
 @endphp
@@ -36,16 +33,6 @@ function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
     <div class="flex-1 space-y-5 min-w-0">
 
         {{-- Info Pesanan (Stepper) --}}
-        @php
-        $steps = [
-            ['label' => 'Pesanan Masuk',       'date' => '2 Jun 2026', 'done' => true,  'current' => false],
-            ['label' => 'Pembayaran Dikonfirmasi', 'date' => '2 Jun 2026', 'done' => true,  'current' => false],
-            ['label' => 'Proses Desain',        'date' => '3 Jun 2026', 'done' => true,  'current' => true],
-            ['label' => 'Menunggu ACC Customer', 'date' => null,         'done' => false, 'current' => false],
-            ['label' => 'Produksi',             'date' => null,         'done' => false, 'current' => false],
-            ['label' => 'Selesai',              'date' => null,         'done' => false, 'current' => false],
-        ];
-        @endphp
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <h3 class="font-semibold text-gray-900 mb-6 flex items-center gap-2 text-sm">
                 <svg class="w-4 h-4 text-[#1a237e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -57,7 +44,7 @@ function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
             {{-- Stepper --}}
             <div class="relative flex items-start">
                 {{-- Connector line (behind circles) --}}
-                <div class="absolute top-4 left-4 right-4 h-0.5 bg-gray-200 z-0" style="left: calc(100% / 12); right: calc(100% / 12);">
+                <div class="absolute top-4 left-4 right-4 h-0.5 bg-gray-200 z-0" style="left: calc(100% / {{ count($steps) * 2 }}); right: calc(100% / {{ count($steps) * 2 }});">
                     @php $doneCount = collect($steps)->filter(fn($s)=>$s['done'])->count(); @endphp
                     <div class="h-full bg-[#1a237e] transition-all" style="width: {{ max(0, (($doneCount - 1) / (count($steps) - 1)) * 100) }}%"></div>
                 </div>
