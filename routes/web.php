@@ -3,37 +3,22 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Internal\LaporanController;
+use App\Http\Controllers\Internal\DashboardController;
+use App\Http\Controllers\Internal\OrderController;
+use App\Http\Controllers\Internal\ChatController;
+use App\Http\Controllers\Internal\DesignController;
+use App\Http\Controllers\Internal\ProductionController;
 
 Route::get('/', fn() => view('customer.beranda'));
 
 Route::middleware(['auth', 'role:Super Admin,Manager,Admin,Design,Produksi'])->group(function () {
-    Route::get('/internal/summary', function () {
-        return view('internal.summary');
-    });
-
-    Route::get('/internal/daftarpesanan', function () {
-        return view('internal.daftar-pesanan');
-    });
-
-    Route::get('/internal/detail-pesanan/{id}', function ($id) {
-        return view('internal.detail-pesanan', ['id' => $id]);
-    });
-
-    Route::get('/internal/chat', function () {
-        return view('internal.chat');
-    })->name('internal.chat');
-
-    Route::get('/internal/stress-test', function () {
-        return view('internal.stress-test');
-    });
-
-    Route::get('/internal/design', function () {
-        return view('internal.design');
-    });
-
-    Route::get('/internal/produksi', function () {
-        return view('internal.produksi');
-    });
+    Route::get('/internal/summary', [DashboardController::class, 'summary']);
+    Route::get('/internal/daftarpesanan', [OrderController::class, 'index']);
+    Route::get('/internal/detail-pesanan/{id}', [OrderController::class, 'show']);
+    Route::get('/internal/chat', [ChatController::class, 'index'])->name('internal.chat');
+    Route::get('/internal/stress-test', fn() => view('internal.stress-test'));
+    Route::get('/internal/design', [DesignController::class, 'index']);
+    Route::get('/internal/produksi', [ProductionController::class, 'index']);
 
     Route::get('/internal/laporan', [LaporanController::class, 'index'])->name('internal.laporan');
     Route::get('/internal/laporan/export/csv', [LaporanController::class, 'exportCsv'])->name('internal.laporan.csv');
@@ -66,7 +51,6 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('customer.chat');
     });
 });
-
 
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
