@@ -109,7 +109,7 @@
 
             {{-- CTA inline --}}
             <div class="flex flex-wrap items-center gap-3" data-aos="fade-up" data-aos-delay="300">
-                <a href="{{ route('customer.pemesanan') }}"
+                <a href="{{ route('pemesanan') }}"
                    class="px-8 py-3.5 bg-[#00e5ff] text-[#1a237e] text-sm font-bold rounded-[4px] hover:bg-[#00d0ea] transition-all shadow-lg shadow-[#00e5ff]/20">
                     Buat Pesanan Sekarang
                 </a>
@@ -151,7 +151,7 @@
         <div class="flex items-end justify-between mb-2" data-aos="fade-up">
             <h2 class="text-3xl font-bold text-[#1a237e]">Produk Terlaris</h2>
             <div class="flex items-center gap-1">
-                <a href="{{ route('customer.katalog') }}" class="text-sm font-semibold text-black border-b border-black transition-colors">
+                <a href="{{ route('katalog') }}" class="text-sm font-semibold text-black border-b border-black transition-colors">
                     Lihat Semua
                 </a>
                 <button @click="scrollLeft()"
@@ -209,7 +209,7 @@
         <div class="flex items-end justify-between mb-2" data-aos="fade-up">
             <h2 class="text-3xl font-bold text-[#1a237e]">Produk Terbaru</h2>
             <div class="flex items-center gap-1">
-                <a href="{{ route('customer.katalog') }}" class="text-sm font-semibold text-black border-b border-black transition-colors">
+                <a href="{{ route('katalog') }}" class="text-sm font-semibold text-black border-b border-black transition-colors">
                     Lihat Semua
                 </a>
                 <button @click="scrollLeft2()"

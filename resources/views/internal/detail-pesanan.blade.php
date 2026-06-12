@@ -20,7 +20,7 @@ function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
 @section('internal-content')
 {{-- Kembali --}}
 <div class="mb-5">
-    <a href="{{ url('internal/daftar-pesanan') }}" class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#1a237e] transition-colors">
+    <a href="{{ url('staf/daftar-pesanan') }}" class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#1a237e] transition-colors">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
         Kembali ke Daftar Pesanan
     </a>
@@ -96,7 +96,7 @@ function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
                 </h3>
                 <div class="flex items-center gap-2">
                     {{-- Tombol Chat (sinkron ke halaman chat internal) --}}
-                    <a href="{{ route('internal.chat') }}" title="Chat dengan Customer" class="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
+                    <a href="{{ route('staf.chat') }}" title="Chat dengan Customer" class="flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-700 font-medium hover:underline">
                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                         Chat
                     </a>

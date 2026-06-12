@@ -121,7 +121,7 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-white">
             <h3 class="font-bold text-gray-900 text-lg">Pesanan Terbaru</h3>
-            <a href="{{ url('internal/daftar-pesanan') }}" class="text-sm font-semibold text-[#1a237e] hover:underline flex items-center gap-1">
+            <a href="{{ url('staf/daftar-pesanan') }}" class="text-sm font-semibold text-[#1a237e] hover:underline flex items-center gap-1">
                 Lihat Semua <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
         </div>
@@ -146,7 +146,7 @@
                         <td class="px-6 py-4">{{ $order->created_at->format('j M Y') }}</td>
                         <td class="px-6 py-4"><x-badge type="{{ $order->status }}">{{ $order->status }}</x-badge></td>
                         <td class="px-6 py-4 text-center">
-                            <a href="{{ url('internal/detail-pesanan/'.$order->id) }}" class="text-gray-400 hover:text-[#1a237e] inline-block">
+                            <a href="{{ url('staf/detail-pesanan/'.$order->id) }}" class="text-gray-400 hover:text-[#1a237e] inline-block">
                                 <i data-lucide="eye" class="w-5 h-5"></i>
                             </a>
                         </td>

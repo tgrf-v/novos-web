@@ -10,9 +10,9 @@ use App\Http\Controllers\Internal\ProductController;
 use App\Http\Controllers\Internal\UserController;
 use App\Http\Controllers\Internal\ChatController;
 
-Route::prefix('internal')
+Route::prefix('staf')
     ->middleware(['auth', 'role:Super Admin,Manager,Admin,Design,Produksi'])
-    ->name('internal.')
+    ->name('staf.')
     ->group(function () {
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

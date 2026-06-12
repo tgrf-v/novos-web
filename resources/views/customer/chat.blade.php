@@ -287,7 +287,7 @@ function chatApp() {
             }
 
             try {
-                const response = await fetch('{{ route("customer.chat.send") }}', {
+                const response = await fetch('{{ route("chat.send") }}', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
