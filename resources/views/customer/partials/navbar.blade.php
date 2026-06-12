@@ -75,9 +75,8 @@
                 </a>
 
                 {{-- User dropdown --}}
-                <div class="relative" x-data="{ userOpen: false, hoverTimer: null }"
-                     @mouseenter="clearTimeout(hoverTimer); userOpen = true"
-                     @mouseleave="hoverTimer = setTimeout(() => userOpen = false, 150)">
+                <div class="relative" x-data="{ userOpen: false }"
+                     @click.away="userOpen = false">
                     <button @click="userOpen = !userOpen"
                         class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
                         <svg class="w-7 h-7 text-[#1a237e]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -261,8 +260,8 @@
                 </template>
                 </div>
             @else
-                <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @click.away="open = false">
-                    <svg class="w-8 h-8 text-[#9e9e9e] hover:text-[#1a237e] transition-colors cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                    <svg @click="open = !open" class="w-8 h-8 text-[#9e9e9e] hover:text-[#1a237e] transition-colors cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     <div x-show="open" x-cloak @mouseenter="open = true"
