@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::get('/tentang-kami', function () {
-    return view('customer.tentang');
+    return view('customer.tentang-kami');
 })->name('tentang');
 
 Route::get('/katalog', function () {
