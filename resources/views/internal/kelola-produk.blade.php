@@ -201,9 +201,9 @@ function kelolaProdukApp() {
     return {
         formMode: 'create',
         
-        categories: [],
+        categories: @json($categories),
         
-        products: [],
+        products: @json($products),
         
         filters: {
             search: '',
