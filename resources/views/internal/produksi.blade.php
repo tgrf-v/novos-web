@@ -276,7 +276,7 @@ function produksiApp() {
         updateStatus: '',
         productionNote: '',
 
-        orders: [],
+        orders: @json($orders),
 
         openDetail(order) {
             this.selectedOrder = order;
