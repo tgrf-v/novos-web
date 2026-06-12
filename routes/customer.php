@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Customer\ProductController;
 use App\Http\Controllers\Customer\OrderController;
 use App\Http\Controllers\Customer\TrackingController;
+use App\Http\Controllers\Customer\ChatController;
 
 // Public routes
 Route::get('/tentang-kami', function () {
@@ -31,10 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/tracking/{id}/acc', [TrackingController::class, 'accDesign'])->name('tracking.acc');
     Route::post('/tracking/{id}/revision', [TrackingController::class, 'revision'])->name('tracking.revision');
 
-    Route::get('/chat', function () {
-        return view('customer.chat');
-    })->name('chat');
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 
-    Route::post('/chat/send', [App\Http\Controllers\Customer\ChatController::class, 'store'])->name('chat.send');
+    Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.send');
 
 });
