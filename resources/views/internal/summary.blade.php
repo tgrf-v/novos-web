@@ -67,7 +67,7 @@ $activities = [];
                 <label class="block text-xs text-gray-500 mb-1 font-medium">Assignee</label>
                 <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
                     <option>Semua</option>
-                    <option>Andi Desainer</option><option>Budi Admin</option><option>Chiko Produksi</option><option>Dini CS</option><option>Eva Desainer</option>
+
                 </select>
             </div>
             <div>
@@ -196,16 +196,16 @@ $activities = [];
         <h3 class="font-semibold text-gray-900 mb-4">⚡ Priority Breakdown</h3>
         <div class="space-y-4">
             <div>
-                <div class="flex justify-between text-sm mb-1.5"><span class="font-medium text-gray-700">Normal</span><span class="text-gray-500 font-semibold">78%</span></div>
-                <div class="bg-gray-100 rounded-full h-2.5"><div class="bg-emerald-500 h-2.5 rounded-full" style="width:78%"></div></div>
+                <div class="flex justify-between text-sm mb-1.5"><span class="font-medium text-gray-700">Normal</span><span class="text-gray-500 font-semibold">{{ $priorityNormal }}%</span></div>
+                <div class="bg-gray-100 rounded-full h-2.5"><div class="bg-emerald-500 h-2.5 rounded-full" style="width:{{ $priorityNormal }}%"></div></div>
             </div>
             <div>
-                <div class="flex justify-between text-sm mb-1.5"><span class="font-medium text-gray-700">Express</span><span class="text-gray-500 font-semibold">15%</span></div>
-                <div class="bg-gray-100 rounded-full h-2.5"><div class="bg-yellow-400 h-2.5 rounded-full" style="width:15%"></div></div>
+                <div class="flex justify-between text-sm mb-1.5"><span class="font-medium text-gray-700">Express</span><span class="text-gray-500 font-semibold">{{ $priorityExpress }}%</span></div>
+                <div class="bg-gray-100 rounded-full h-2.5"><div class="bg-yellow-400 h-2.5 rounded-full" style="width:{{ $priorityExpress }}%"></div></div>
             </div>
             <div>
-                <div class="flex justify-between text-sm mb-1.5"><span class="font-medium text-gray-700">Super Express</span><span class="text-gray-500 font-semibold">7%</span></div>
-                <div class="bg-gray-100 rounded-full h-2.5"><div class="bg-red-500 h-2.5 rounded-full" style="width:7%"></div></div>
+                <div class="flex justify-between text-sm mb-1.5"><span class="font-medium text-gray-700">Super Express</span><span class="text-gray-500 font-semibold">{{ $prioritySuper }}%</span></div>
+                <div class="bg-gray-100 rounded-full h-2.5"><div class="bg-red-500 h-2.5 rounded-full" style="width:{{ $prioritySuper }}%"></div></div>
             </div>
         </div>
     </div>
@@ -229,20 +229,20 @@ $activities = [];
 {{-- ─── CHART.JS ────────────────────────────────────────────────────────── --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const weeks = ['W1','W2','W3','W4','W5','W6','W7','W8'];
+const weeks = @json($chartWeeks);
 const chartDefaults = { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ font:{ family:"'Poppins',sans-serif", size:11 }}}}, scales:{ x:{ grid:{display:false}, border:{display:false}}, y:{ grid:{color:'#f3f4f6'}, border:{display:false}}}};
 
 new Chart(document.getElementById('chartRevenue'), {
     type:'line',
-    data:{ labels:weeks, datasets:[{ label:'Revenue (jt)', data:[45,52,48,62,58,71,68,85], borderColor:'#1a237e', backgroundColor:'rgba(26,35,126,0.07)', borderWidth:2, tension:0.4, fill:true, pointBackgroundColor:'#1a237e', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:4 }]},
+    data:{ labels:weeks, datasets:[{ label:'Revenue (jt)', data:@json($chartRevenue), borderColor:'#1a237e', backgroundColor:'rgba(26,35,126,0.07)', borderWidth:2, tension:0.4, fill:true, pointBackgroundColor:'#1a237e', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:4 }]},
     options:{...chartDefaults, plugins:{...chartDefaults.plugins, legend:{display:false}}}
 });
 
 new Chart(document.getElementById('chartOrders'), {
     type:'line',
     data:{ labels:weeks, datasets:[
-        { label:'Masuk', data:[12,15,18,22,20,25,28,32], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.07)', borderWidth:2, tension:0.4, fill:true, pointBackgroundColor:'#3b82f6', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:4 },
-        { label:'Selesai', data:[8,10,14,18,19,22,26,30], borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,0.07)', borderWidth:2, tension:0.4, fill:true, pointBackgroundColor:'#22c55e', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:4 }
+        { label:'Masuk', data:@json($chartOrdersIn), borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.07)', borderWidth:2, tension:0.4, fill:true, pointBackgroundColor:'#3b82f6', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:4 },
+        { label:'Selesai', data:@json($chartOrdersOut), borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,0.07)', borderWidth:2, tension:0.4, fill:true, pointBackgroundColor:'#22c55e', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:4 }
     ]},
     options:chartDefaults
 });
@@ -250,15 +250,15 @@ new Chart(document.getElementById('chartOrders'), {
 new Chart(document.getElementById('chartTop5'), {
     type:'bar',
     data:{
-        labels:['Jersey Futsal','Jersey Basket','Jersey Sepak Bola','Jersey Voli','Jersey Running'],
-        datasets:[{ label:'Terjual', data:[42,38,35,28,25], backgroundColor:['#1a237e','#283593','#303f9f','#3949ab','#3f51b5'], borderRadius:6 }]
+        labels:@json($topProductLabels),
+        datasets:[{ label:'Terjual', data:@json($topProductData), backgroundColor:['#1a237e','#283593','#303f9f','#3949ab','#3f51b5'], borderRadius:6 }]
     },
     options:{...chartDefaults, indexAxis:'y', plugins:{...chartDefaults.plugins, legend:{display:false}}}
 });
 
 new Chart(document.getElementById('chartDist'), {
     type:'doughnut',
-    data:{ labels:['Custom','Produk Katalog'], datasets:[{ data:[65,35], backgroundColor:['#1a237e','#38bdf8'], borderWidth:3, borderColor:'#fff', hoverOffset:4 }]},
+    data:{ labels:@json($distLabels), datasets:[{ data:@json($distData), backgroundColor:['#1a237e','#38bdf8'], borderWidth:3, borderColor:'#fff', hoverOffset:4 }]},
     options:{ responsive:true, maintainAspectRatio:false, cutout:'72%', plugins:{ legend:{ position:'bottom', labels:{ padding:20, usePointStyle:true, pointStyle:'circle', font:{ family:"'Poppins',sans-serif", size:12 }}}}}
 });
 </script>
