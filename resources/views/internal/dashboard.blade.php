@@ -11,7 +11,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Card 1: Total Pesanan -->
         <a href="{{ url('/admin/daftar-pesanan') }}" class="block no-underline">
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-xl hover:border-[#1a237e]/30 hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <div class="glass-card glass-card-hover rounded-2xl p-6 flex flex-col cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-[#1a237e] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         {{-- Clipboard List icon (Heroicons) --}}
@@ -88,14 +88,14 @@
     <!-- Charts Row -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- Line Chart -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
+        <div class="glass-card glass-card-hover rounded-xl p-6">
             <h3 class="font-bold text-gray-900 mb-6 text-lg">Pesanan Per Minggu</h3>
             <div class="h-64">
                 <canvas id="lineChart"></canvas>
             </div>
         </div>
         <!-- Donut Chart -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
+        <div class="glass-card glass-card-hover rounded-xl p-6">
             <h3 class="font-bold text-gray-900 mb-6 text-lg">Status Pesanan Saat Ini</h3>
             <div class="h-64 flex justify-center">
                 <canvas id="donutChart"></canvas>
@@ -104,8 +104,8 @@
     </div>
 
     <!-- Table Row -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-white">
+    <div class="glass-card glass-card-hover rounded-xl overflow-hidden">
+        <div class="px-6 py-4 border-b border-white/30 flex justify-between items-center bg-white/25">
             <h3 class="font-bold text-gray-900 text-lg">Pesanan Terbaru</h3>
             <a href="#" class="text-sm font-semibold text-[#1a237e] hover:underline flex items-center gap-1">
                 Lihat Semua <i data-lucide="arrow-right" class="w-4 h-4"></i>
