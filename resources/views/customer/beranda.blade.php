@@ -96,7 +96,6 @@
 
         {{-- Kiri: Content Panel --}}
         <div class="relative z-10 w-[70%] md:w-auto min-h-[400px] md:min-h-0 flex flex-col justify-center py-4 md:py-0">
-            <div class="backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-2 md:bg-transparent md:backdrop-blur-none md:border-none md:p-0">
 
             {{-- headline --}}
             <h1 class="text-4xl md:text-[56px] font-bold leading-tight text-white mb-5 max-w-2xl" data-aos="fade-up" data-aos-delay="100">
@@ -114,7 +113,6 @@
                    class="px-3 py-1.5 md:px-8 md:py-3.5 bg-[#00e5ff] text-[#1a237e] text-sm font-bold rounded-[4px] hover:bg-[#00d0ea] transition-all shadow-lg shadow-[#00e5ff]/20">
                     Buat Pesanan Sekarang
                 </a>
-            </div>
             </div>
         </div>
 
