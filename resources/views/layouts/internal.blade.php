@@ -21,55 +21,40 @@
         [x-cloak] { display: none !important; }
 
         body.internal-body {
-            background: linear-gradient(135deg, #dbeafe 0%, #eef2ff 25%, #ede9fe 50%, #e0f5f0 75%, #f8fafc 100%) !important;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f5f3ff 50%, #f0fdf4 100%) !important;
         }
 
         .glass-sidebar {
-            background: rgba(255, 255, 255, 0.4) !important;
-            backdrop-filter: blur(24px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-        }
-
-        .glass-topbar {
-            background: rgba(255, 255, 255, 0.32) !important;
-            backdrop-filter: blur(22px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(22px) saturate(180%) !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
+            background: rgba(255, 255, 255, 0.68) !important;
+            backdrop-filter: blur(8px) saturate(110%) !important;
+            -webkit-backdrop-filter: blur(8px) saturate(110%) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.45) !important;
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.18) !important;
-            backdrop-filter: blur(22px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(22px) saturate(180%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
-            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.08) !important;
-        }
-
-        .glass-card-hover {
-            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-        }
-        .glass-card-hover:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.1) !important;
-            border-color: rgba(255, 255, 255, 0.45) !important;
+            background: rgba(255, 255, 255, 0.72) !important;
+            backdrop-filter: blur(8px) saturate(110%) !important;
+            -webkit-backdrop-filter: blur(8px) saturate(110%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.6) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
         }
 
         main .bg-white {
-            background-color: rgba(255, 255, 255, 0.45) !important;
-            backdrop-filter: blur(16px) saturate(160%) !important;
-            -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+            background-color: rgba(255, 255, 255, 0.75) !important;
+            backdrop-filter: blur(6px) saturate(105%) !important;
+            -webkit-backdrop-filter: blur(6px) saturate(105%) !important;
             border-color: rgba(255, 255, 255, 0.5) !important;
         }
 
         main table thead tr {
-            background: rgba(255, 255, 255, 0.45) !important;
+            background: rgba(255, 255, 255, 0.5) !important;
         }
         main tbody tr:hover {
-            background: rgba(255, 255, 255, 0.35) !important;
+            background: rgba(255, 255, 255, 0.55) !important;
         }
         main .bg-gray-50,
         main .bg-gray-50\/50 {
-            background: rgba(255, 255, 255, 0.28) !important;
+            background: rgba(255, 255, 255, 0.5) !important;
         }
     </style>
     {{-- Migrate old cookie name (sidebar.open) → sidebar_open to fix PHP dot-conversion bug --}}

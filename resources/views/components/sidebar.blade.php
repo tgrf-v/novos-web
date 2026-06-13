@@ -18,7 +18,7 @@ $isSidebarOpen = !(isset($_COOKIE['sidebar_open']) && $_COOKIE['sidebar_open'] =
     class="glass-sidebar min-h-screen border-r border-white/30 flex flex-col shrink-0">
 
     {{-- Logo Area --}}
-    <div class="h-16 flex items-center px-6 border-b border-gray-200 overflow-hidden">
+    <div class="h-16 flex items-center px-6 border-b border-white/50 overflow-hidden">
         <a href="{{ url('/admin/dashboard') }}" class="flex items-center gap-2">
             <div class="w-8 h-8 bg-[#1a237e] rounded-lg flex items-center justify-center shrink-0">
                 <span class="text-white font-bold text-lg">N</span>
@@ -49,7 +49,7 @@ $isSidebarOpen = !(isset($_COOKIE['sidebar_open']) && $_COOKIE['sidebar_open'] =
 
         @foreach($menus as $menu)
             <a href="{{ $menu['url'] }}"
-               class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ $menu['active'] ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-white/40' }}">
+               class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ $menu['active'] ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-white/25' }}">
                 <i data-lucide="{{ $menu['icon'] }}" class="w-5 h-5 shrink-0 {{ $menu['active'] ? 'text-white' : 'text-[#1a237e]' }}"></i>
                 <span x-show="sidebarOpen"
                       @if(!$isSidebarOpen) style="display:none" @endif
