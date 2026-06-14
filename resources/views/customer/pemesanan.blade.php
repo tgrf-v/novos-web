@@ -19,7 +19,7 @@
     </div>
 
     {{-- Step Indicator --}}
-    <div class="flex items-center justify-center mb-10">
+    <div class="flex items-center justify-center mb-10 px-4">
         <template x-for="(s, index) in steps" :key="index">
             <div class="flex items-center">
                 <div class="flex flex-col items-center">
@@ -39,7 +39,7 @@
                 <div
                     x-show="index < steps.length - 1"
                     :class="step > index + 1 ? 'bg-blue-900' : 'bg-gray-200'"
-                    class="w-16 sm:w-24 h-0.5 mx-2 transition-colors"
+                    class="w-10 sm:w-16 md:w-24 h-0.5 mx-1 sm:mx-2 transition-colors"
                 ></div>
             </div>
         </template>
