@@ -117,7 +117,7 @@
         </div>
 
         {{-- Kanan: Visual Showcase --}}
-        <div class="absolute -right-4 top-0 bottom-0 w-[65%] z-0 overflow-visible flex items-center justify-center
+        <div class="absolute -right-[30%] top-0 bottom-0 w-[65%] z-0 overflow-visible flex items-center justify-center
                     md:static md:w-auto md:z-auto md:flex md:items-center md:justify-center md:py-0 md:relative"
              data-aos="zoom-in" data-aos-delay="400">
             {{-- background glow --}}
