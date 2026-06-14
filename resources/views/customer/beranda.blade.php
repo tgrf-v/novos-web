@@ -261,7 +261,9 @@
         {{-- steps --}}
         <div class="relative flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-0">
 
-            {{-- dashed connector --}}
+            {{-- dashed connector: mobile vertical, desktop horizontal --}}
+            <div class="absolute left-1/2 top-[22px] bottom-[52px] w-0
+                        border-l-2 border-dashed border-[#1a237e]/[0.05] md:hidden z-0"></div>
             <div class="absolute top-[50px] left-[10%] right-[10%] h-0
                         border-t-2 border-dashed border-[#1a237e]/20 z-0 hidden md:block"></div>
 
