@@ -259,7 +259,7 @@
         </div>
 
         {{-- steps --}}
-        <div class="relative flex justify-between items-start overflow-x-auto no-scrollbar">
+        <div class="relative flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-0">
 
             {{-- dashed connector --}}
             <div class="absolute top-[50px] left-[10%] right-[10%] h-0
@@ -272,7 +272,7 @@
                 ['ACC Desain',         'Setujui desain final dari tim',    false, false],
                 ['Produksi & Selesai', 'Diproduksi & dikirim ke kamu',    false, false],
             ] as $i => $s)
-            <div class="flex-shrink-0 flex flex-col items-center text-center relative z-10 w-[140px] md:w-auto md:flex-1 px-2" data-aos="fade-up" data-aos-delay="{{ $i * 100 }}">
+            <div class="flex-shrink-0 flex flex-col items-center text-center relative z-10 w-full md:flex-1 px-2" data-aos="fade-up" data-aos-delay="{{ $i * 100 }}">
 
                 {{-- step label --}}
                 <span class="text-[10px] font-semibold text-black uppercase tracking-widest mb-2">
