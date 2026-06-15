@@ -117,7 +117,7 @@
         </div>
 
         {{-- Kanan: Visual Showcase --}}
-        <div class="absolute -right-4 top-0 bottom-0 w-[65%] z-0 overflow-visible flex items-center justify-center
+        <div class="absolute -right-[30%] top-0 bottom-0 w-[65%] z-0 overflow-visible flex items-center justify-center
                     md:static md:w-auto md:z-auto md:flex md:items-center md:justify-center md:py-0 md:relative"
              data-aos="zoom-in" data-aos-delay="400">
             {{-- background glow --}}
@@ -152,7 +152,7 @@
 
         <div class="flex items-end justify-between mb-2" data-aos="fade-up">
             <h2 class="text-3xl font-bold text-[#1a237e]">Produk Terlaris</h2>
-            <div class="flex items-center gap-1">
+            <div class="hidden md:flex items-center gap-1">
                 <a href="{{ route('katalog') }}" class="text-sm font-semibold text-black border-b border-black transition-colors">
                     Lihat Semua
                 </a>
@@ -171,21 +171,23 @@
         <div class="w-full h-0.5 bg-gradient-to-r from-[#00e5ff] to-transparent mb-8"></div>
 
         {{-- horizontal scroll --}}
-        <div x-ref="scroll" id="product-scroll" @scroll="updateScroll()" class="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar scroll-smooth">
+        <div x-ref="scroll" id="product-scroll" @scroll="updateScroll()" class="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar scroll-smooth snap-x snap-mandatory">
             @forelse($bestSellers as $i => $product)
-            <div class="flex-shrink-0 w-[270px] group" data-aos="fade-up" data-aos-delay="{{ ($i % 4) * 100 }}">
-                <div class="relative w-full overflow-hidden" style="aspect-ratio:3/4">
-                    <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://placehold.co/300x300/1a237e/ffffff?text=Jersey' }}"
-                         alt="{{ $product->name }}"
-                         class="w-full h-full object-cover transition-transform duration-300 ease-out
-                                group-hover:scale-105">
-                    <span class="absolute top-0 left-0 px-2 py-0.5 bg-[#00e5ff] text-[#1a1a2e] text-[10px] font-bold">
-                        {{ $product->category?->name ?? 'Kategori' }}
-                    </span>
+            <div class="snap-start shrink-0 w-[calc(50%-12px)] md:w-[270px] group bg-gray-50" data-aos="fade-up" data-aos-delay="{{ ($i % 4) * 100 }}">
+                <div class="p-2">
+                    <div class="relative w-full overflow-hidden" style="aspect-ratio:3/4">
+                        <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://placehold.co/300x300/1a237e/ffffff?text=Jersey' }}"
+                             alt="{{ $product->name }}"
+                             class="w-full h-full object-cover transition-transform duration-300 ease-out
+                                    group-hover:scale-105">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 bg-[#1a237e]/80 text-white text-[10px] font-semibold">
+                            {{ $product->category?->name ?? 'Kategori' }}
+                        </span>
+                    </div>
                 </div>
-                <div class="mt-2 text-center">
-                    <h3 class="text-[#1a237e] text-sm font-bold">{{ $product->name }}</h3>
-                    <p class="text-black text-sm font-semibold mt-0.5">{{ $product->price ? 'Rp ' . number_format($product->price, 0, ',', '.') : '' }}</p>
+                <div class="p-3 text-center bg-gray-50">
+                    <h3 class="text-sm font-semibold text-[#1a237e] leading-snug">{{ $product->name }}</h3>
+                    <p class="text-sm font-bold text-[#1a237e] mt-0.5">{{ $product->price ? 'Rp ' . number_format($product->price, 0, ',', '.') : '' }}</p>
                 </div>
             </div>
             @empty
@@ -203,7 +205,7 @@
 
         <div class="flex items-end justify-between mb-2" data-aos="fade-up">
             <h2 class="text-3xl font-bold text-[#1a237e]">Produk Terbaru</h2>
-            <div class="flex items-center gap-1">
+            <div class="hidden md:flex items-center gap-1">
                 <a href="{{ route('katalog') }}" class="text-sm font-semibold text-black border-b border-black transition-colors">
                     Lihat Semua
                 </a>
@@ -222,21 +224,23 @@
         <div class="w-full h-0.5 bg-gradient-to-r from-[#00e5ff] to-transparent mb-8"></div>
 
         {{-- horizontal scroll --}}
-        <div x-ref="scroll2" id="product-scroll2" @scroll="updateScroll2()" class="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar scroll-smooth">
+        <div x-ref="scroll2" id="product-scroll2" @scroll="updateScroll2()" class="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 no-scrollbar scroll-smooth snap-x snap-mandatory">
             @forelse($latestProducts as $i => $product)
-            <div class="flex-shrink-0 w-[270px] group" data-aos="fade-up" data-aos-delay="{{ ($i % 4) * 100 }}">
-                <div class="relative w-full overflow-hidden" style="aspect-ratio:3/4">
-                    <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://placehold.co/300x300/1a237e/ffffff?text=Jersey' }}"
-                         alt="{{ $product->name }}"
-                         class="w-full h-full object-cover transition-transform duration-300 ease-out
-                                group-hover:scale-105">
-                    <span class="absolute top-0 left-0 px-2 py-0.5 bg-[#00e5ff] text-[#1a1a2e] text-[10px] font-bold">
-                        {{ $product->category?->name ?? 'Kategori' }}
-                    </span>
+            <div class="snap-start shrink-0 w-[calc(50%-12px)] md:w-[270px] group bg-gray-50" data-aos="fade-up" data-aos-delay="{{ ($i % 4) * 100 }}">
+                <div class="p-2">
+                    <div class="relative w-full overflow-hidden" style="aspect-ratio:3/4">
+                        <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://placehold.co/300x300/1a237e/ffffff?text=Jersey' }}"
+                             alt="{{ $product->name }}"
+                             class="w-full h-full object-cover transition-transform duration-300 ease-out
+                                    group-hover:scale-105">
+                        <span class="absolute top-3 left-3 px-2.5 py-1 bg-[#1a237e]/80 text-white text-[10px] font-semibold">
+                            {{ $product->category?->name ?? 'Kategori' }}
+                        </span>
+                    </div>
                 </div>
-                <div class="mt-2 text-center">
-                    <h3 class="text-[#1a237e] text-sm font-bold">{{ $product->name }}</h3>
-                    <p class="text-black text-sm font-semibold mt-0.5">{{ $product->price ? 'Rp ' . number_format($product->price, 0, ',', '.') : '' }}</p>
+                <div class="p-3 text-center bg-gray-50">
+                    <h3 class="text-sm font-semibold text-[#1a237e] leading-snug">{{ $product->name }}</h3>
+                    <p class="text-sm font-bold text-[#1a237e] mt-0.5">{{ $product->price ? 'Rp ' . number_format($product->price, 0, ',', '.') : '' }}</p>
                 </div>
             </div>
             @empty
@@ -259,9 +263,11 @@
         </div>
 
         {{-- steps --}}
-        <div class="relative flex justify-between items-start overflow-x-auto no-scrollbar">
+        <div class="relative flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-0">
 
-            {{-- dashed connector --}}
+            {{-- dashed connector: mobile vertical, desktop horizontal --}}
+            <div class="absolute left-1/2 top-[22px] bottom-[52px] w-0
+                        border-l-2 border-dashed border-[#1a237e]/[0.05] md:hidden z-0"></div>
             <div class="absolute top-[50px] left-[10%] right-[10%] h-0
                         border-t-2 border-dashed border-[#1a237e]/20 z-0 hidden md:block"></div>
 
@@ -272,7 +278,7 @@
                 ['ACC Desain',         'Setujui desain final dari tim',    false, false],
                 ['Produksi & Selesai', 'Diproduksi & dikirim ke kamu',    false, false],
             ] as $i => $s)
-            <div class="flex-shrink-0 flex flex-col items-center text-center relative z-10 w-[140px] md:w-auto md:flex-1 px-2" data-aos="fade-up" data-aos-delay="{{ $i * 100 }}">
+            <div class="flex-shrink-0 flex flex-col items-center text-center relative z-10 w-full md:flex-1 px-2" data-aos="fade-up" data-aos-delay="{{ $i * 100 }}">
 
                 {{-- step label --}}
                 <span class="text-[10px] font-semibold text-black uppercase tracking-widest mb-2">
@@ -326,7 +332,7 @@
 <section class="bg-[#f8f9fa] py-16" data-aos="fade-in">
     <div class="max-w-[1200px] mx-auto px-6">
         <div class="bg-white rounded-2xl shadow-sm px-6 py-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-0">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
                 @php
                     $stats = [
                         [$totalOrders . '+', 'Pesanan Selesai'],
@@ -336,7 +342,7 @@
                     ];
                 @endphp
                 @foreach($stats as $i => $stat)
-                <div class="flex flex-col items-center text-center py-4 px-4 {{ $i < 3 ? 'border-r border-[#1a237e]/20' : '' }}">
+                <div class="flex flex-col items-center text-center py-4 px-4 {{ $i < 3 ? 'border-b md:border-r border-[#1a237e]/20 md:border-b-0' : '' }}">
                     <p class="text-4xl md:text-5xl font-extrabold text-[#1a237e] mb-1">{{ $stat[0] }}</p>
                     <p class="text-sm text-[#1a237e]/70 font-medium">{{ $stat[1] }}</p>
                 </div>
