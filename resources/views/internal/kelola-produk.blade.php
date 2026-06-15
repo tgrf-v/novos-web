@@ -3,8 +3,7 @@
 @section('title', 'Katalog Produk')
 
 @section('topbar-left')
-    <h1 class="text-xl font-bold text-[#1a237e]">Katalog Produk</h1>
-    <p class="text-sm text-gray-500 mt-0.5">Kelola data jersey dan tampilan produk unggulan</p>
+    <h1 class="text-xl font-bold text-black">Katalog Produk</h1>
 @endsection
 
 @section('internal-content')
