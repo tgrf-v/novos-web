@@ -315,8 +315,22 @@
 
             <div class="grid lg:grid-cols-2 gap-6">
                 {{-- Jenis Kerah --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Jenis Kerah <span class="text-red-500">*</span></label>
+                <div x-data="{ showCollarGuide: false }">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-sm font-medium text-gray-700">Jenis Kerah <span class="text-red-500">*</span></label>
+                        <button
+                            type="button"
+                            @click="showCollarGuide = true"
+                            class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-700 border border-blue-200 bg-blue-50 hover:bg-blue-100 hover:border-blue-400 px-2.5 py-1 rounded-lg transition-colors"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 16v-4"/>
+                                <path d="M12 8h.01"/>
+                            </svg>
+                            Detail Kerah
+                        </button>
+                    </div>
                     <select
                         x-model="form.kerah"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-blue-900 outline-none transition-shadow bg-white"
@@ -327,6 +341,109 @@
                         <option value="V-Neck">V-Neck</option>
                         <option value="Mock Neck">Mock Neck</option>
                     </select>
+
+                    {{-- Modal Detail Kerah --}}
+                    <div
+                        x-show="showCollarGuide"
+                        x-cloak
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
+                        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+                        style="background: rgba(0,0,0,0.55);"
+                        @click.self="showCollarGuide = false"
+                    >
+                        <div
+                            x-show="showCollarGuide"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                            x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+                            class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden"
+                            @click.stop
+                        >
+                            {{-- Modal Header --}}
+                            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23Z"/>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-base font-bold text-gray-900">Detail Jenis Kerah Jersey</h3>
+                                </div>
+                                <button
+                                    @click="showCollarGuide = false"
+                                    class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 flex items-center justify-center transition-colors"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                </button>
+                            </div>
+
+                            {{-- Modal Body --}}
+                            <div class="px-6 py-5 overflow-y-auto max-h-[75vh]">
+                                <p class="text-xs text-gray-500 mb-4">Panduan referensi variasi desain kerah jersey. Pilih jenis kerah yang sesuai dengan selera Anda.</p>
+
+                                {{-- Gambar Panduan Kerah --}}
+                                <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                                    <img
+                                        src="{{ asset('images/jersey_collar_guide.png') }}"
+                                        alt="Panduan Desain Kerah Jersey"
+                                        class="w-full h-auto object-contain"
+                                    >
+                                </div>
+
+                                {{-- Keterangan Singkat --}}
+                                <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center">
+                                        <div class="w-8 h-8 bg-blue-900 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23Z"/></svg>
+                                        </div>
+                                        <p class="text-xs font-bold text-blue-900">Crew Neck</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">Bulat, sporty</p>
+                                    </div>
+                                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center">
+                                        <div class="w-8 h-8 bg-blue-900 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23Z"/></svg>
+                                        </div>
+                                        <p class="text-xs font-bold text-blue-900">V-Neck</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">Segitiga, elegan</p>
+                                    </div>
+                                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center">
+                                        <div class="w-8 h-8 bg-blue-900 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23Z"/></svg>
+                                        </div>
+                                        <p class="text-xs font-bold text-blue-900">Polo</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">Formal, klasik</p>
+                                    </div>
+                                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center">
+                                        <div class="w-8 h-8 bg-blue-900 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23Z"/></svg>
+                                        </div>
+                                        <p class="text-xs font-bold text-blue-900">Mock Neck</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">Tinggi, modern</p>
+                                    </div>
+                                </div>
+
+                                <p class="text-xs text-gray-400 mt-3">* Detail variasi spesifik dapat dikonsultasikan lebih lanjut dengan tim desain kami.</p>
+                            </div>
+
+                            {{-- Modal Footer --}}
+                            <div class="px-6 py-4 border-t border-gray-100 flex justify-end">
+                                <button
+                                    @click="showCollarGuide = false"
+                                    class="px-6 py-2 bg-blue-900 hover:bg-blue-800 text-white text-sm font-semibold rounded-lg transition-colors"
+                                >
+                                    Mengerti
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Bahan Jersey --}}
