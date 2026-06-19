@@ -85,9 +85,9 @@
         <table class="w-full text-sm text-left text-gray-700">
             <thead class="bg-gray-50 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
                 <tr>
-                    <th class="px-6 py-3 w-16 font-semibold">No</th>
-                    <th class="px-6 py-3 font-semibold">Metrik</th>
-                    <th class="px-6 py-3 text-right font-semibold">Nilai</th>
+                    <th class="px-6 py-3 w-16 font-semibold text-center">No</th>
+                    <th class="px-6 py-3 font-semibold text-center">Metrik</th>
+                    <th class="px-6 py-3 font-semibold text-center">Nilai</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -106,9 +106,9 @@
                 @endphp
                 @foreach($ringkasan as $index => $row)
                     <tr class="hover:bg-blue-50/50 transition-colors">
-                        <td class="px-6 py-3.5 text-gray-400">{{ $index + 1 }}</td>
-                        <td class="px-6 py-3.5 font-medium text-gray-800">{{ $row[0] }}</td>
-                        <td class="px-6 py-3.5 text-right font-bold text-[#1a237e]">{{ $row[1] }}</td>
+                        <td class="px-6 py-3.5 text-gray-400 text-center">{{ $index + 1 }}</td>
+                        <td class="px-6 py-3.5 font-medium text-gray-800 text-center">{{ $row[0] }}</td>
+                        <td class="px-6 py-3.5 text-center font-bold text-[#1a237e]">{{ $row[1] }}</td>
                     </tr>
                 @endforeach
             </tbody>
