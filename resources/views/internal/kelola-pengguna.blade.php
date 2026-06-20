@@ -99,7 +99,7 @@
             </table>
         </div>
         <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-white">
-            <p class="text-sm text-gray-500">Menampilkan 0 dari <span id="totalDisplay">0</span> pengguna</p>
+            <p id="infoDisplay" class="text-sm text-gray-500">Menampilkan 0 dari <span id="totalDisplay">0</span> pengguna</p>
             <div class="flex items-center gap-2">
                 <button class="px-3 py-1.5 text-sm border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 disabled:opacity-50 transition-colors" disabled>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
@@ -286,7 +286,7 @@
             if (!data.length) {
                 tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-10 text-center text-gray-500">Tidak ada pengguna ditemukan.</td></tr>';
                 total.textContent = '0';
-                document.querySelector('[id^="Menampilkan"]').textContent = 'Menampilkan 0 dari 0 pengguna';
+                document.getElementById('infoDisplay').textContent = 'Menampilkan 0 dari 0 pengguna';
                 return;
             }
             tbody.innerHTML = data.map(u => {
@@ -339,6 +339,34 @@
             renderTable(__users);
             document.getElementById('searchInput').addEventListener('input', applyFilters);
             document.getElementById('roleFilter').addEventListener('change', applyFilters);
+
+            const formTambah = document.getElementById('formTambah');
+            if (formTambah) {
+                formTambah.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    const result = await submitForm(this.id, '{{ route("staf.kelola-pengguna.store") }}', 'POST', formData);
+                    if (result) {
+                        await Swal.fire({ icon: 'success', title: 'Berhasil!', text: result.message, timer: 1500, showConfirmButton: false });
+                        refreshTable();
+                    }
+                });
+            }
+
+            const formEdit = document.getElementById('formEdit');
+            if (formEdit) {
+                formEdit.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const id = document.getElementById('editId').value;
+                    const formData = new FormData(this);
+                    formData.set('_method', 'PUT');
+                    const result = await submitForm(this.id, `{{ url('staf/kelola-pengguna') }}/${id}`, 'POST', formData);
+                    if (result) {
+                        await Swal.fire({ icon: 'success', title: 'Berhasil!', text: result.message, timer: 1500, showConfirmButton: false });
+                        refreshTable();
+                    }
+                });
+            }
         });
 
         function refreshData() {
@@ -432,40 +460,6 @@
         function refreshTable() {
             window.location.reload();
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const formTambah = document.getElementById('formTambah');
-            if (formTambah) {
-                formTambah.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    const formData = new FormData(this);
-
-                    const result = await submitForm(this.id, '{{ route("staf.kelola-pengguna.store") }}', 'POST', formData);
-
-                    if (result) {
-                        await Swal.fire({ icon: 'success', title: 'Berhasil!', text: result.message, timer: 1500, showConfirmButton: false });
-                        refreshTable();
-                    }
-                });
-            }
-
-            const formEdit = document.getElementById('formEdit');
-            if (formEdit) {
-                formEdit.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    const id = document.getElementById('editId').value;
-                    const formData = new FormData(this);
-                    formData.set('_method', 'PUT');
-
-                    const result = await submitForm(this.id, `{{ url('staf/kelola-pengguna') }}/${id}`, 'POST', formData);
-
-                    if (result) {
-                        await Swal.fire({ icon: 'success', title: 'Berhasil!', text: result.message, timer: 1500, showConfirmButton: false });
-                        refreshTable();
-                    }
-                });
-            }
-        });
 
         function confirmHapus(id, nama) {
             const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
