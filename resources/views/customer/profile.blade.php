@@ -17,7 +17,7 @@
 @endpush
 
 @section('content')
-<div class="max-w-6xl mx-auto px-4 py-8" x-data="profileDashboard(@json($orders), @json($user))">
+<div class="max-w-6xl mx-auto px-4 py-8" x-data="profileDashboard(window.profileOrders, window.profileUser)">
     {{-- Alerts --}}
     @if (session('status') === 'profile-updated')
     <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3000)"
@@ -448,6 +448,9 @@
 @push('scripts')
 <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 <script>
+window.profileOrders = @json($orders);
+window.profileUser = @json($user);
+
 function profileDashboard(orders = [], user = {}) {
     return {
         activeTab: (new URLSearchParams(window.location.search)).get('tab') || 'pembelian',
