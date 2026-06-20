@@ -38,52 +38,22 @@
     <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
         {{-- ==================== SIDEBAR (LEFT) ==================== --}}
         <div class="space-y-6">
-            {{-- Profile Card --}}
-            <div class="glass-card bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col items-center text-center">
-                {{-- Avatar --}}
-                <div class="w-20 h-20 rounded-full overflow-hidden mb-4 profile-avatar-glow flex items-center justify-center bg-gray-50 border border-gray-150 shrink-0">
-                    <template x-if="user.avatar">
-                        <img :src="'/storage/' + user.avatar" class="w-full h-full object-cover">
-                    </template>
-                    <template x-if="!user.avatar">
-                        <div class="w-full h-full bg-[#1a237e] text-white flex items-center justify-center text-2xl font-bold">
-                            <span x-text="getUserInitials()"></span>
-                        </div>
-                    </template>
-                </div>
-                {{-- Name & Role --}}
-                <h2 class="font-bold text-gray-900 text-lg leading-tight" x-text="user.fullname || user.name"></h2>
-                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-[#1a237e] mt-2" x-text="user.role ? user.role.name : 'Customer'"></span>
-
-                {{-- Contact Info --}}
-                <div class="w-full border-t border-gray-100 mt-5 pt-4 text-left space-y-3">
-                    <div class="flex items-center gap-3 text-sm text-gray-600">
-                        <svg class="w-4 h-4 text-gray-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        <span class="truncate" x-text="user.email"></span>
-                    </div>
-                    <div class="flex items-center gap-3 text-sm text-gray-600">
-                        <svg class="w-4 h-4 text-gray-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                        <span x-text="user.phone || 'Nomor HP Belum Diisi'"></span>
-                    </div>
-                </div>
-            </div>
-
             {{-- Navigation Menu --}}
             <div class="glass-card bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
                 <nav class="space-y-1">
-                    {{-- Tab: Pembelian --}}
-                    <button @click="activeTab = 'pembelian'"
-                        :class="activeTab === 'pembelian' ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-50'"
-                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
-                        <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-                        Riwayat Pembelian
-                    </button>
                     {{-- Tab: Pengaturan --}}
                     <button @click="activeTab = 'pengaturan'"
                         :class="activeTab === 'pengaturan' ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-50'"
                         class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
                         <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                         Pengaturan Profil
+                    </button>
+                    {{-- Tab: Pembelian --}}
+                    <button @click="activeTab = 'pembelian'"
+                        :class="activeTab === 'pembelian' ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-50'"
+                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
+                        <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                        Riwayat Pembelian
                     </button>
                     {{-- Tab: Alamat --}}
                     <button @click="activeTab = 'alamat'"
@@ -453,7 +423,7 @@ window.profileUser = @json($user);
 
 function profileDashboard(orders = [], user = {}) {
     return {
-        activeTab: (new URLSearchParams(window.location.search)).get('tab') || 'pembelian',
+        activeTab: (new URLSearchParams(window.location.search)).get('tab') || 'pengaturan',
         orderFilter: 'menunggu_pembayaran',
         orders: orders,
         user: user,
