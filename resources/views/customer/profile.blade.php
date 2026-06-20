@@ -42,35 +42,35 @@
             <div class="glass-card bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
                 <nav class="space-y-1">
                     {{-- Tab: Pengaturan --}}
-                    <button @click="activeTab = 'pengaturan'"
+                    <button @click="setActiveTab('pengaturan')"
                         :class="activeTab === 'pengaturan' ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-50'"
                         class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
                         <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                         Pengaturan Profil
                     </button>
                     {{-- Tab: Pembelian --}}
-                    <button @click="activeTab = 'pembelian'"
+                    <button @click="setActiveTab('pembelian')"
                         :class="activeTab === 'pembelian' ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-50'"
                         class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
                         <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
                         Riwayat Pemesanan
                     </button>
                     {{-- Tab: Alamat --}}
-                    <button @click="activeTab = 'alamat'"
+                    <button @click="setActiveTab('alamat')"
                         :class="activeTab === 'alamat' ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-50'"
                         class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
                         <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                         Alamat Pengiriman
                     </button>
                     {{-- Tab: Keamanan --}}
-                    <button @click="activeTab = 'keamanan'"
+                    <button @click="setActiveTab('keamanan')"
                         :class="activeTab === 'keamanan' ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-50'"
                         class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
                         <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                         Keamanan Akun
                     </button>
                     {{-- Tab: Bantuan --}}
-                    <button @click="activeTab = 'bantuan'"
+                    <button @click="setActiveTab('bantuan')"
                         :class="activeTab === 'bantuan' ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-50'"
                         class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
                         <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
@@ -473,6 +473,13 @@ function profileDashboard(orders = [], user = {}) {
 
         init() {
             this.$watch('orderFilter', () => this.currentPage = 1);
+        },
+
+        setActiveTab(tab) {
+            this.activeTab = tab;
+            const url = new URL(window.location);
+            url.searchParams.set('tab', tab);
+            window.history.replaceState({}, '', url);
         },
 
         displayedOrders() {
