@@ -321,6 +321,12 @@ function trackingForm() {
         },
 
         init() {
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('q');
+            if (q) {
+                this.searchQuery = q;
+                this.$nextTick(() => this.searchOrder());
+            }
             this.$nextTick(() => {
                 setTimeout(() => { this.animateProgress = true; }, 200);
             });
