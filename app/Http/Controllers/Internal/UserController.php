@@ -14,7 +14,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with('role')
-            ->whereHas('role', fn($q) => $q->whereIn('name', ['Manager', 'Admin', 'Design', 'Produksi']))
+            ->whereHas('role', fn($q) => $q->whereIn('name', ['Super Admin', 'Manager', 'Admin', 'Design', 'Produksi']))
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($user) {
@@ -41,7 +41,7 @@ class UserController extends Controller
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role'     => 'required|string|in:Manager,Admin,Design,Produksi',
+            'role'     => 'required|string|in:Super Admin,Manager,Admin,Design,Produksi',
         ]);
 
         $role = Role::where('name', $data['role'])->firstOrFail();
@@ -77,7 +77,7 @@ class UserController extends Controller
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:6|confirmed',
-            'role'     => 'required|string|in:Manager,Admin,Design,Produksi',
+            'role'     => 'required|string|in:Super Admin,Manager,Admin,Design,Produksi',
         ]);
 
         $role = Role::where('name', $data['role'])->firstOrFail();

@@ -66,6 +66,7 @@
                 </div>
                 <select id="roleFilter" class="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all">
                     <option value="">Semua Role</option>
+                    <option value="Super Admin">Super Admin</option>
                     <option value="Manager">Manager</option>
                     <option value="Admin">Admin</option>
                     <option value="Design">Design</option>
@@ -145,6 +146,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Role</label>
                         <select name="role" id="tambahRole" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all">
                             <option value="">Pilih Role</option>
+                            <option value="Super Admin">Super Admin</option>
                             <option value="Manager">Manager</option>
                             <option value="Admin">Admin</option>
                             <option value="Design">Design</option>
@@ -201,6 +203,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Role</label>
                         <select name="role" id="editRole" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all">
+                            <option value="Super Admin">Super Admin</option>
                             <option value="Manager">Manager</option>
                             <option value="Admin">Admin</option>
                             <option value="Design">Design</option>
@@ -277,7 +280,7 @@
         }
 
         function roleBadgeColor(role) {
-            return ({ 'Manager': 'purple', 'Admin': 'blue', 'Design': 'orange', 'Produksi': 'green' })[role] || 'gray';
+            return ({ 'Super Admin': 'red', 'Manager': 'purple', 'Admin': 'blue', 'Design': 'orange', 'Produksi': 'green' })[role] || 'gray';
         }
 
         function renderTable(data) {
@@ -291,7 +294,7 @@
             }
             tbody.innerHTML = data.map(u => {
                 const roleBadge = {
-                    'Manager': 'purple', 'Admin': 'blue', 'Design': 'orange', 'Produksi': 'green'
+                    'Super Admin': 'red', 'Manager': 'purple', 'Admin': 'blue', 'Design': 'orange', 'Produksi': 'green'
                 }[u.role] || 'gray';
                 const initials = u.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
                 return `<tr class="hover:bg-gray-50 transition-colors">
