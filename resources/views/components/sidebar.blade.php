@@ -40,7 +40,7 @@ $isSidebarOpen = !(isset($_COOKIE['sidebar_open']) && $_COOKIE['sidebar_open'] =
                 ['label' => 'Daftar Pesanan',  'url' => route('staf.daftar-pesanan'),  'icon' => 'shopping-bag',     'active' => request()->routeIs('staf.daftar-pesanan') || request()->routeIs('staf.detail-pesanan') || request()->routeIs('staf.chat')],
                 ['label' => 'Design',          'url' => route('staf.design'),          'icon' => 'pen-tool',         'active' => request()->routeIs('staf.design')],
                 ['label' => 'Produksi',        'url' => route('staf.produksi'),        'icon' => 'scissors',         'active' => request()->routeIs('staf.produksi')],
-                ['label' => 'Stress Test',     'url' => route('staf.stress-test'),     'icon' => 'activity',         'active' => request()->routeIs('staf.stress-test')],
+                ['label' => 'Daily Mental Check', 'url' => route('staf.daily-mental-check'), 'icon' => 'heart',         'active' => request()->routeIs('staf.daily-mental-check')],
                 ['label' => 'Laporan',         'url' => route('staf.laporan'),         'icon' => 'file-text',        'active' => request()->routeIs('staf.laporan')],
                 ['label' => 'Kelola Produk',   'url' => route('staf.kelola-produk'),   'icon' => 'package',          'active' => request()->routeIs('staf.kelola-produk')],
                 ['label' => 'Kelola Pengguna', 'url' => route('staf.kelola-pengguna'), 'icon' => 'users',            'active' => request()->routeIs('staf.kelola-pengguna')],
