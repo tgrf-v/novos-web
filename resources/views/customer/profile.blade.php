@@ -93,8 +93,6 @@
                             class="px-3 py-3.5 border rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1.5">
                             <span class="text-lg">📌</span>
                             Menunggu Pembayaran
-                            <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-200 text-amber-900 font-semibold"
-                                  x-text="getOrdersCountByFilter('menunggu_pembayaran')"></span>
                         </button>
 
                         <button @click="orderFilter = 'proses'"
@@ -102,8 +100,6 @@
                             class="px-3 py-3.5 border rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1.5">
                             <span class="text-lg">⚙️</span>
                             Proses Produksi
-                            <span class="px-2 py-0.5 rounded-full text-[10px] bg-blue-200 text-blue-900 font-semibold"
-                                  x-text="getOrdersCountByFilter('proses')"></span>
                         </button>
 
                         <button @click="orderFilter = 'kirim'"
@@ -111,8 +107,6 @@
                             class="px-3 py-3.5 border rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1.5">
                             <span class="text-lg">🚚</span>
                             Sedang Dikirim
-                            <span class="px-2 py-0.5 rounded-full text-[10px] bg-orange-200 text-orange-900 font-semibold"
-                                  x-text="getOrdersCountByFilter('kirim')"></span>
                         </button>
 
                         <button @click="orderFilter = 'selesai'"
@@ -120,8 +114,6 @@
                             class="px-3 py-3.5 border rounded-xl text-xs font-bold transition-all flex flex-col items-center gap-1.5">
                             <span class="text-lg">✅</span>
                             Pesanan Selesai
-                            <span class="px-2 py-0.5 rounded-full text-[10px] bg-green-200 text-green-900 font-semibold"
-                                  x-text="getOrdersCountByFilter('selesai')"></span>
                         </button>
                     </div>
                 </div>
