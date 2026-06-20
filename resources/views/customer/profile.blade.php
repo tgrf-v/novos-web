@@ -121,7 +121,7 @@
                 {{-- Order List --}}
                 <div class="space-y-4">
                     <template x-for="order in getFilteredOrders()" :key="order.id">
-                        <div class="glass-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                        <div x-data="{ showMenu: false }" :class="showMenu ? 'relative z-10' : ''" class="glass-card bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                             <div class="flex items-center justify-between gap-4">
                                 <div class="flex-1 min-w-0">
                                     <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">No. Pesanan</p>
@@ -148,11 +148,11 @@
                                     <template x-if="order.status === 'pending'">
                                         <button @click="payOrder(order.id)" class="px-4 py-2 bg-[#1a237e] text-white rounded-lg text-xs font-bold hover:bg-[#283593] transition-colors">Bayar Sekarang</button>
                                     </template>
-                                    <div class="relative" x-data="{ open: false }">
-                                        <button @click="open = !open" class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <div class="relative">
+                                        <button @click="showMenu = !showMenu" class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                                             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
                                         </button>
-                                        <div x-show="open" @click.outside="open = false" x-cloak class="absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-200 py-1 z-50">
+                                        <div x-show="showMenu" @click.outside="showMenu = false" x-cloak class="absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-200 py-1 z-50">
                                             <a :href="'/chat'" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                                 <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                                                 Tanya Admin
