@@ -15,8 +15,7 @@
                 :class="activeTab === i ? 'bg-[#1a237e] text-white shadow-sm' : 'text-gray-600 hover:text-gray-900 hover:bg-white/60'"
                 class="flex-1 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2"
             >
-                <span x-html="tab.icon"></span>
-                <span x-text="tab.label"></span>
+                    <span x-text="tab.label"></span>
             </button>
         </template>
     </div>
@@ -170,7 +169,7 @@ function dailyMentalCheck() {
 
         tabs: [
             { label: 'Dashboard', icon: '&#9632;' },
-            { label: 'Isi Check', icon: '&#9998;' },
+            { label: 'Isi Daily Check', icon: '&#9998;' },
             { label: 'Riwayat',    icon: '&#9776;' },
             { label: 'Edukasi',    icon: '&#9733;' },
         ],
