@@ -230,11 +230,12 @@
                                                         <td class="px-4 py-3 text-gray-700" x-text="q.text"></td>
                                                         <template x-for="val in [1, 2, 3]" :key="val">
                                                             <td class="px-4 py-3 text-center">
-                                                                <label class="inline-flex items-center justify-center w-10 h-10 rounded-full border-2 cursor-pointer transition-all relative"
-                                                                    :class="form.answers[q.id] === val ? 'border-[#1a237e] bg-[#1a237e]/5 shadow-sm' : 'border-gray-200 hover:border-gray-400'">
-                                                                    <input type="radio" :name="'q' + q.id" :value="val" x-model="form.answers[q.id]"
-                                                                        class="absolute inset-0 opacity-0 cursor-pointer">
-                                                                    <span x-show="form.answers[q.id] === val" class="w-4 h-4 rounded-full bg-[#1a237e]"></span>
+                                                                <label @click="form.answers[q.id] = val"
+                                                                    class="inline-flex items-center justify-center w-10 h-10 rounded-full border-2 cursor-pointer transition-all"
+                                                                    :class="form.answers[q.id] === val ? 'border-[#1a237e] bg-[#1a237e]/10 shadow-sm' : 'border-gray-200 hover:border-gray-400 hover:bg-gray-50'">
+                                                                    <div class="w-3 h-3 rounded-full transition-all duration-150"
+                                                                        :class="form.answers[q.id] === val ? 'bg-[#1a237e] scale-100' : 'bg-transparent scale-0'">
+                                                                    </div>
                                                                 </label>
                                                             </td>
                                                         </template>
