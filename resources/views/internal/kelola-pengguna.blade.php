@@ -10,7 +10,7 @@
 @section('internal-content')
     {{-- Header --}}
     <div class="flex justify-end mb-8">
-        <button onclick="openModal('modalTambah')" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1a237e] text-white text-sm font-semibold rounded-xl hover:bg-[#283593] transition-colors shadow-sm">
+        <button onclick="document.getElementById('formTambah').reset(); openModal('modalTambah')" class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1a237e] text-white text-sm font-semibold rounded-xl hover:bg-[#283593] transition-colors shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
             Tambah Pengguna
         </button>
@@ -121,7 +121,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
             </div>
-            <form id="formTambah" class="p-6 space-y-5">
+            <form id="formTambah" class="p-6 space-y-5" autocomplete="off">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Lengkap</label>
@@ -129,16 +129,16 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
-                    <input type="email" name="email" id="tambahEmail" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all" placeholder="Masukkan email">
+                    <input type="email" name="email" id="tambahEmail" autocomplete="off" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all" placeholder="Masukkan email">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-                        <input type="password" name="password" id="tambahPassword" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all" placeholder="Password">
+                        <input type="password" name="password" id="tambahPassword" autocomplete="new-password" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all" placeholder="Password">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Konfirmasi Password</label>
-                        <input type="password" name="password_confirmation" id="tambahPasswordConfirmation" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all" placeholder="Konfirmasi password">
+                        <input type="password" name="password_confirmation" id="tambahPasswordConfirmation" autocomplete="new-password" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all" placeholder="Konfirmasi password">
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
