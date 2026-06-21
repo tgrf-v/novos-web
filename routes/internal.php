@@ -32,6 +32,7 @@ Route::prefix('staf')
 
         Route::get('/chat', [ChatController::class, 'index'])->name('chat');
         Route::get('/daily-mental-check', fn() => view('internal.daily-mental-check'))->name('daily-mental-check');
+        Route::get('/notifikasi', fn() => view('internal.notifikasi'))->name('notifikasi');
 
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
         Route::get('/laporan/export/csv', [LaporanController::class, 'exportCsv'])->name('laporan.csv');
