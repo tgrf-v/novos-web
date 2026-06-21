@@ -51,14 +51,12 @@ function rupiah($n) {
                 <div>
                     <label class="block text-xs text-gray-500 mb-1 font-medium">Status</label>
                     <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
-                        <option>Semua</option>
-                        <option>Menunggu Verifikasi</option>
-                        <option>Tahap Desain</option>
-                        <option>Menunggu ACC</option>
-                        <option>Produksi</option>
-                        <option>Selesai</option>
-                        <option>Sedang Diproses</option>
-                        <option>Selesai Hari Ini</option>
+                        <option {{ !$activeFilter ? 'selected' : '' }}>Semua</option>
+                        <option value="menunggu_verifikasi" {{ $activeFilter === 'menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
+                        <option value="tahap_desain" {{ $activeFilter === 'tahap_desain' ? 'selected' : '' }}>Tahap Desain</option>
+                        <option value="menunggu_acc" {{ $activeFilter === 'menunggu_acc' ? 'selected' : '' }}>Menunggu ACC</option>
+                        <option value="tahap_produksi" {{ $activeFilter === 'tahap_produksi' ? 'selected' : '' }}>Produksi</option>
+                        <option value="selesai" {{ $activeFilter === 'selesai' ? 'selected' : '' }}>Selesai</option>
                     </select>
                 </div>
                 <div>
@@ -113,6 +111,18 @@ function rupiah($n) {
             </button>
         </div>
     </div>
+
+    @if($activeFilter)
+    <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-[#1a237e]/5 border border-[#1a237e]/15 rounded-lg text-sm text-[#1a237e]">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/></svg>
+            <span class="font-medium">{{ ucwords(str_replace('_', ' ', $activeFilter)) }}</span>
+            <a href="{{ route('staf.daftar-pesanan') }}" class="ml-1 text-[#1a237e]/50 hover:text-[#1a237e]">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </a>
+        </div>
+    </div>
+    @endif
 
     {{-- ─── TABLE ────────────────────────────────────────────────────────── --}}
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
