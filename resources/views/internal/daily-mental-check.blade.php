@@ -9,7 +9,7 @@
 @section('internal-content')
 <div x-data="dailyMentalCheck()">
     {{-- Tab Navigation --}}
-    <div class="flex gap-1 bg-white/60 backdrop-blur-sm rounded-2xl p-1.5 shadow-sm border border-white/70 max-w-5xl mr-auto mb-8">
+    <div class="flex max-w-lg gap-1 bg-white/60 backdrop-blur-sm rounded-2xl p-1.5 shadow-sm border border-white/70 mb-8">
         <template x-for="(tab, i) in tabs" :key="i">
             <button @click="activeTab = i"
                 :class="activeTab === i ? 'bg-[#1a237e] text-white shadow-sm' : 'text-gray-600 hover:text-gray-900 hover:bg-white/60'"
@@ -71,22 +71,8 @@
             </div>
         </div>
 
-        {{-- Row 2: Edukasi + Reminder + Kepatuhan --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {{-- Card: Edukasi Minggu Ini --}}
-            <div class="glass-card rounded-2xl p-6">
-                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-3">Edukasi Minggu Ini</p>
-                <div class="flex items-start gap-4">
-                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br flex items-center justify-center text-2xl shrink-0"
-                        :style="'background: ' + currentEdukasi.gradient"
-                        x-html="currentEdukasi.icon">
-                    </div>
-                    <div class="min-w-0">
-                        <h4 class="font-bold text-gray-900 text-sm mb-1" x-text="currentEdukasi.title"></h4>
-                        <p class="text-xs text-gray-500 leading-relaxed" x-text="currentEdukasi.desc"></p>
-                    </div>
-                </div>
-            </div>
+        {{-- Row 2: Reminder + Kepatuhan --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             {{-- Card: Reminder Berikutnya --}}
             <div class="glass-card rounded-2xl p-6">
@@ -642,12 +628,6 @@
         </div>
     </div>
 
-    {{-- ========== TAB 4: EDUKASI ========== --}}
-    <div x-show="activeTab === 3" x-cloak x-transition:enter.duration.300 class="text-center py-20">
-        <span class="text-5xl block mb-3">📖</span>
-        <h3 class="text-lg font-bold text-gray-900 mb-1">Pusat Edukasi</h3>
-        <p class="text-sm text-gray-500">Konten edukasi akan segera hadir.</p>
-    </div>
 </div>
 
 <script>
@@ -698,7 +678,6 @@ function dailyMentalCheck() {
             { label: 'Dashboard', icon: '&#9632;' },
             { label: 'Isi Daily Check', icon: '&#9998;' },
             { label: 'Micro-Break', icon: '&#9776;' },
-            { label: 'Edukasi',    icon: '&#9733;' },
         ],
 
         get allAnswered() {
@@ -817,45 +796,6 @@ function dailyMentalCheck() {
                 newIndex = Math.floor(Math.random() * this.quotes.length);
             } while (newIndex === this.currentQuoteIndex && this.quotes.length > 1);
             this.currentQuoteIndex = newIndex;
-        },
-
-        // Edukasi
-        edukasiTopics: [
-            {
-                title: 'Kenali Stres Kerja',
-                desc: 'Pelajari tanda-tanda awal stres kerja dan cara mengelolanya sebelum berdampak pada performa.',
-                icon: '&#9888;',
-                gradient: 'linear-gradient(135deg, #fef3c7, #fde68a)',
-            },
-            {
-                title: 'Pekerja Sehat',
-                desc: 'Tips menjaga kesehatan fisik dan mental selama bekerja, dari postur duduk hingga manajemen waktu.',
-                icon: '&#10003;',
-                gradient: 'linear-gradient(135deg, #d1fae5, #a7f3d0)',
-            },
-            {
-                title: 'Micro-Break Bukan Malas',
-                desc: 'Istirahat singkat 3-5 menit terbukti meningkatkan fokus dan produktivitas — bukan kemalasan.',
-                icon: '&#8986;',
-                gradient: 'linear-gradient(135deg, #dbeafe, #93c5fd)',
-            },
-            {
-                title: 'Mindfulness STOP',
-                desc: 'Teknik S-T-O-P: Stop, Take a breath, Observe, Proceed. Redakan stres dalam 1 menit.',
-                icon: '&#9775;',
-                gradient: 'linear-gradient(135deg, #ede9fe, #c4b5fd)',
-            },
-        ],
-
-        get currentEdukasi() {
-            const week = this.getWeekNumber(new Date());
-            return this.edukasiTopics[week % this.edukasiTopics.length];
-        },
-
-        getWeekNumber(date) {
-            const startOfYear = new Date(date.getFullYear(), 0, 1);
-            const diff = date - startOfYear;
-            return Math.ceil((diff / 86400000 + startOfYear.getDay() + 1) / 7);
         },
 
         // Reminder
