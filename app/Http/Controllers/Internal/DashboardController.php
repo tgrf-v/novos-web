@@ -91,6 +91,7 @@ class DashboardController extends Controller
             ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->sum('amount');
 
         $activeCustomers = Order::whereIn('status', ['menunggu_validasi', 'menunggu_pembayaran', 'dikonfirmasi', 'disetujui', 'di_design', 'siap_cetak', 'diproduksi', 'selesai'])
+            ->where('created_at', '>=', now()->subDays(30))
             ->distinct('user_id')->count('user_id');
 
         $avgDays = Order::where('status', 'selesai')
@@ -124,7 +125,7 @@ class DashboardController extends Controller
                 'up' => true,
                 'bg' => 'bg-indigo-50', 'tc' => 'text-indigo-600',
                 'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
-                'url' => route('staf.kelola-pengguna'),
+                'url' => route('staf.laporan'),
             ],
             [
                 'v' => $avgDaysFormatted,
