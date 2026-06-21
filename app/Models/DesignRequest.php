@@ -16,6 +16,7 @@ class DesignRequest extends Model
         'motif',
         'material',
         'collar_style',
+        'priority',
         'additional_notes',
     ];
 
