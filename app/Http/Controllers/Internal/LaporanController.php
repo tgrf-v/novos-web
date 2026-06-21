@@ -54,6 +54,8 @@ class LaporanController extends Controller
                 ['Total Pendapatan', 'Rp ' . number_format($data['totalPendapatan'], 0, ',', '.')],
                 ['Rata-rata Nilai Transaksi', 'Rp ' . number_format($data['avgTransaksi'], 0, ',', '.')],
                 ['Pesanan Terlambat Selesai', $data['pesananTerlambat']],
+                ['Total Produk Terjual', $data['totalProdukTerjual'] . ' pcs'],
+                ['Rata-rata Waktu Proses', $data['avgProcessingDays'] ? number_format($data['avgProcessingDays'], 1) . ' hari' : '-'],
             ];
             foreach ($ringkasan as $i => $row) {
                 fputcsv($file, [$i + 1, $row[0], $row[1]]);
@@ -139,6 +141,8 @@ class LaporanController extends Controller
                 ['Total Pendapatan',    'Rp ' . number_format($data['totalPendapatan'], 0, ',', '.')],
                 ['Rata-rata Nilai Transaksi', 'Rp ' . number_format($data['avgTransaksi'], 0, ',', '.')],
                 ['Pesanan Terlambat Selesai', number_format($data['pesananTerlambat'])],
+                ['Total Produk Terjual', number_format($data['totalProdukTerjual']) . ' pcs'],
+                ['Rata-rata Waktu Proses', $data['avgProcessingDays'] ? number_format($data['avgProcessingDays'], 1) . ' hari' : '-'],
             ];
             foreach ($ringkasan as $i => $r) {
                 echo '<tr><td>' . ($i + 1) . '</td><td>' . $r[0] . '</td><td style="font-weight:bold;">' . $r[1] . '</td></tr>';
@@ -263,6 +267,16 @@ class LaporanController extends Controller
             ->orderBy('tanggal')
             ->get();
 
+        $totalProdukTerjual = DB::table('order_items')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->sum('order_items.qty');
+
+        $avgProcessingDays = Order::where('status', 'selesai')
+            ->whereBetween('updated_at', [$startDate, $endDate])
+            ->selectRaw('AVG(DATEDIFF(updated_at, created_at)) as avg_days')
+            ->value('avg_days');
+
         $produkTerbanyak = $produkStats->first();
         $produkTersedikit = $produkStats->last();
 
@@ -270,6 +284,7 @@ class LaporanController extends Controller
             'filter', 'startDate', 'endDate',
             'totalPesanan', 'pesananSelesai', 'pesananDiproses', 'pesananDibatalkan',
             'pesananPending', 'totalCustomer', 'totalPendapatan', 'avgTransaksi', 'pesananTerlambat',
+            'totalProdukTerjual', 'avgProcessingDays',
             'pesananPerAdmin', 'produkStats', 'pesananPerKategori', 'pendapatanHarian',
             'produkTerbanyak', 'produkTersedikit'
         );
