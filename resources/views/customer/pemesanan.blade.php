@@ -486,6 +486,7 @@
                     </select>
 
                     {{-- Modal Detail Bahan --}}
+                    <template x-teleport="body">
                     <div
                         x-show="showBahanGuide"
                         x-cloak
@@ -496,8 +497,6 @@
                         x-transition:leave-start="opacity-100"
                         x-transition:leave-end="opacity-0"
                         class="fixed inset-0 z-50 flex items-center justify-center p-4"
-                        style="background: rgba(0,0,0,0.55);"
-                        @click.self="showBahanGuide = false"
                     >
                         <div
                             x-show="showBahanGuide"
@@ -508,7 +507,6 @@
                             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                             x-transition:leave-end="opacity-0 scale-95 translate-y-4"
                             class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden"
-                            @click.stop
                         >
                             {{-- Modal Header --}}
                             <div class="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
@@ -554,6 +552,7 @@
                             </div>
                         </div>
                     </div>
+                    </template>
                 </div>
 
                 {{-- Jenis Potongan --}}
@@ -586,6 +585,7 @@
                     </select>
 
                     {{-- Modal Detail Potongan --}}
+                    <template x-teleport="body">
                     <div
                         x-show="showPotonganGuide"
                         x-cloak
@@ -596,8 +596,6 @@
                         x-transition:leave-start="opacity-100"
                         x-transition:leave-end="opacity-0"
                         class="fixed inset-0 z-50 flex items-center justify-center p-4"
-                        style="background: rgba(0,0,0,0.55);"
-                        @click.self="showPotonganGuide = false"
                     >
                         <div
                             x-show="showPotonganGuide"
@@ -608,7 +606,6 @@
                             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                             x-transition:leave-end="opacity-0 scale-95 translate-y-4"
                             class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden"
-                            @click.stop
                         >
                             <div class="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
                                 <div class="flex items-center gap-2">
@@ -637,6 +634,7 @@
                             </div>
                         </div>
                     </div>
+                    </template>
                 </div>
 
                 {{-- Model Lengan & Jahitan --}}
@@ -670,6 +668,7 @@
                     </select>
 
                     {{-- Modal Detail Lengan & Jahitan --}}
+                    <template x-teleport="body">
                     <div
                         x-show="showLenganGuide"
                         x-cloak
@@ -680,8 +679,6 @@
                         x-transition:leave-start="opacity-100"
                         x-transition:leave-end="opacity-0"
                         class="fixed inset-0 z-50 flex items-center justify-center p-4"
-                        style="background: rgba(0,0,0,0.55);"
-                        @click.self="showLenganGuide = false"
                     >
                         <div
                             x-show="showLenganGuide"
@@ -692,7 +689,6 @@
                             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                             x-transition:leave-end="opacity-0 scale-95 translate-y-4"
                             class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden"
-                            @click.stop
                         >
                             {{-- Modal Header --}}
                             <div class="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
@@ -733,6 +729,7 @@
                             </div>
                         </div>
                     </div>
+                    </template>
                 </div>
             </div>
 

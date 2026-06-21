@@ -19,6 +19,8 @@ class OrderController extends Controller
     {
         $data = $request->validate([
             'team_name'      => 'required|string|max:255',
+            'no_punggung'    => 'nullable|string|max:100',
+            'detail_sponsor' => 'nullable|string|max:255',
             'kerah'          => 'required|string|max:100',
             'bahan'          => 'required|string|max:100',
             'jenis_potongan' => 'required|string|in:REGULER,SLIMFIT CEWE,OVERSIZE,TUNIK,SLIM FIT UNISEX',
@@ -79,6 +81,10 @@ class OrderController extends Controller
             DesignRequest::create([
                 'order_id'         => $order->id,
                 'team_name'        => $data['team_name'],
+                'no_punggung'      => $data['no_punggung'] ?? null,
+                'detail_sponsor'   => $data['detail_sponsor'] ?? null,
+                'jenis_potongan'   => $data['jenis_potongan'],
+                'lengan_jahitan'   => $data['lengan_jahitan'],
                 'material'         => $data['bahan'],
                 'collar_style'     => $data['kerah'],
                 'primary_color'    => $data['warna_utama'] ?? null,

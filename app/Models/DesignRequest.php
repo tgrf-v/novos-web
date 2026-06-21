@@ -10,6 +10,10 @@ class DesignRequest extends Model
     protected $fillable = [
         'order_id',
         'team_name',
+        'no_punggung',
+        'detail_sponsor',
+        'jenis_potongan',
+        'lengan_jahitan',
         'logo',
         'primary_color',
         'secondary_color',
