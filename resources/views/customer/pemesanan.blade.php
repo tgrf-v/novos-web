@@ -563,6 +563,22 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Jenis Potongan --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Jenis Potongan <span class="text-red-500">*</span></label>
+                    <select
+                        x-model="form.jenis_potongan"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-blue-900 outline-none transition-shadow bg-white"
+                    >
+                        <option value="">Pilih Jenis Potongan</option>
+                        <option value="REGULER">REGULER</option>
+                        <option value="SLIMFIT CEWE">SLIMFIT CEWE</option>
+                        <option value="OVERSIZE">OVERSIZE</option>
+                        <option value="TUNIK">TUNIK</option>
+                        <option value="SLIM FIT UNISEX">SLIM FIT UNISEX</option>
+                    </select>
+                </div>
             </div>
 
             {{-- Catatan Desain --}}
@@ -748,6 +764,10 @@
                             <span class="font-medium text-gray-900" x-text="form.bahan || '-'"></span>
                         </div>
                         <div class="flex justify-between">
+                            <span class="text-gray-500">Jenis Potongan</span>
+                            <span class="font-medium text-gray-900" x-text="form.jenis_potongan || '-'"></span>
+                        </div>
+                        <div class="flex justify-between">
                             <span class="text-gray-500">Jumlah</span>
                             <span class="font-medium text-gray-900" x-text="totalQty + ' pcs'"></span>
                         </div>
@@ -862,6 +882,10 @@
                         <span class="font-medium text-gray-900" x-text="form.bahan || '-'"></span>
                     </div>
                     <div class="flex justify-between">
+                        <span class="text-gray-500">Jenis Potongan</span>
+                        <span class="font-medium text-gray-900" x-text="form.jenis_potongan || '-'"></span>
+                    </div>
+                    <div class="flex justify-between">
                         <span class="text-gray-500">Jumlah</span>
                         <span class="font-medium text-gray-900" x-text="totalQty + ' pcs'"></span>
                     </div>
@@ -929,6 +953,7 @@ function pemesananForm(catalogProduct = null) {
             detail_sponsor: '',
             kerah: '',
             bahan: '',
+            jenis_potongan: '',
 
             warna_utama: '#1e3a5f',
             warna_sekunder: '#ffffff',
@@ -985,7 +1010,7 @@ function pemesananForm(catalogProduct = null) {
         },
 
         get validateStep2() {
-            return this.form.team_name.trim() !== '' && this.form.kerah !== '' && this.form.bahan !== '';
+            return this.form.team_name.trim() !== '' && this.form.kerah !== '' && this.form.bahan !== '' && this.form.jenis_potongan !== '';
         },
 
         get validateStep3() {
@@ -1050,6 +1075,7 @@ function pemesananForm(catalogProduct = null) {
                 detail_sponsor: this.form.detail_sponsor,
                 kerah: this.form.kerah,
                 bahan: this.form.bahan,
+                jenis_potongan: this.form.jenis_potongan,
                 catatan: this.form.catatan,
                 ukuran: this.form.ukuran,
                 total_qty: this.totalQty || this.form.jumlah,
