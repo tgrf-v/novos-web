@@ -459,10 +459,24 @@
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-900 focus:border-blue-900 outline-none transition-shadow bg-white"
                     >
                         <option value="">Pilih Bahan Jersey</option>
-                        <option value="Dryfit Premium">Dryfit Premium</option>
-                        <option value="Dryfit Reguler">Dryfit Reguler</option>
-                        <option value="PE">PE (Polyester)</option>
-                        <option value="Cotton Combed">Cotton Combed</option>
+                        <option value="BINTIK JARUM GRADE B">BINTIK JARUM GRADE B</option>
+                        <option value="MILANO GRADE B">MILANO GRADE B</option>
+                        <option value="BINTIK JARUM PREMIUM">BINTIK JARUM PREMIUM</option>
+                        <option value="MILANO PREMIUM">MILANO PREMIUM</option>
+                        <option value="RABBIT">RABBIT</option>
+                        <option value="DROPPEDDLE">DROPPEDDLE</option>
+                        <option value="SMASH">SMASH</option>
+                        <option value="WAFFLE">WAFFLE</option>
+                        <option value="EMBOSH">EMBOSH</option>
+                        <option value="MICROCOOL">MICROCOOL</option>
+                        <option value="JAQUARD AERO">JAQUARD AERO</option>
+                        <option value="COTTON 24S">COTTON 24S</option>
+                        <option value="COTTON 30S">COTTON 30S</option>
+                        <option value="LOTTO">LOTTO</option>
+                        <option value="PARASUT">PARASUT</option>
+                        <option value="PUMA">PUMA</option>
+                        <option value="ULTRALIGHT A">ULTRALIGHT A</option>
+                        <option value="ULTRALIGHT B">ULTRALIGHT B</option>
                     </select>
                 </div>
             </div>
