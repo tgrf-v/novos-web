@@ -129,6 +129,7 @@ class DailyMentalCheckController extends Controller
             ->keyBy(fn($r) => $r->check_date->format('Y-m-d'));
 
         $weekHistory = [];
+        $dayLabels = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
         for ($i = 6; $i >= 0; $i--) {
             $date = $today->copy()->subDays($i);
             $dateStr = $date->format('Y-m-d');
@@ -137,7 +138,7 @@ class DailyMentalCheckController extends Controller
 
             $weekHistory[] = [
                 'date' => $dateStr,
-                'label' => $date->format('D'),
+                'label' => $dayLabels[$date->dayOfWeek],
                 'daily_check' => $daily ? [
                     'category' => $daily->category,
                     'score' => $daily->total_score,
