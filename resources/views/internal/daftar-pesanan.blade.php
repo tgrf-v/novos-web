@@ -142,14 +142,14 @@ function rupiah($n) {
                         <td class="px-5 py-4 text-gray-700 text-center whitespace-nowrap">{{ $o['qty'] }}</td>
                         <td class="px-5 py-4 text-gray-700 whitespace-nowrap font-medium">{{ rupiah($o['total']) }}</td>
                         <td class="px-5 py-4 whitespace-nowrap">
-                            @if($ac)
-                            <div class="flex items-center gap-2">
-                                {!! avatar($ac['name'], $ac['color']) !!}
-                                <span class="text-sm text-gray-700">{{ $ac['name'] }}</span>
-                            </div>
-                            @else
-                            <span class="text-sm text-gray-400 italic">Unassigned</span>
-                            @endif
+                            <select @change="assignOrder('{{ $o['id'] }}', $event.target.value)" class="border border-gray-200 rounded-lg px-2 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30 bg-white">
+                                <option value="">Unassigned</option>
+                                @foreach($assignees as $a)
+                                    <option value="{{ $a['id'] }}" {{ $o['assignee_id'] == $a['id'] ? 'selected' : '' }}>
+                                        {{ $a['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </td>
                         <td class="px-5 py-4 whitespace-nowrap">{!! badge($o['status']) !!}</td>
                         <td class="px-5 py-4 text-center whitespace-nowrap">
@@ -248,7 +248,34 @@ function rupiah($n) {
 <script>
 function orderManager() {
     return {
-        //
+        assignOrder(orderId, assigneeId) {
+            fetch(`/staf/pesanan/${orderId}/assign`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ assignee_id: assigneeId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: data.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                } else {
+                    Swal.fire('Error', data.message || 'Terjadi kesalahan.', 'error');
+                }
+            })
+            .catch(err => {
+                Swal.fire('Error', 'Gagal menghubungi server.', 'error');
+            });
+        }
     }
 }
 </script>

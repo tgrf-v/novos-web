@@ -29,7 +29,7 @@ class OrderController extends Controller
             'dibatalkan'         => 'dibatalkan',
         ];
 
-        $orders = Order::with(['user', 'orderItem', 'designRequest', 'productionTask.assignedTo'])
+        $orders = Order::with(['user', 'orderItem', 'designRequest', 'assignee'])
             ->whereIn('status', $dbStatuses)
             ->latest()
             ->get()
@@ -38,17 +38,17 @@ class OrderController extends Controller
                     ? 'Jersey ' . $order->designRequest->team_name
                     : 'Jersey Custom';
 
-                $assigneeName = null;
-                if ($order->productionTask && $order->productionTask->assignedTo) {
-                    $assigneeName = $order->productionTask->assignedTo->name;
-                }
+                $assigneeId = $order->assignee_id;
+                $assigneeName = $order->assignee ? $order->assignee->name : null;
 
                 return [
+                    'id'       => $order->id,
                     'order_id' => $order->order_number,
                     'customer' => $order->user->name ?? 'Unknown',
                     'produk'   => $produk,
                     'qty'      => $order->orderItem?->qty ?? 0,
                     'total'    => (float) ($order->total_price ?? 0),
+                    'assignee_id' => $assigneeId,
                     'assignee' => $assigneeName,
                     'status'   => $statusMap[$order->status] ?? $order->status,
                 ];
@@ -61,6 +61,7 @@ class OrderController extends Controller
             ->get()
             ->map(function ($user) use ($colorKeys) {
                 return [
+                    'id'    => $user->id,
                     'name'  => $user->name,
                     'color' => $colorKeys[array_rand($colorKeys)],
                 ];
@@ -253,6 +254,22 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Pesanan berhasil divalidasi.',
+        ]);
+    }
+
+    public function assign(Request $request, Order $order)
+    {
+        $request->validate([
+            'assignee_id' => 'nullable|exists:users,id',
+        ]);
+
+        $order->update([
+            'assignee_id' => $request->assignee_id,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Assignee berhasil diperbarui.',
         ]);
     }
 }

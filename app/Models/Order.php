@@ -17,6 +17,7 @@ class Order extends Model
         'admin_notes',
         'total_price',
         'confirmed_at',
+        'assignee_id',
     ];
 
     protected function casts(): array
@@ -30,6 +31,11 @@ class Order extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assignee_id');
     }
 
     public function orderItem(): HasOne
