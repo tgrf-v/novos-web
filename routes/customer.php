@@ -16,12 +16,14 @@ Route::get('/tentang-kami', function () {
 Route::get('/katalog', [ProductController::class, 'index'])->name('katalog');
 
 Route::get('/pesan', function () {
-        return view('customer.pemesanan', [
-            'produk'   => request('produk'),
-            'kategori' => request('kategori'),
-            'harga'    => request('harga'),
-            'gambar'   => request('gambar'),
-        ]);
+        $produk = request('produk');
+        $kategori = request('kategori');
+        $harga = request('harga');
+        $gambar = request('gambar');
+
+        $produkData = $produk ? compact('produk', 'kategori', 'harga', 'gambar') : null;
+
+        return view('customer.pemesanan', compact('produkData'));
     })->name('pemesanan');
 
 // Public routes (Midtrans callback)

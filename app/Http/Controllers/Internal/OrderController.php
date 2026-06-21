@@ -264,6 +264,10 @@ class OrderController extends Controller
                 'customer_id' => $order->user_id,
             ]);
 
+            if (!$chat->admin_id) {
+                $chat->update(['admin_id' => auth()->id()]);
+            }
+
             ChatMessage::create([
                 'chat_id'   => $chat->id,
                 'sender_id' => auth()->id(),
@@ -418,6 +422,10 @@ class OrderController extends Controller
                 'order_id'    => $order->id,
                 'customer_id' => $order->user_id,
             ]);
+
+            if (!$chat->admin_id) {
+                $chat->update(['admin_id' => $user->id]);
+            }
 
             $chatMessage = match($newDbStatus) {
                 'menunggu_pembayaran' => 'Pesanan ' . $order->order_number . ' telah divalidasi. Silakan lakukan pembayaran.',
