@@ -31,8 +31,7 @@ Route::prefix('staf')
         Route::delete('/kelola-pengguna/{user}', [UserController::class, 'destroy'])->name('kelola-pengguna.destroy');
 
         Route::get('/chat', [ChatController::class, 'index'])->name('chat');
-        Route::get('/stress-test', fn() => view('internal.stress-test'))->name('stress-test');
-        Route::get('/notifikasi', fn() => view('internal.notifikasi'))->name('notifikasi');
+        Route::get('/daily-mental-check', fn() => view('internal.daily-mental-check'))->name('daily-mental-check');
 
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
         Route::get('/laporan/export/csv', [LaporanController::class, 'exportCsv'])->name('laporan.csv');
