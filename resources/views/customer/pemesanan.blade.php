@@ -313,6 +313,7 @@
                             </div>
                         </div>
                     </div>
+                    </template>
                     <div class="grid grid-cols-4 sm:grid-cols-5 gap-2">
                         <template x-for="size in ['XS', 'S', 'M', 'L', 'XL', '2XL / XXL', '3XL', '4XL', '5XL', '6XL']" :key="size">
                             <div class="text-center">
@@ -327,7 +328,6 @@
                         </template>
                     </div>
                 </div>
-                </template>
             </div>
 
             <div class="grid lg:grid-cols-2 gap-6">
