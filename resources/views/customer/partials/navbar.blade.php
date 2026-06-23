@@ -77,6 +77,58 @@
                     </svg>
                 </a>
 
+                {{-- Notification icon --}}
+                <div class="relative" x-data="notificationDropdown()" @click.away="notifOpen = false">
+                    <button @click="notifOpen = !notifOpen; $dispatch('fetch-unread')" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors relative" title="Notifikasi">
+                        <svg class="w-6 h-6 text-[#616161] hover:text-[#1a237e] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                        </svg>
+                        <span x-show="unreadCount > 0" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center" x-text="unreadCount"></span>
+                    </button>
+
+                    <div x-show="notifOpen" x-cloak
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 translate-y-1"
+                         class="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-100 rounded-xl shadow-lg py-2 z-[70]">
+                        <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                            <h3 class="font-semibold text-gray-900 text-sm">Notifikasi</h3>
+                            <button @click="markAllRead" class="text-xs text-blue-600 hover:underline">Tandai semua dibaca</button>
+                        </div>
+                        <div class="max-h-96 overflow-y-auto">
+                            <template x-if="notifications.length === 0">
+                                <div class="px-4 py-8 text-center text-gray-400 text-sm">Belum ada notifikasi</div>
+                            </template>
+                            <template x-for="notif in notifications" :key="notif.id">
+                                <a :href="notif.data && notif.data.order_number ? '/tracking?q=' + notif.data.order_number : '#'" 
+                                   class="flex items-start gap-3 p-4 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
+                                   @click="markRead(notif.id)">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                                        <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0018 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900" x-text="notif.title"></p>
+                                        <p class="text-xs text-gray-500 mt-0.5" x-text="notif.message"></p>
+                                        <p class="text-[11px] text-gray-400 mt-1" x-text="formatDate(notif.created_at)"></p>
+                                    </div>
+                                    <template x-if="!notif.is_read">
+                                        <div class="w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-2"></div>
+                                    </template>
+                                </a>
+                            </template>
+                        </div>
+                        <div class="px-4 py-2 border-t border-gray-100 text-center">
+                            <a href="{{ route('notifikasi') }}" class="text-sm text-blue-600 hover:underline">Lihat semua notifikasi</a>
+                        </div>
+                    </div>
+                </div>
+
                 {{-- User dropdown --}}
                 <div class="relative" x-data="{ userOpen: false }"
                      @click.away="userOpen = false">
@@ -459,6 +511,74 @@
                 this.showWarning = false;
                 this.tab = tab;
                 this.sidebarOpen = true;
+            }
+        }
+    }
+
+    function notificationDropdown() {
+        return {
+            notifOpen: false,
+            unreadCount: 0,
+            notifications: [],
+
+            init() {
+                this.$on('fetch-unread', () => this.fetchUnreadCount());
+                this.fetchUnreadCount();
+                // Poll every 30 seconds
+                setInterval(() => this.fetchUnreadCount(), 30000);
+            },
+
+            async fetchUnreadCount() {
+                try {
+                    const res = await fetch('{{ route("notifikasi.unread-count") }}', {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    const data = await res.json();
+                    this.unreadCount = data.count || 0;
+                } catch (e) {}
+            },
+
+            async fetchNotifications() {
+                if (this.notifications.length > 0) return;
+                try {
+                    const res = await fetch('{{ route("notifikasi") }}', {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    const html = await res.text();
+                    // Parse notifications from HTML - for now we'll just show count
+                } catch (e) {}
+            },
+
+            async markRead(notificationId) {
+                try {
+                    await fetch('{{ route("notifikasi.read", "") }}' + notificationId, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                        }
+                    });
+                    this.fetchUnreadCount();
+                } catch (e) {}
+            },
+
+            async markAllRead() {
+                try {
+                    await fetch('{{ route("notifikasi.read-all") }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                        }
+                    });
+                    this.unreadCount = 0;
+                    this.notifOpen = false;
+                } catch (e) {}
+            },
+
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
             }
         }
     }

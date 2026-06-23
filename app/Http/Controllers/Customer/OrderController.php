@@ -33,9 +33,12 @@ class OrderController extends Controller
             'pembayaran'     => 'nullable|string|max:50',
             'warna_utama'    => 'nullable|string|max:7',
             'warna_sekunder' => 'nullable|string|max:7',
+            'logo'           => 'nullable|file|mimes:jpg,jpeg,png,ai,eps,psd|max:5120',
+            'design_files'   => 'nullable|array',
+            'design_files.*' => 'file|mimes:jpg,jpeg,png,pdf,ai,eps,psd,zip,rar|max:20480',
         ]);
 
-        $order = DB::transaction(function () use ($data) {
+        $order = DB::transaction(function () use ($data, $request) {
             $orderNumber = 'NVS-' . now()->format('Ymd') . '-' . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
 
             $totalQty = $data['total_qty'] ?? 0;
@@ -78,6 +81,24 @@ class OrderController extends Controller
                 }
             }
 
+            $designFiles = [];
+            if ($request->hasFile('design_files')) {
+                foreach ($request->file('design_files') as $file) {
+                    $path = $file->store('design-files/' . $orderNumber, 'public');
+                    $designFiles[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getMimeType(),
+                    ];
+                }
+            }
+
+            $logoPath = null;
+            if ($request->hasFile('logo')) {
+                $logoPath = $request->file('logo')->store('design-files/' . $orderNumber, 'public');
+            }
+
             DesignRequest::create([
                 'order_id'         => $order->id,
                 'team_name'        => $data['team_name'],
@@ -89,6 +110,8 @@ class OrderController extends Controller
                 'collar_style'     => $data['kerah'],
                 'primary_color'    => $data['warna_utama'] ?? null,
                 'secondary_color'  => $data['warna_sekunder'] ?? null,
+                'logo'             => $logoPath,
+                'design_files'     => $designFiles,
                 'additional_notes' => $catatanText,
             ]);
 

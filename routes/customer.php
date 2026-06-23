@@ -7,6 +7,7 @@ use App\Http\Controllers\Customer\PaymentController;
 use App\Http\Controllers\Customer\TrackingController;
 use App\Http\Controllers\Customer\ChatController;
 use App\Http\Controllers\Customer\ProfileController;
+use App\Http\Controllers\Customer\NotificationController;
 
 // Public routes
 Route::get('/tentang-kami', function () {
@@ -50,5 +51,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/notifikasi', [NotificationController::class, 'index'])->name('notifikasi');
+    Route::post('/notifikasi/{notification}/read', [NotificationController::class, 'markRead'])->name('notifikasi.read');
+    Route::post('/notifikasi/read-all', [NotificationController::class, 'markAllRead'])->name('notifikasi.read-all');
+    Route::get('/notifikasi/unread-count', [NotificationController::class, 'countUnread'])->name('notifikasi.unread-count');
 
 });

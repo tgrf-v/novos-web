@@ -67,4 +67,14 @@ class Notification extends Model
 
         self::send($staffIds, $type, $title, $message, $data);
     }
+
+    public static function sendToCustomer(
+        int $userId,
+        string $type,
+        string $title,
+        string $message,
+        ?array $data = null,
+    ): void {
+        self::send($userId, $type, $title, $message, $data);
+    }
 }

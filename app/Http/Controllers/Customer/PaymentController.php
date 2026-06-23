@@ -53,6 +53,14 @@ class PaymentController extends Controller
         try {
             $snapToken = $this->midtrans->createSnapToken($params);
         } catch (\Exception $e) {
+            \Log::error('Midtrans snapToken error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'params' => $params,
+                'server_key' => config('midtrans.server_key'),
+                'client_key' => config('midtrans.client_key'),
+                'is_production' => config('midtrans.is_production'),
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal terhubung ke payment gateway: ' . $e->getMessage(),
@@ -115,6 +123,14 @@ class PaymentController extends Controller
         try {
             $snapToken = $this->midtrans->createSnapToken($params);
         } catch (\Exception $e) {
+            \Log::error('Midtrans approveAndPay error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'params' => $params,
+                'server_key' => config('midtrans.server_key'),
+                'client_key' => config('midtrans.client_key'),
+                'is_production' => config('midtrans.is_production'),
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal terhubung ke payment gateway: ' . $e->getMessage(),
@@ -208,6 +224,16 @@ class PaymentController extends Controller
                         'role' => 'Customer',
                         'role_initial' => 'C',
                         'role_color' => '#16a34a',
+                        'order_number' => $order->order_number,
+                    ]
+                );
+
+                Notification::sendToCustomer(
+                    $order->user_id,
+                    'payment_success',
+                    'Pembayaran Berhasil',
+                    'Pembayaran untuk pesanan ' . $order->order_number . ' telah berhasil dikonfirmasi. Pesanan Anda akan segera diproses.',
+                    [
                         'order_number' => $order->order_number,
                     ]
                 );

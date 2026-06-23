@@ -300,6 +300,67 @@
                                     </table>
                                 </div>
                                 <p class="text-xs text-gray-400 mt-3">* Ukuran dapat sedikit berbeda tergantung bahan yang dipilih. Hubungi kami jika butuh konsultasi ukuran.</p>
+                                {{-- Ukuran Anak Table --}}
+                                <div class="mt-6">
+                                    <p class="text-xs font-semibold text-gray-700 mb-2">Panduan Ukuran Anak (cm)</p>
+                                    <div class="overflow-x-auto rounded-xl border border-gray-200">
+                                        <table class="w-full text-sm">
+                                            <thead>
+                                                <tr class="bg-[#1a237e] text-white">
+                                                    <th class="px-4 py-3 text-left font-semibold">Ukuran</th>
+                                                    <th class="px-4 py-3 text-left font-semibold">Usia (thn)</th>
+                                                    <th class="px-4 py-3 text-left font-semibold">Tinggi Badan (cm)</th>
+                                                    <th class="px-4 py-3 text-left font-semibold">Lingkar Dada (cm)</th>
+                                                    <th class="px-4 py-3 text-left font-semibold">Panjang Baju (cm)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-100">
+                                                <tr class="hover:bg-blue-50 transition-colors">
+                                                    <td class="px-4 py-2.5 font-bold text-blue-900">100 cm</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">3 – 4</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">98 – 104</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">54 – 56</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">40 – 42</td>
+                                                </tr>
+                                                <tr class="hover:bg-blue-50 transition-colors">
+                                                    <td class="px-4 py-2.5 font-bold text-blue-900">110 cm</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">4 – 5</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">106 – 112</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">57 – 59</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">43 – 45</td>
+                                                </tr>
+                                                <tr class="hover:bg-blue-50 transition-colors">
+                                                    <td class="px-4 py-2.5 font-bold text-blue-900">120 cm</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">6 – 7</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">114 – 120</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">60 – 62</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">46 – 48</td>
+                                                </tr>
+                                                <tr class="hover:bg-blue-50 transition-colors">
+                                                    <td class="px-4 py-2.5 font-bold text-blue-900">130 cm</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">8 – 9</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">122 – 128</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">63 – 65</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">49 – 51</td>
+                                                </tr>
+                                                <tr class="hover:bg-blue-50 transition-colors">
+                                                    <td class="px-4 py-2.5 font-bold text-blue-900">140 cm</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">10 – 11</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">130 – 136</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">66 – 68</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">52 – 54</td>
+                                                </tr>
+                                                <tr class="hover:bg-blue-50 transition-colors">
+                                                    <td class="px-4 py-2.5 font-bold text-blue-900">150 cm</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">12 – 13</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">138 – 144</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">69 – 71</td>
+                                                    <td class="px-4 py-2.5 text-gray-700">55 – 57</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
 
                             {{-- Modal Footer --}}
@@ -314,18 +375,41 @@
                         </div>
                     </div>
                     </template>
-                    <div class="grid grid-cols-4 sm:grid-cols-5 gap-2">
-                        <template x-for="size in ['XS', 'S', 'M', 'L', 'XL', '2XL / XXL', '3XL', '4XL', '5XL', '6XL']" :key="size">
-                            <div class="text-center">
-                                <span class="block text-xs font-medium text-gray-500 mb-1" x-text="size"></span>
-                                <input
-                                    type="number"
-                                    x-model="form.ukuran[size]"
-                                    min="0"
-                                    class="w-full px-2 py-2 text-center border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
-                                >
+                    <div class="space-y-4">
+                        {{-- Ukuran Dewasa --}}
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Ukuran Dewasa</label>
+                            <div class="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                                <template x-for="size in ['XS', 'S', 'M', 'L', 'XL', '2XL / XXL', '3XL', '4XL', '5XL', '6XL']" :key="size">
+                                    <div class="text-center">
+                                        <span class="block text-xs font-medium text-gray-500 mb-1" x-text="size"></span>
+                                        <input
+                                            type="number"
+                                            x-model="form.ukuran[size]"
+                                            min="0"
+                                            class="w-full px-2 py-2 text-center border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
+                                        >
+                                    </div>
+                                </template>
                             </div>
-                        </template>
+                        </div>
+                        {{-- Ukuran Anak --}}
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Ukuran Anak (cm)</label>
+                            <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                                <template x-for="size in ['100', '110', '120', '130', '140', '150']" :key="size">
+                                    <div class="text-center">
+                                        <span class="block text-xs font-medium text-gray-500 mb-1" x-text="size + ' cm'"></span>
+                                        <input
+                                            type="number"
+                                            x-model="form.ukuran['Anak ' + size]"
+                                            min="0"
+                                            class="w-full px-2 py-2 text-center border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
+                                        >
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1110,7 +1194,7 @@ function pemesananForm(catalogProduct = null) {
         steps: ['Pilih Jenis', 'Detail & Upload', 'Prioritas & Bayar', 'Konfirmasi'],
         jenis: null,
         catalogProduct: catalogProduct,
-        form: {
+            form: {
             team_name: '',
             no_punggung: '',
             detail_sponsor: '',
@@ -1122,7 +1206,7 @@ function pemesananForm(catalogProduct = null) {
             warna_utama: '#1a237e',
             warna_sekunder: '#ffffff',
             catatan: '',
-            ukuran: { XS: 0, S: 0, M: 0, L: 0, XL: 0, '2XL / XXL': 0, '3XL': 0, '4XL': 0, '5XL': 0, '6XL': 0 }
+            ukuran: { XS: 0, S: 0, M: 0, L: 0, XL: 0, '2XL / XXL': 0, '3XL': 0, '4XL': 0, '5XL': 0, '6XL': 0, 'Anak 100': 0, 'Anak 110': 0, 'Anak 120': 0, 'Anak 130': 0, 'Anak 140': 0, 'Anak 150': 0 }
         },
         prioritas: 'normal',
         pembayaran: 'midtrans',
@@ -1233,28 +1317,38 @@ function pemesananForm(catalogProduct = null) {
             if (this.loading) return;
             this.loading = true;
 
-            const payload = {
-                team_name: this.form.team_name,
-                no_punggung: this.form.no_punggung,
-                detail_sponsor: this.form.detail_sponsor,
-                kerah: this.form.kerah,
-                bahan: this.form.bahan,
-                jenis_potongan: this.form.jenis_potongan,
-                lengan_jahitan: this.form.lengan_jahitan,
-                catatan: this.form.catatan,
-                ukuran: this.form.ukuran,
-                total_qty: this.totalQty || this.form.jumlah,
-                jumlah: this.form.jumlah,
-                prioritas: this.prioritas,
-                pembayaran: this.pembayaran,
-                warna_utama: this.form.warna_utama,
-                warna_sekunder: this.form.warna_sekunder,
-            };
+            const formData = new FormData();
+            formData.append('team_name', this.form.team_name);
+            formData.append('no_punggung', this.form.no_punggung);
+            formData.append('detail_sponsor', this.form.detail_sponsor);
+            formData.append('kerah', this.form.kerah);
+            formData.append('bahan', this.form.bahan);
+            formData.append('jenis_potongan', this.form.jenis_potongan);
+            formData.append('lengan_jahitan', this.form.lengan_jahitan);
+            formData.append('catatan', this.form.catatan);
+            formData.append('ukuran', JSON.stringify(this.form.ukuran));
+            formData.append('total_qty', this.totalQty || this.form.jumlah);
+            formData.append('prioritas', this.prioritas);
+            formData.append('pembayaran', this.pembayaran);
+            formData.append('warna_utama', this.form.warna_utama);
+            formData.append('warna_sekunder', this.form.warna_sekunder);
+
+            // Logo tim (single file)
+            if (this.uploads.length > 0) {
+                formData.append('logo', this.uploads[0].file);
+            }
+
+            // Design files (multiple files from Referensi Desain)
+            if (this.refUploads.length > 0) {
+                this.refUploads.forEach(ref => {
+                    formData.append('design_files[]', ref.file);
+                });
+            }
 
             fetch('{{ route('pesan.store') }}', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                body: JSON.stringify(payload),
+                headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                body: formData,
             })
             .then(res => {
                 if (!res.ok) {

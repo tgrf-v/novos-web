@@ -140,8 +140,25 @@ class OrderController extends Controller
 
         // Design files
         $designFiles = [];
-        if ($order->designRequest && $order->designRequest->logo) {
-            $designFiles[] = ['name' => basename($order->designRequest->logo)];
+        if ($order->designRequest) {
+            if ($order->designRequest->logo) {
+                $designFiles[] = [
+                    'name' => basename($order->designRequest->logo),
+                    'url' => asset('storage/' . $order->designRequest->logo),
+                    'type' => 'logo',
+                ];
+            }
+            if ($order->designRequest->design_files) {
+                foreach ($order->designRequest->design_files as $file) {
+                    $designFiles[] = [
+                        'name' => $file['name'],
+                        'url' => asset('storage/' . $file['path']),
+                        'type' => 'design',
+                        'size' => $file['size'] ?? null,
+                        'mime' => $file['type'] ?? null,
+                    ];
+                }
+            }
         }
 
         // History notes
@@ -443,6 +460,38 @@ class OrderController extends Controller
                 'sender_id' => $user->id,
                 'message'   => $chatMessage,
             ]);
+
+            // Send notification to customer
+            $customerTitle = match($newDbStatus) {
+                'menunggu_pembayaran' => 'Pesanan Divalidasi',
+                'disetujui'           => 'Pesanan Disetujui',
+                'di_design'           => 'Pesanan Masuk Tahap Desain',
+                'siap_cetak'          => 'Desain Selesai',
+                'diproduksi'          => 'Pesanan Diproduksi',
+                'selesai'             => 'Pesanan Selesai',
+                'dibatalkan'          => 'Pesanan Dibatalkan',
+                default               => 'Status Pesanan Diperbarui',
+            };
+            $customerMessage = match($newDbStatus) {
+                'menunggu_pembayaran' => 'Pesanan Anda telah divalidasi. Silakan lakukan pembayaran.',
+                'disetujui'           => 'Pesanan Anda telah disetujui dan akan dikerjakan oleh tim design.',
+                'di_design'           => 'Pesanan Anda sedang dikerjakan oleh tim design.',
+                'siap_cetak'          => 'Desain pesanan Anda telah selesai dan siap diproduksi.',
+                'diproduksi'          => 'Pesanan Anda sedang dalam proses produksi.',
+                'selesai'             => 'Pesanan Anda telah selesai! Terima kasih telah memesan di Novos.',
+                'dibatalkan'          => 'Pesanan Anda telah dibatalkan.',
+                default               => 'Status pesanan Anda telah diperbarui.',
+            };
+            Notification::sendToCustomer(
+                $order->user_id,
+                'order_status',
+                $customerTitle,
+                $customerMessage,
+                [
+                    'order_number' => $order->order_number,
+                    'status' => $newDbStatus,
+                ]
+            );
         });
 
         Notification::sendToAllStaff(

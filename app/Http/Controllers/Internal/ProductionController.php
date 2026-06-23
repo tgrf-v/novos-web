@@ -26,6 +26,11 @@ class ProductionController extends Controller
 
                 $stage = $order->production_stage ?? 'printing';
 
+                $priority = 'Normal';
+                if ($order->admin_notes && preg_match('/Prioritas: (Express|Super Express)/', $order->admin_notes, $matches)) {
+                    $priority = $matches[1];
+                }
+
                 return [
                     'id'                => $order->id,
                     'order_id'          => $order->order_number,
@@ -35,7 +40,7 @@ class ProductionController extends Controller
                     'status'            => $order->status,
                     'production_stage'  => $stage,
                     'deadline'          => $order->created_at->addDays(7)->format('d M Y'),
-                    'priority'          => $dr?->priority ?? 'Normal',
+                    'priority'          => $priority,
                     'material'          => $dr?->material ?? '-',
                     'collar'            => $dr?->collar_style ?? '-',
                     'pattern'           => $dr?->motif ?? '-',
@@ -109,6 +114,18 @@ class ProductionController extends Controller
                 'order_number' => $order->order_number,
             ]
         );
+
+        if ($newOrderStatus === 'selesai') {
+            Notification::sendToCustomer(
+                $order->user_id,
+                'production_done',
+                'Pesanan Selesai',
+                'Pesanan ' . $order->order_number . ' telah selesai diproduksi dan siap untuk dikirim/diambil.',
+                [
+                    'order_number' => $order->order_number,
+                ]
+            );
+        }
 
         return response()->json([
             'success' => true,

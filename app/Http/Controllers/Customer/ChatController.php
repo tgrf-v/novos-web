@@ -47,6 +47,7 @@ class ChatController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
+            'chat_id' => 'nullable|exists:chats,id',
             'message' => 'nullable|string|max:2000',
             'file'    => 'nullable|file|max:20480',
         ]);
@@ -55,7 +56,20 @@ class ChatController extends Controller
             return response()->json(['message' => 'Pesan atau file harus diisi'], 422);
         }
 
-        $chat = Chat::firstOrCreate(['customer_id' => auth()->id()]);
+        $user = auth()->user();
+
+        // Use provided chat_id if valid and belongs to customer, otherwise create/get default chat
+        if ($data['chat_id']) {
+            $chat = Chat::where('id', $data['chat_id'])
+                ->where('customer_id', $user->id)
+                ->first();
+            
+            if (!$chat) {
+                return response()->json(['message' => 'Chat tidak ditemukan'], 404);
+            }
+        } else {
+            $chat = Chat::firstOrCreate(['customer_id' => $user->id]);
+        }
 
         $filePath = null;
         $fileName = null;
@@ -72,7 +86,7 @@ class ChatController extends Controller
 
         $message = ChatMessage::create([
             'chat_id'   => $chat->id,
-            'sender_id' => auth()->id(),
+            'sender_id' => $user->id,
             'message'   => $data['message'] ?? null,
             'file_path' => $filePath,
             'file_name' => $fileName,
@@ -82,14 +96,13 @@ class ChatController extends Controller
 
         $message->load('sender');
 
-        $currentUser = auth()->user();
         $chat->load('order');
         Notification::sendToAllStaff(
             'chat',
             'Pesan Baru',
-            "Pesan baru dari customer <strong>{$currentUser->name}</strong>" . ($chat->order ? " untuk <strong>{$chat->order->order_number}</strong>" : '') . ($data['message'] ? ": {$data['message']}" : ''),
+            "Pesan baru dari customer <strong>{$user->name}</strong>" . ($chat->order ? " untuk <strong>{$chat->order->order_number}</strong>" : '') . ($data['message'] ? ": {$data['message']}" : ''),
             [
-                'initials' => collect(explode(' ', $currentUser->name))->map(fn($w) => substr($w, 0, 1))->take(2)->implode(''),
+                'initials' => collect(explode(' ', $user->name))->map(fn($w) => substr($w, 0, 1))->take(2)->implode(''),
                 'role' => 'Customer',
                 'role_initial' => 'C',
                 'role_color' => '#d53f8c',

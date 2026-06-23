@@ -31,7 +31,7 @@
 </head>
 <body class="bg-[#f5f5f5] text-[#212121] antialiased">
 
-<div class="w-full bg-white">
+<div class="w-full min-h-screen flex flex-col bg-white">
 
     {{-- Navbar --}}
     @include('customer.partials.navbar')
@@ -40,7 +40,7 @@
     @include('components.alert')
 
     {{-- Page Content (padded for fixed navbar height) --}}
-    <main class="pt-16">
+    <main class="pt-16 flex-1">
         {{ $slot ?? '' }}
         @yield('content')
     </main>

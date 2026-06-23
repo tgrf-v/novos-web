@@ -15,6 +15,7 @@ class DesignRequest extends Model
         'jenis_potongan',
         'lengan_jahitan',
         'logo',
+        'design_files',
         'primary_color',
         'secondary_color',
         'motif',
@@ -23,6 +24,13 @@ class DesignRequest extends Model
         'priority',
         'additional_notes',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'design_files' => 'array',
+        ];
+    }
 
     public function order(): BelongsTo
     {

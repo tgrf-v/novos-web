@@ -21,6 +21,11 @@ class Order extends Model
         'assignee_id',
     ];
 
+    public function getRouteKeyName(): string
+    {
+        return 'order_number';
+    }
+
     protected function casts(): array
     {
         return [

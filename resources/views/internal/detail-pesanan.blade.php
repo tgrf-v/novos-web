@@ -155,9 +155,23 @@ function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
             </h3>
             <div class="grid grid-cols-3 gap-4">
                 @forelse($order['design_files'] as $f)
-                <div class="bg-gray-100 rounded-xl aspect-square flex flex-col items-center justify-center gap-2 border border-gray-200 hover:border-[#1a237e]/40 transition-colors cursor-pointer">
-                    <svg class="w-7 h-7 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    <span class="text-xs text-gray-500 text-center px-2">{{ $f['name'] }}</span>
+                <div class="relative group bg-gray-100 rounded-xl aspect-square border border-gray-200 hover:border-[#1a237e]/40 transition-colors overflow-hidden">
+                    @if(isset($f['url']) && ($f['mime'] ?? '') && str_starts_with($f['mime'], 'image/'))
+                        <img src="{{ $f['url'] }}" alt="{{ $f['name'] }}" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full flex flex-col items-center justify-center gap-2">
+                            <svg class="w-7 h-7 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        </div>
+                    @endif
+                    <div class="absolute inset-0 bg-[#1a237e]/80 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity gap-2 p-2">
+                        <a href="{{ $f['url'] }}" target="_blank" class="text-white text-xs font-medium bg-white/20 px-3 py-1 rounded hover:bg-white/30">
+                            <svg class="w-4 h-4 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Download
+                        </a>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                        <span class="text-xs text-white text-center truncate block">{{ $f['name'] }}</span>
+                    </div>
                 </div>
                 @empty
                 <div class="col-span-3 py-8 text-center text-gray-400 text-sm">Belum ada file desain dari customer.</div>

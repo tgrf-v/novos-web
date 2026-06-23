@@ -18,6 +18,10 @@ class DesignController extends Controller
             ->get()
             ->map(function ($order) {
                 $dr = $order->designRequest;
+                $priority = 'Normal';
+                if ($order->admin_notes && preg_match('/Prioritas: (Express|Super Express)/', $order->admin_notes, $matches)) {
+                    $priority = $matches[1];
+                }
                 return [
                     'id'                => $order->id,
                     'order_id'          => $order->order_number,
@@ -25,7 +29,7 @@ class DesignController extends Controller
                     'customer_contact'  => $order->user->phone ?? '-',
                     'team_name'         => $dr?->team_name ?? 'Jersey Custom',
                     'deadline'          => $order->created_at->addDays(7)->format('d M Y'),
-                    'priority'          => $dr?->priority ?? 'Normal',
+                    'priority'          => $priority,
                     'material'          => $dr?->material ?? '-',
                     'collar'            => $dr?->collar_style ?? '-',
                     'pattern'           => $dr?->motif ?? '-',
@@ -88,6 +92,16 @@ class DesignController extends Controller
                 'role' => $user->role->name,
                 'role_initial' => substr($user->role->name, 0, 1),
                 'role_color' => '#6b46c1',
+                'order_number' => $order->order_number,
+            ]
+        );
+
+        Notification::sendToCustomer(
+            $order->user_id,
+            'design_ready',
+            'Desain Selesai',
+            'Desain untuk pesanan ' . $order->order_number . ' telah selesai dan siap untuk tahap produksi.',
+            [
                 'order_number' => $order->order_number,
             ]
         );
