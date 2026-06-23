@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Models\Order;
+use App\Models\CustomerAddress;
 
 class ProfileController extends Controller
 {
@@ -38,6 +39,8 @@ class ProfileController extends Controller
                     $order->designRequest->all_design_files = $allFiles;
                 }
             });
+
+        $addresses = CustomerAddress::where('user_id', $user->id)->latest()->get();
 
         return view('customer.profile', [
             'user' => $user,
