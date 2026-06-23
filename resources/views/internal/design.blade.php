@@ -155,14 +155,15 @@
                                 File & Logo Referensi
                             </h4>
                             <div class="grid grid-cols-4 gap-4">
-                                <template x-for="img in selectedOrder?.reference_files" :key="img">
-                                    <div class="aspect-square rounded-xl border border-gray-200 overflow-hidden bg-gray-100 relative group cursor-pointer hover:border-[#1a237e] hover:shadow-md transition-all">
+                                 <template x-for="img in selectedOrder?.reference_files" :key="img">
+                                    <a :href="img" target="_blank"
+                                       class="aspect-square rounded-xl border border-gray-200 overflow-hidden bg-gray-100 relative group cursor-pointer hover:border-[#1a237e] hover:shadow-md transition-all block">
                                         <img :src="img" class="w-full h-full object-cover">
                                         <div class="absolute inset-0 bg-[#1a237e]/80 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity gap-2">
                                             <i data-lucide="download" class="w-6 h-6 text-white"></i>
                                             <span class="text-white text-xs font-medium">Download</span>
                                         </div>
-                                    </div>
+                                    </a>
                                 </template>
                             </div>
                         </div>

@@ -218,13 +218,14 @@
                             </h4>
                             <div class="grid grid-cols-3 gap-4">
                                 <template x-for="img in selectedOrder?.reference_files" :key="img">
-                                    <div class="aspect-square rounded-xl border border-gray-200 overflow-hidden bg-gray-100 relative group cursor-pointer hover:border-[#1a237e] hover:shadow-md transition-all">
+                                    <a :href="img" target="_blank"
+                                       class="aspect-square rounded-xl border border-gray-200 overflow-hidden bg-gray-100 relative group cursor-pointer hover:border-[#1a237e] hover:shadow-md transition-all block">
                                         <img :src="img" class="w-full h-full object-cover">
                                         <div class="absolute inset-0 bg-[#1a237e]/80 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity gap-2">
                                             <i data-lucide="download" class="w-6 h-6 text-white"></i>
                                             <span class="text-white text-xs font-medium">Download</span>
                                         </div>
-                                    </div>
+                                    </a>
                                 </template>
                             </div>
                             <div class="mt-4 space-y-2">
@@ -237,7 +238,7 @@
                                             <p class="text-xs font-medium text-gray-800 truncate" x-text="file.name"></p>
                                             <p class="text-[10px] text-gray-400" x-text="file.type"></p>
                                         </div>
-                                        <button class="text-[#1a237e] bg-white border border-blue-100 hover:bg-[#1a237e] hover:text-white p-1.5 rounded-md transition-colors shrink-0" title="Download">
+                                        <button @click="window.open(file.path, '_blank')" class="text-[#1a237e] bg-white border border-blue-100 hover:bg-[#1a237e] hover:text-white p-1.5 rounded-md transition-colors shrink-0" title="Download">
                                             <i data-lucide="download" class="w-4 h-4"></i>
                                         </button>
                                     </div>

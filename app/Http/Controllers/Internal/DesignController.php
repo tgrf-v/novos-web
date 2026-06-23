@@ -72,6 +72,13 @@ class DesignController extends Controller
         DB::transaction(function () use ($order, $data, $user, $uploadedFiles) {
             $order->update(['status' => $data['status']]);
 
+            if (!empty($uploadedFiles) && $order->designRequest) {
+                $existing = $order->designRequest->design_files ?? [];
+                $order->designRequest->update([
+                    'design_files' => array_merge($existing, $uploadedFiles),
+                ]);
+            }
+
             $notes = 'Design selesai dikerjakan';
             if (!empty($uploadedFiles)) {
                 $notes .= '. File: ' . implode(', ', array_column($uploadedFiles, 'name'));
