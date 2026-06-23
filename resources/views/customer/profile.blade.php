@@ -137,7 +137,7 @@
                                 <div class="flex gap-2 items-center">
                                     <button @click="openDetail(order)" class="px-4 py-2 text-gray-600 rounded-lg text-xs font-bold hover:bg-gray-50 transition-colors">Lihat Detail Transaksi</button>
                                     <template x-if="order.status === 'menunggu_pembayaran'">
-                                        <button @click="payOrder(order.id)" class="px-4 py-2 bg-[#1a237e] text-white rounded-lg text-xs font-bold hover:bg-[#283593] transition-colors">Setujui Detail & Bayar Sekarang</button>
+                                        <button @click="payOrder(order.order_number)" class="px-4 py-2 bg-[#1a237e] text-white rounded-lg text-xs font-bold hover:bg-[#283593] transition-colors">Setujui Detail & Bayar Sekarang</button>
                                     </template>
                                     <div class="relative">
                                         <button @click="showMenu = !showMenu" class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
