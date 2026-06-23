@@ -34,7 +34,10 @@ class DesignController extends Controller
                     'collar'            => $dr?->collar_style ?? '-',
                     'pattern'           => $dr?->motif ?? '-',
                     'notes'             => nl2br(e($dr?->additional_notes ?? $order->notes ?? 'Tidak ada catatan')),
-                    'reference_files'   => $dr?->logo ? [asset('storage/' . $dr->logo)] : [],
+                    'reference_files'   => array_merge(
+                        $dr?->logo ? [asset('storage/' . $dr->logo)] : [],
+                        collect($dr?->design_files ?? [])->map(fn($f) => asset('storage/' . $f['path']))->values()->toArray(),
+                    ),
                 ];
             })
             ->values()

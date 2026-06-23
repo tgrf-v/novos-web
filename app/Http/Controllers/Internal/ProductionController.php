@@ -47,7 +47,10 @@ class ProductionController extends Controller
                     'notes'             => nl2br(e($dr?->additional_notes ?? $order->notes ?? 'Tidak ada catatan')),
                     'total_qty'         => $order->orderItem?->qty ?? 0,
                     'sizes'             => $sizes,
-                    'reference_files'   => $dr?->logo ? [asset('storage/' . $dr->logo)] : [],
+                    'reference_files'   => array_merge(
+                        $dr?->logo ? [asset('storage/' . $dr->logo)] : [],
+                        collect($dr?->design_files ?? [])->map(fn($f) => asset('storage/' . $f['path']))->values()->toArray(),
+                    ),
                     'design_files'      => [],
                 ];
             })
