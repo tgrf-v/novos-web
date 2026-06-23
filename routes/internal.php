@@ -25,7 +25,7 @@ Route::prefix('staf')
         Route::get('/daftar-pesanan', [OrderController::class, 'index'])->name('daftar-pesanan');
         Route::get('/detail-pesanan/{order:order_number}', [OrderController::class, 'show'])->name('detail-pesanan');
         Route::post('/validasi-pesanan/{order:order_number}', [OrderController::class, 'validateOrder'])->name('validasi-pesanan');
-        Route::patch('/pesanan/{order}/assign', [OrderController::class, 'assign'])->name('pesanan.assign');
+        Route::patch('/pesanan/{order:order_number}/assign', [OrderController::class, 'assign'])->name('pesanan.assign');
         Route::post('/pesanan/{order:order_number}/update-status', [OrderController::class, 'updateStatus'])->name('pesanan.update-status');
         Route::get('/pesanan/{order:order_number}/allowed-statuses', [OrderController::class, 'allowedStatuses'])->name('pesanan.allowed-statuses');
 
@@ -46,6 +46,8 @@ Route::prefix('staf')
         Route::delete('/kelola-pengguna/{user}', [UserController::class, 'destroy'])->name('kelola-pengguna.destroy');
 
         Route::get('/chat', [ChatController::class, 'index'])->name('chat');
+        Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unread-count');
+        Route::post('/chat/{chat}/read', [ChatController::class, 'markRead'])->name('chat.read');
         Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.send');
         Route::get('/daily-mental-check', [DailyMentalCheckController::class, 'index'])->name('daily-mental-check');
         Route::get('/daily-mental-check/today', [DailyMentalCheckController::class, 'getToday'])->name('daily-mental-check.today');

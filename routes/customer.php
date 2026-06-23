@@ -36,8 +36,8 @@ Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('
 Route::middleware('auth')->group(function () {
 
     Route::post('/pesan', [OrderController::class, 'store'])->name('pesan.store');
-    Route::post('/payment/approve/{order}', [PaymentController::class, 'approveAndPay'])->name('payment.approve');
-    Route::post('/payment/snap/{order}', [PaymentController::class, 'snapToken'])->name('payment.snap');
+    Route::post('/payment/approve/{order:order_number}', [PaymentController::class, 'approveAndPay'])->name('payment.approve');
+    Route::post('/payment/snap/{order:order_number}', [PaymentController::class, 'snapToken'])->name('payment.snap');
     Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
     Route::get('/payment/unfinish', [PaymentController::class, 'unfinish'])->name('payment.unfinish');
     Route::get('/payment/error', [PaymentController::class, 'error'])->name('payment.error');
@@ -47,7 +47,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/tracking/{id}/revision', [TrackingController::class, 'revision'])->name('tracking.revision');
 
     Route::get('/chat', [ChatController::class, 'index'])->name('chat');
+    Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unread-count');
 
+    Route::post('/chat/{chat}/read', [ChatController::class, 'markRead'])->name('chat.read');
     Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.send');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -62,5 +64,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifikasi/{notification}/read', [NotificationController::class, 'markRead'])->name('notifikasi.read');
     Route::post('/notifikasi/read-all', [NotificationController::class, 'markAllRead'])->name('notifikasi.read-all');
     Route::get('/notifikasi/unread-count', [NotificationController::class, 'countUnread'])->name('notifikasi.unread-count');
+    Route::get('/notifikasi/recent', [NotificationController::class, 'recentJson'])->name('notifikasi.recent');
 
 });

@@ -71,15 +71,18 @@
                 {{-- Wrap with password sidebar state --}}
                 <div x-data="{ passwordOpen: false, profileOpen: false }" class="flex items-center gap-3">
                 {{-- Chat icon --}}
-                <a href="{{ route('chat') }}" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors" title="Chat">
-                    <svg class="w-6 h-6 text-[#616161] hover:text-[#1a237e] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                    </svg>
-                </a>
+                <div class="relative" x-data="chatBadge()">
+                    <a href="{{ route('chat') }}" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors block relative" title="Chat">
+                        <svg class="w-6 h-6 text-[#616161] hover:text-[#1a237e] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                        </svg>
+                        <span x-show="chatUnread > 0" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center" x-text="chatUnread"></span>
+                    </a>
+                </div>
 
                 {{-- Notification icon --}}
                 <div class="relative" x-data="notificationDropdown()" @click.away="notifOpen = false">
-                    <button @click="notifOpen = !notifOpen; $dispatch('fetch-unread')" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors relative" title="Notifikasi">
+                    <button @click="notifOpen = !notifOpen; fetchUnreadCount(); if(notifOpen) fetchNotifications()" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors relative" title="Notifikasi">
                         <svg class="w-6 h-6 text-[#616161] hover:text-[#1a237e] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
@@ -267,6 +270,11 @@
                             <form x-show="tab === 'login'" x-cloak method="POST" action="{{ route('login') }}">
                                 @csrf
                                 <div class="space-y-4">
+                                    @if($errors->any())
+                                    <div class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 font-medium">
+                                        Username atau password salah.
+                                    </div>
+                                    @endif
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Username</label>
                                         <input type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="username"
@@ -486,6 +494,9 @@
                         history.replaceState(null, '', url);
                     }
                 }
+                @if($errors->any())
+                this.openSidebar('login');
+                @endif
                 @endguest
             },
 
@@ -515,6 +526,27 @@
         }
     }
 
+    function chatBadge() {
+        return {
+            chatUnread: 0,
+
+            init() {
+                this.fetchUnread();
+                setInterval(() => this.fetchUnread(), 30000);
+            },
+
+            async fetchUnread() {
+                try {
+                    const res = await fetch('{{ route("chat.unread-count") }}', {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    const data = await res.json();
+                    this.chatUnread = data.count || 0;
+                } catch (e) {}
+            }
+        }
+    }
+
     function notificationDropdown() {
         return {
             notifOpen: false,
@@ -522,9 +554,7 @@
             notifications: [],
 
             init() {
-                this.$on('fetch-unread', () => this.fetchUnreadCount());
                 this.fetchUnreadCount();
-                // Poll every 30 seconds
                 setInterval(() => this.fetchUnreadCount(), 30000);
             },
 
@@ -539,13 +569,12 @@
             },
 
             async fetchNotifications() {
-                if (this.notifications.length > 0) return;
                 try {
-                    const res = await fetch('{{ route("notifikasi") }}', {
+                    const res = await fetch('{{ route("notifikasi.recent") }}', {
                         headers: { 'Accept': 'application/json' }
                     });
-                    const html = await res.text();
-                    // Parse notifications from HTML - for now we'll just show count
+                    if (!res.ok) return;
+                    this.notifications = await res.json();
                 } catch (e) {}
             },
 

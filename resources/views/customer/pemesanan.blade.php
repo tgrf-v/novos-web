@@ -1981,12 +1981,13 @@ function pemesananForm(catalogProduct = null, userAddresses = []) {
                 formData.append('address_id', this.selectedAddressId);
             }
 
-            // Logo tim (single file)
+            // Logo tim + Referensi Desain → semua masuk design_files[]
             if (this.uploads.length > 0) {
+                this.uploads.forEach(u => {
+                    formData.append('design_files[]', u.file);
+                });
                 formData.append('logo', this.uploads[0].file);
             }
-
-            // Design files (multiple files from Referensi Desain)
             if (this.refUploads.length > 0) {
                 this.refUploads.forEach(ref => {
                     formData.append('design_files[]', ref.file);
