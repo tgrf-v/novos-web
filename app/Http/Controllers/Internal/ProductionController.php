@@ -63,7 +63,7 @@ class ProductionController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         $data = $request->validate([
-            'action'  => 'required|in:proses_printing,selesai_printing,proses_jahit,selesai_jahit,proses_qc,selesai_qc',
+            'action'  => 'required|in:proses_printing,selesai_printing,proses_jahit,selesai_jahit,proses_qc,selesai_qc,revisi_qc',
             'notes'   => 'nullable|string|max:2000',
         ]);
 
@@ -77,6 +77,7 @@ class ProductionController extends Controller
             'selesai_jahit'    => ['stage' => 'qc',       'order_status' => 'diproduksi'],
             'proses_qc'        => ['stage' => 'qc',       'order_status' => 'diproduksi'],
             'selesai_qc'       => ['stage' => null,       'order_status' => 'selesai'],
+            'revisi_qc'        => ['stage' => 'jahit',    'order_status' => 'diproduksi'],
         ];
 
         $mapping = $statusMap[$data['action']];

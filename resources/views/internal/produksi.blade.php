@@ -284,8 +284,8 @@
                                     <!-- QC Stage Actions -->
                                     <div x-show="selectedOrder?.stage === 'qc'">
                                         <select x-model="updateStatus" class="w-full text-sm border-gray-300 rounded-lg focus:ring-[#1a237e] focus:border-[#1a237e] shadow-sm py-2.5">
-                                            <option value="proses_qc">Sedang Proses</option>
-                                            <option value="selesai_qc">Selesai</option>
+                                            <option value="selesai_qc">Selesai (Lolos QC)</option>
+                                            <option value="revisi_qc">Revisi / Pengerjaan Ulang</option>
                                         </select>
                                     </div>
                                 </div>
@@ -448,7 +448,7 @@ function produksiApp() {
             } else if (order.stage === 'jahit') {
                 this.updateStatus = order.jahit_status || 'proses_jahit';
             } else if (order.stage === 'qc') {
-                this.updateStatus = order.qc_status || 'proses_qc';
+                this.updateStatus = '';
             } else {
                 this.updateStatus = 'proses_qc';
             }
@@ -497,25 +497,24 @@ function produksiApp() {
                     successText = 'Proses jahit selesai. Pesanan dikirim ke divisi QC.';
                 }
             } else if (currentStage === 'qc') {
-                if (targetStatus === 'proses_qc') {
-                    title = 'Update Status Quality Control?';
-                    text = 'Status QC akan diperbarui menjadi Sedang Proses.';
-                    confirmButtonText = 'Ya, Update!';
-                    successText = 'Status Quality Control berhasil diperbarui.';
-                } else {
+                if (targetStatus === 'selesai_qc') {
+                    if (!this.qcChecklist.jahitan || !this.qcChecklist.cacat || !this.qcChecklist.ukuran || !this.qcChecklist.desain) {
+                        Swal.fire({
+                            title: 'Checklist Belum Lengkap',
+                            text: 'Semua item checklist (Kualitas Jahitan, Bebas Cacat, Ukuran & Kuantitas, Desain & Sablon) wajib dicentang untuk menyelesaikan QC.',
+                            icon: 'warning',
+                            confirmButtonColor: '#1a237e',
+                            confirmButtonText: 'Mengerti'
+                        });
+                        return;
+                    }
                     if (this.qcChecklist.perluRevisi) {
                         Swal.fire({
-                            title: 'Ada Item Perlu Revisi!',
-                            html: 'Kamu mencentang <strong>Perlu Revisi</strong> pada checklist QC.<br>Yakin ingin menyelesaikan pesanan ini?',
+                            title: 'Tidak Bisa Selesaikan',
+                            text: 'Checklist "Perlu Revisi" tidak boleh dicentang jika ingin menyelesaikan QC. Hapus centang atau pilih tindakan Revisi.',
                             icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#d97706',
-                            cancelButtonColor: '#6b7280',
-                            confirmButtonText: 'Tetap Selesaikan',
-                            cancelButtonText: 'Batal'
-                        }).then((res) => {
-                            if (!res.isConfirmed) return;
-                            this._doSubmit(targetStatus, currentStage, successText);
+                            confirmButtonColor: '#1a237e',
+                            confirmButtonText: 'Mengerti'
                         });
                         return;
                     }
@@ -523,6 +522,41 @@ function produksiApp() {
                     text = 'Semua item QC telah diperiksa. Pesanan akan ditandai SELESAI dan siap diserahkan ke customer.';
                     confirmButtonText = 'Ya, Selesaikan!';
                     successText = 'Quality Control selesai. Pesanan dinyatakan selesai diproduksi.';
+                } else if (targetStatus === 'revisi_qc') {
+                    if (this.qcChecklist.jahitan || this.qcChecklist.cacat || this.qcChecklist.ukuran || this.qcChecklist.desain) {
+                        Swal.fire({
+                            title: 'Checklist Tidak Sesuai',
+                            text: 'Untuk revisi, hanya checklist "Perlu Revisi / Pengerjaan Ulang" yang boleh dicentang. Checklist lainnya harus dikosongkan.',
+                            icon: 'warning',
+                            confirmButtonColor: '#1a237e',
+                            confirmButtonText: 'Mengerti'
+                        });
+                        return;
+                    }
+                    if (!this.qcChecklist.perluRevisi) {
+                        Swal.fire({
+                            title: 'Centang Perlu Revisi',
+                            text: 'Centang checklist "Perlu Revisi / Pengerjaan Ulang" untuk mengirim pesanan kembali ke bagian Jahit.',
+                            icon: 'warning',
+                            confirmButtonColor: '#1a237e',
+                            confirmButtonText: 'Mengerti'
+                        });
+                        return;
+                    }
+                    if (!this.productionNote.trim()) {
+                        Swal.fire({
+                            title: 'Catatan Revisi Wajib Diisi',
+                            text: 'Harap isi catatan QC dengan detail bagian yang perlu diperbaiki sebelum mengirim revisi.',
+                            icon: 'warning',
+                            confirmButtonColor: '#1a237e',
+                            confirmButtonText: 'Mengerti'
+                        });
+                        return;
+                    }
+                    title = 'Kirim Revisi ke Jahit?';
+                    text = 'Pesanan akan dikembalikan ke bagian Jahit untuk pengerjaan ulang sesuai catatan QC.';
+                    confirmButtonText = 'Ya, Kirim Revisi!';
+                    successText = 'Pesanan dikembalikan ke bagian Jahit untuk revisi.';
                 }
             }
 
@@ -531,7 +565,7 @@ function produksiApp() {
                 text: text,
                 icon: isSelesai ? 'success' : 'question',
                 showCancelButton: true,
-                confirmButtonColor: isSelesai ? '#16a34a' : (targetStatus === 'proses_printing' || targetStatus === 'proses_jahit' || targetStatus === 'proses_qc' ? '#0891b2' : '#1a237e'),
+                confirmButtonColor: isSelesai ? '#16a34a' : (targetStatus === 'revisi_qc' ? '#d97706' : (targetStatus === 'proses_printing' || targetStatus === 'proses_jahit' ? '#0891b2' : '#1a237e')),
                 cancelButtonColor: '#6b7280',
                 confirmButtonText: confirmButtonText,
                 cancelButtonText: 'Batal',
