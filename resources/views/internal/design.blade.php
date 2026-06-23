@@ -140,6 +140,12 @@
                                     </div>
                                 </div>
                             </div>
+                            <div x-show="selectedOrder?.revision_note" class="mt-5 pt-4 border-t border-gray-100">
+                                <span class="text-orange-600 block mb-2 text-xs font-medium uppercase tracking-wider flex items-center gap-1.5">
+                                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Revisi Terakhir dari Customer
+                                </span>
+                                <div class="text-gray-700 bg-orange-50 p-4 rounded-xl border border-orange-200/60 leading-relaxed text-sm" x-text="selectedOrder?.revision_note"></div>
+                            </div>
                             <div class="mt-5 pt-4 border-t border-gray-100">
                                 <span class="text-gray-500 block mb-2 text-xs font-medium uppercase tracking-wider flex items-center gap-1.5">
                                     <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Catatan Customer / Admin
