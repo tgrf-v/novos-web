@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/tracking/{id}/revision', [TrackingController::class, 'revision'])->name('tracking.revision');
 
     Route::get('/chat', [ChatController::class, 'index'])->name('chat');
+    Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unread-count');
 
     Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.send');
 

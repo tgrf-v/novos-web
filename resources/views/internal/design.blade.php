@@ -311,7 +311,7 @@ function designApp() {
 
                 Swal.fire({ title: 'Mengupload...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-                fetch('{{ route("staf.design.update", "") }}/' + this.selectedOrder.order_id, {
+                fetch('/staf/design/update/' + this.selectedOrder.order_id, {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
                     body: formData

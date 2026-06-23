@@ -547,7 +547,7 @@ function produksiApp() {
 
             Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-            fetch('{{ route("staf.produksi.update", "") }}/' + this.selectedOrder.order_id, {
+            fetch('/staf/produksi/update/' + this.selectedOrder.order_id, {
                 method: 'POST',
                 headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 body: JSON.stringify({

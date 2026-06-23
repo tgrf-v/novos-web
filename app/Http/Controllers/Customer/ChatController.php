@@ -44,6 +44,15 @@ class ChatController extends Controller
         return view('customer.chat', compact('chats'));
     }
 
+    public function unreadCount()
+    {
+        $count = Chat::where('customer_id', auth()->id())
+            ->withCount(['messages' => fn($q) => $q->where('is_read', false)->where('sender_id', '!=', auth()->id())])
+            ->get()
+            ->sum('messages_count');
+        return response()->json(['count' => $count]);
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
