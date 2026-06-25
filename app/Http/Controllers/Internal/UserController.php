@@ -44,12 +44,32 @@ class UserController extends Controller
             'email'    => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
             'role'     => 'required|string|in:Super Admin,Manager,Admin,Design,Produksi',
-            'avatar'   => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'avatar'   => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         $role = Role::where('name', $data['role'])->firstOrFail();
 
-        $avatarPath = $request->hasFile('avatar') ? $request->file('avatar')->store('avatars', 'public') : null;
+        $avatarPath = null;
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            $filename = 'avatar_' . time() . '_' . uniqid() . '.jpg';
+            $destinationPath = storage_path('app/public/avatars/' . $filename);
+
+            if (!file_exists(storage_path('app/public/avatars'))) {
+                mkdir(storage_path('app/public/avatars'), 0755, true);
+            }
+
+            $image = strtolower($file->getClientOriginalExtension()) === 'png'
+                ? @imagecreatefrompng($file->getRealPath())
+                : @imagecreatefromjpeg($file->getRealPath());
+
+            if ($image) {
+                imagejpeg($image, $destinationPath, 60);
+                imagedestroy($image);
+            }
+
+            $avatarPath = 'avatars/' . $filename;
+        }
 
         $user = DB::transaction(function () use ($data, $role, $avatarPath) {
             return User::create([
@@ -85,17 +105,35 @@ class UserController extends Controller
             'email'    => 'required|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:6|confirmed',
             'role'     => 'required|string|in:Super Admin,Manager,Admin,Design,Produksi',
-            'avatar'   => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'avatar'   => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         $role = Role::where('name', $data['role'])->firstOrFail();
 
         $avatarPath = $user->avatar;
         if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            $filename = 'avatar_' . $user->id . '_' . time() . '.jpg';
+            $destinationPath = storage_path('app/public/avatars/' . $filename);
+
+            if (!file_exists(storage_path('app/public/avatars'))) {
+                mkdir(storage_path('app/public/avatars'), 0755, true);
+            }
+
+            $image = strtolower($file->getClientOriginalExtension()) === 'png'
+                ? @imagecreatefrompng($file->getRealPath())
+                : @imagecreatefromjpeg($file->getRealPath());
+
+            if ($image) {
+                imagejpeg($image, $destinationPath, 60);
+                imagedestroy($image);
+            }
+
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
+
+            $avatarPath = 'avatars/' . $filename;
         }
 
         DB::transaction(function () use ($data, $role, $user, $avatarPath) {

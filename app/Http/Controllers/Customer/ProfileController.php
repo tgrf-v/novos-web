@@ -55,11 +55,29 @@ class ProfileController extends Controller
         $user->fill($request->safe()->except(['avatar']));
 
         if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+
+            $filename = 'avatar_' . $user->id . '_' . time() . '.jpg';
+            $destinationPath = storage_path('app/public/avatars/' . $filename);
+
+            if (!file_exists(storage_path('app/public/avatars'))) {
+                mkdir(storage_path('app/public/avatars'), 0755, true);
+            }
+
+            $image = strtolower($file->getClientOriginalExtension()) === 'png'
+                ? @imagecreatefrompng($file->getRealPath())
+                : @imagecreatefromjpeg($file->getRealPath());
+
+            if ($image) {
+                imagejpeg($image, $destinationPath, 60);
+                imagedestroy($image);
+            }
+
             if ($user->avatar) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($user->avatar);
             }
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $path;
+
+            $user->avatar = 'avatars/' . $filename;
         }
 
         if ($user->isDirty('email')) {
