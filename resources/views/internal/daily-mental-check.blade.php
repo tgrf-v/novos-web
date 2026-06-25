@@ -9,7 +9,7 @@
 @section('internal-content')
 <div x-data="dailyMentalCheck({ role: '{{ auth()->user()->role->name }}' })">
     {{-- Tab Navigation --}}
-    <div class="flex max-w-lg gap-1 bg-white/60 backdrop-blur-sm rounded-2xl p-1.5 shadow-sm border border-white/70 mb-8">
+    <div class="flex max-w-2xl gap-1 bg-white/60 backdrop-blur-sm rounded-2xl p-1.5 shadow-sm border border-white/70 mb-8">
         <template x-for="(tab, i) in tabs" :key="i">
             <button @click="activeTab = i"
                 :class="activeTab === i ? 'bg-[#1a237e] text-white shadow-sm' : 'text-gray-600 hover:text-gray-900 hover:bg-white/60'"
