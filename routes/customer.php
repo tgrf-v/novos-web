@@ -9,6 +9,7 @@ use App\Http\Controllers\Customer\ChatController;
 use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Customer\NotificationController;
 use App\Http\Controllers\Customer\AddressController;
+use App\Http\Controllers\Customer\CartController;
 
 // Public routes
 Route::get('/tentang-kami', function () {
@@ -40,6 +41,7 @@ Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('
 Route::middleware('auth')->group(function () {
 
     Route::post('/pesan', [OrderController::class, 'store'])->name('pesan.store');
+    Route::post('/pesan/cart', [OrderController::class, 'storeCart'])->name('pesan.store-cart');
     Route::post('/payment/approve/{order:order_number}', [PaymentController::class, 'approveAndPay'])->name('payment.approve');
     Route::post('/payment/snap/{order:order_number}', [PaymentController::class, 'snapToken'])->name('payment.snap');
     Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
@@ -63,6 +65,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/address/{address}', [AddressController::class, 'update'])->name('address.update');
     Route::delete('/address/{address}', [AddressController::class, 'destroy'])->name('address.destroy');
     Route::patch('/profile/contact', [AddressController::class, 'updateProfile'])->name('profile.update.contact');
+
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::post('/cart/design', [CartController::class, 'storeDesign'])->name('cart.store-design');
+    Route::put('/cart/{cart}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::post('/cart/{cart}/toggle-select', [CartController::class, 'toggleSelect'])->name('cart.toggle-select');
 
     Route::get('/notifikasi', [NotificationController::class, 'index'])->name('notifikasi');
     Route::post('/notifikasi/{notification}/read', [NotificationController::class, 'markRead'])->name('notifikasi.read');
