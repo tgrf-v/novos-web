@@ -266,14 +266,6 @@
                                     <option value="5XL">5XL</option>
                                     <option value="6XL">6XL</option>
                                 </optgroup>
-                                <optgroup label="Anak (cm)">
-                                    <option value="Anak 100">100 cm</option>
-                                    <option value="Anak 110">110 cm</option>
-                                    <option value="Anak 120">120 cm</option>
-                                    <option value="Anak 130">130 cm</option>
-                                    <option value="Anak 140">140 cm</option>
-                                    <option value="Anak 150">150 cm</option>
-                                </optgroup>
                             </select>
                         </div>
                         <div>
