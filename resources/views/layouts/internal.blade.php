@@ -20,11 +20,110 @@
     @stack('styles')
     
     <style>
-        * { font-family: 'Poppins', sans-serif; }
+        :root {
+            --color-primary: #1a237e;
+            --color-primary-rgb: 26, 35, 126;
+            --color-secondary: #3949ab;
+            --font-size-base: 15px;
+            --radius-base: 12px;
+        }
+
+        * { font-family: 'Poppins', sans-serif; font-size: var(--font-size-base); }
         [x-cloak] { display: none !important; }
 
         body.internal-body {
             background: linear-gradient(135deg, #f0f4ff 0%, #f5f3ff 50%, #f0fdf4 100%) !important;
+            transition: background 0.4s ease, color 0.3s ease;
+            color: #212121;
+        }
+
+        /* ── Dynamic Brand Color Mappings ── */
+        .bg-\[\#1a237e\] { background-color: var(--color-primary) !important; }
+        .bg-\[\#1a237e\]\/90 { background-color: var(--color-primary) !important; }
+        .hover\:bg-\[\#283593\]:hover { background-color: var(--color-secondary) !important; }
+        .text-\[\#1a237e\] { color: var(--color-primary) !important; }
+        .hover\:text-\[\#1a237e\]:hover { color: var(--color-primary) !important; }
+        .border-\[\#1a237e\] { border-color: var(--color-primary) !important; }
+        
+        .bg-\[\#1a237e\]\/5 { background-color: rgba(var(--color-primary-rgb), 0.05) !important; }
+        .bg-\[\#1a237e\]\/10 { background-color: rgba(var(--color-primary-rgb), 0.1) !important; }
+        .bg-\[\#1a237e\]\/20 { background-color: rgba(var(--color-primary-rgb), 0.2) !important; }
+        .bg-\[\#1a237e\]\/80 { background-color: rgba(var(--color-primary-rgb), 0.8) !important; }
+        .border-\[\#1a237e\]\/20 { border-color: rgba(var(--color-primary-rgb), 0.2) !important; }
+        .border-\[\#1a237e\]\/30 { border-color: rgba(var(--color-primary-rgb), 0.3) !important; }
+        .shadow-\[\#1a237e\]\/5 { --tw-shadow-color: rgba(var(--color-primary-rgb), 0.05) !important; }
+        .shadow-\[\#1a237e\]\/20 { --tw-shadow-color: rgba(var(--color-primary-rgb), 0.2) !important; }
+
+        .focus\:ring-\[\#1a237e\]:focus, .focus\:ring-\[\#1a237e\/30\]:focus {
+            --tw-ring-color: var(--color-primary) !important;
+        }
+        .focus\:border-\[\#1a237e\]:focus {
+            border-color: var(--color-primary) !important;
+        }
+
+        /* ── Button Styles ── */
+        /* 3D Button Style */
+        html[data-btn-style='3d'] button.bg-\[\#1a237e\],
+        html[data-btn-style='3d'] button[type='submit'],
+        html[data-btn-style='3d'] .btn-primary,
+        html[data-btn-style='3d'] [class*="bg-[#1a237e]"],
+        html[data-btn-style='3d'] .btn-primary-dynamic {
+            border-bottom: none !important;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.3) !important;
+            transform: translateY(0);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        html[data-btn-style='3d'] button.bg-\[\#1a237e\]:active,
+        html[data-btn-style='3d'] button[type='submit']:active,
+        html[data-btn-style='3d'] .btn-primary:active,
+        html[data-btn-style='3d'] [class*="bg-[#1a237e]"]:active,
+        html[data-btn-style='3d'] .btn-primary-dynamic:active {
+            box-shadow: 0 1px 0 rgba(0,0,0,0.3) !important;
+            transform: translateY(3px) !important;
+        }
+
+        /* Outline Button Style */
+        html[data-btn-style='outline'] button.bg-\[\#1a237e\],
+        html[data-btn-style='outline'] button[type='submit'],
+        html[data-btn-style='outline'] .btn-primary,
+        html[data-btn-style='outline'] [class*="bg-[#1a237e]"],
+        html[data-btn-style='outline'] .btn-primary-dynamic {
+            background-color: transparent !important;
+            background-image: none !important;
+            border: 2px solid var(--color-primary) !important;
+            color: var(--color-primary) !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+        html[data-btn-style='outline'] button.bg-\[\#1a237e\]:hover,
+        html[data-btn-style='outline'] button[type='submit']:hover,
+        html[data-btn-style='outline'] .btn-primary:hover,
+        html[data-btn-style='outline'] [class*="bg-[#1a237e]"]:hover,
+        html[data-btn-style='outline'] .btn-primary-dynamic:hover {
+            background-color: var(--color-primary) !important;
+            color: white !important;
+        }
+
+        /* ── Component Rounding (Rectangular to Capsule) ── */
+        .rounded-xl,
+        .rounded-lg,
+        .rounded-md,
+        .rounded-sm,
+        .rounded,
+        .input,
+        .select,
+        .textarea,
+        .btn,
+        button {
+            border-radius: var(--radius-base) !important;
+        }
+
+        /* Large Container Capped Rounding */
+        .glass-card,
+        .glass-sidebar,
+        .rounded-2xl,
+        .rounded-3xl {
+            border-radius: min(var(--radius-base), 24px) !important;
         }
 
         .glass-sidebar {
@@ -52,7 +151,130 @@
         main .bg-gray-50\/50 {
             background: rgba(255, 255, 255, 0.5) !important;
         }
+
+        /* ── Dark Mode Theme Styles ── */
+        body.theme-dark.internal-body {
+            background: linear-gradient(135deg, #0e111a 0%, #121422 50%, #0e121d 100%) !important;
+            color: #cbd5e1 !important;
+        }
+        body.theme-dark .glass-card,
+        body.theme-dark .bg-white,
+        body.theme-dark .bg-white\/60,
+        body.theme-dark .bg-white\/70 {
+            background: rgba(22, 28, 45, 0.9) !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+            color: #cbd5e1 !important;
+        }
+        body.theme-dark .glass-sidebar {
+            background: rgba(13, 17, 28, 0.95) !important;
+            border-right-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        body.theme-dark .glass-sidebar span,
+        body.theme-dark .glass-sidebar a {
+            color: #cbd5e1 !important;
+        }
+        body.theme-dark .glass-sidebar a:hover {
+            background-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        body.theme-dark .glass-sidebar a.bg-\[\#1a237e\]\/90 {
+            background-color: var(--color-primary) !important;
+            color: #ffffff !important;
+        }
+        body.theme-dark .glass-sidebar a.bg-\[\#1a237e\]\/90 span {
+            color: #ffffff !important;
+        }
+        body.theme-dark input,
+        body.theme-dark textarea,
+        body.theme-dark select {
+            background-color: rgba(13, 17, 28, 0.8) !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
+            color: #f8fafc !important;
+        }
+        body.theme-dark input::placeholder,
+        body.theme-dark textarea::placeholder {
+            color: #475569 !important;
+        }
+        body.theme-dark h1,
+        body.theme-dark h2,
+        body.theme-dark h3,
+        body.theme-dark h4,
+        body.theme-dark h5,
+        body.theme-dark h6,
+        body.theme-dark label,
+        body.theme-dark p,
+        body.theme-dark span,
+        body.theme-dark th,
+        body.theme-dark td,
+        body.theme-dark tr,
+        body.theme-dark select option {
+            color: #cbd5e1 !important;
+        }
+        body.theme-dark .text-gray-900,
+        body.theme-dark .text-gray-800,
+        body.theme-dark .text-gray-700,
+        body.theme-dark .text-gray-600,
+        body.theme-dark .text-gray-500 {
+            color: #cbd5e1 !important;
+        }
+        body.theme-dark .text-gray-400 {
+            color: #94a3b8 !important;
+        }
+        body.theme-dark .text-\[\#1a237e\] {
+            color: #a5b4fc !important;
+        }
+        body.theme-dark .bg-gray-25,
+        body.theme-dark .bg-gray-50,
+        body.theme-dark .bg-gray-50\/50,
+        body.theme-dark .bg-gray-100,
+        body.theme-dark .bg-gray-200 {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            color: #cbd5e1 !important;
+        }
+        body.theme-dark main table thead tr {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        body.theme-dark main tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.08) !important;
+        }
+        body.theme-dark .border-gray-100,
+        body.theme-dark .border-gray-200,
+        body.theme-dark .border-gray-300 {
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
     </style>
+
+    {{-- Apply saved appearance BEFORE first paint to avoid flash --}}
+    <script>
+    (function(){
+        try {
+            var s = localStorage.getItem('novos_appearance');
+            if (!s) return;
+            var a = JSON.parse(s);
+            var root = document.documentElement;
+            if (a.primary) {
+                root.style.setProperty('--color-primary', a.primary);
+                var hex = a.primary.replace('#', '');
+                if (hex.length === 3) {
+                    hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+                }
+                var r = parseInt(hex.substring(0,2), 16);
+                var g = parseInt(hex.substring(2,4), 16);
+                var b = parseInt(hex.substring(4,6), 16);
+                if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
+                    root.style.setProperty('--color-primary-rgb', r + ',' + g + ',' + b);
+                }
+            }
+            if (a.secondary) root.style.setProperty('--color-secondary', a.secondary);
+            var fsMap = {sm:'13px', md:'15px', lg:'17px', xl:'19px'};
+            if (a.fontSize)  root.style.setProperty('--font-size-base', fsMap[a.fontSize]||'15px');
+            var rrMap = {none:'0px', sm:'6px', xl:'12px', full:'9999px'};
+            if (a.rounded)   root.style.setProperty('--radius-base', rrMap[a.rounded]||'12px');
+            if (a.buttonStyle) root.setAttribute('data-btn-style', a.buttonStyle);
+            var dark = a.theme==='dark' || (a.theme==='auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (dark) document.documentElement.classList.add('theme-dark-pending');
+        } catch(e){}
+    })();
+    </script>
     {{-- Migrate old cookie name (sidebar.open) → sidebar_open to fix PHP dot-conversion bug --}}
     <script>
         (function () {
@@ -70,6 +292,14 @@
     </script>
 </head>
 <body class="internal-body text-[#212121] antialiased flex h-screen overflow-hidden" x-data>
+<script>
+(function(){
+    if (document.documentElement.classList.contains('theme-dark-pending')) {
+        document.body.classList.add('theme-dark');
+        document.documentElement.classList.remove('theme-dark-pending');
+    }
+})();
+</script>
 
     <!-- Sidebar -->
     @include('components.sidebar')
