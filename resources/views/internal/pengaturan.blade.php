@@ -78,7 +78,14 @@ function settingApp() {
                 });
                 const data = await res.json();
                 if (data.success) {
+                    this.form.company_name = data.data?.company_name ?? this.form.company_name;
+                    this.form.company_phone = data.data?.company_phone ?? this.form.company_phone;
+                    this.form.company_email = data.data?.company_email ?? this.form.company_email;
+                    this.form.company_address = data.data?.company_address ?? this.form.company_address;
                     Swal.fire({ icon: 'success', title: 'Berhasil', text: data.message, timer: 1500, showConfirmButton: false });
+                } else {
+                    const msg = data.message || (data.errors ? Object.values(data.errors).flat().join(', ') : 'Gagal menyimpan pengaturan.');
+                    Swal.fire({ icon: 'error', title: 'Gagal', text: msg });
                 }
             } catch (e) {
                 Swal.fire({ icon: 'error', title: 'Gagal', text: 'Terjadi kesalahan server.' });

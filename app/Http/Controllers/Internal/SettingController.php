@@ -31,6 +31,7 @@ class SettingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Pengaturan berhasil disimpan',
+            'data'    => $data,
         ]);
     }
 }

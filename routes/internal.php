@@ -37,7 +37,7 @@ Route::prefix('staf')
 
         Route::get('/kelola-produk', [ProductController::class, 'index'])->name('kelola-produk');
         Route::post('/kelola-produk', [ProductController::class, 'store'])->name('kelola-produk.store');
-        Route::post('/kelola-produk/{product}', [ProductController::class, 'update'])->name('kelola-produk.update');
+        Route::put('/kelola-produk/{product}', [ProductController::class, 'update'])->name('kelola-produk.update');
         Route::delete('/kelola-produk/{product}', [ProductController::class, 'destroy'])->name('kelola-produk.destroy');
         Route::patch('/kelola-produk/{product}/featured', [ProductController::class, 'toggleFeatured'])->name('kelola-produk.featured');
         Route::get('/kelola-pengguna', [UserController::class, 'index'])->name('kelola-pengguna');
