@@ -251,6 +251,102 @@
             </div>
         </div>
 
+        {{-- Kepadatan Tata Letak --}}
+        <div class="glass-card rounded-2xl p-7">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+                    <i data-lucide="layout-grid" class="w-5 h-5 text-blue-500"></i>
+                </div>
+                <div>
+                    <h2 class="text-base font-bold text-gray-900">Kepadatan Tata Letak</h2>
+                    <p class="text-xs text-gray-500">Atur kerapatan dan jarak elemen (padding/margin) di seluruh sistem</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+                <template x-for="d in densities" :key="d.value">
+                    <button @click="applyDensity(d.value)"
+                        :class="appearance.density===d.value ? 'ring-2 ring-[#1a237e] bg-[#1a237e]/5 text-[#1a237e]' : 'hover:bg-gray-50 text-gray-600'"
+                        class="flex flex-col items-center gap-1.5 p-4 rounded-xl border-2 border-transparent transition-all">
+                        <span class="text-sm font-bold" x-text="d.label"></span>
+                        <span class="text-[10px] text-gray-400" x-text="d.desc"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        {{-- Pilihan Gaya Font --}}
+        <div class="glass-card rounded-2xl p-7">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+                    <i data-lucide="languages" class="w-5 h-5 text-indigo-500"></i>
+                </div>
+                <div>
+                    <h2 class="text-base font-bold text-gray-900">Gaya Font (Tipografi)</h2>
+                    <p class="text-xs text-gray-500">Pilih jenis huruf yang digunakan di seluruh panel</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+                <template x-for="f in fontOptions" :key="f.value">
+                    <button @click="applyFontFamily(f.value)"
+                        :class="appearance.fontFamily===f.value ? 'ring-2 ring-[#1a237e] bg-[#1a237e]/5 text-[#1a237e]' : 'hover:bg-gray-50 text-gray-600'"
+                        class="flex flex-col items-center gap-1.5 p-4 rounded-xl border-2 border-transparent transition-all"
+                        :style="'font-family: ' + f.family + ', sans-serif;'">
+                        <span class="text-lg font-bold" x-text="'Novos Web'"></span>
+                        <span class="text-xs font-semibold" x-text="f.label"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        {{-- Efek Glassmorphism --}}
+        <div class="glass-card rounded-2xl p-7">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center">
+                    <i data-lucide="layers" class="w-5 h-5 text-orange-500"></i>
+                </div>
+                <div>
+                    <h2 class="text-base font-bold text-gray-900">Efek Glassmorphism (Kaca)</h2>
+                    <p class="text-xs text-gray-500">Sesuaikan tingkat transparansi dan keburaman kartu & sidebar</p>
+                </div>
+            </div>
+            <div class="space-y-6">
+                {{-- Toggle Switch --}}
+                <div class="flex items-center justify-between p-4 rounded-xl bg-gray-50/50 border border-gray-100">
+                    <div>
+                        <label class="text-sm font-bold text-gray-800 block">Aktifkan Efek Kaca (Glassmorphism)</label>
+                        <span class="text-xs text-gray-400">Nonaktifkan untuk menggunakan latar belakang solid klasik</span>
+                    </div>
+                    <input type="checkbox" x-model="appearance.glassEnabled" @change="applyGlass()" class="toggle toggle-primary toggle-sm">
+                </div>
+
+                {{-- Slider Opacity --}}
+                <div class="space-y-2" x-show="appearance.glassEnabled" x-transition>
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-semibold text-gray-700">Transparansi Kaca (Opacity)</label>
+                        <span class="text-sm font-mono font-bold text-gray-800" x-text="Math.round(appearance.glassOpacity * 100) + '%'"></span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-xs text-gray-400">Jernih (Transparan)</span>
+                        <input type="range" min="0.1" max="1.0" step="0.02" x-model="appearance.glassOpacity" @input="applyGlass()" class="range range-xs accent-[#1a237e] flex-1">
+                        <span class="text-xs text-gray-400">Solid (Flat)</span>
+                    </div>
+                </div>
+
+                {{-- Slider Blur --}}
+                <div class="space-y-2" x-show="appearance.glassEnabled" x-transition>
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-semibold text-gray-700">Kelembutan Kaca (Backdrop Blur)</label>
+                        <span class="text-sm font-mono font-bold text-gray-800" x-text="appearance.glassBlur + ' px'"></span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-xs text-gray-400">Tajam (0px)</span>
+                        <input type="range" min="0" max="24" step="1" x-model="appearance.glassBlur" @input="applyGlass()" class="range range-xs accent-[#1a237e] flex-1">
+                        <span class="text-xs text-gray-400">Frosted (24px)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- Preview & Reset --}}
         <div class="flex items-center justify-between">
             <button @click="resetAppearance()"
@@ -275,6 +371,11 @@ function settingApp() {
         fontSize: 'md',
         buttonStyle: 'flat',
         rounded: 'xl',
+        density: 'comfortable',
+        fontFamily: 'poppins',
+        glassOpacity: 0.72,
+        glassBlur: 8,
+        glassEnabled: true,
     };
 
     return {
@@ -325,6 +426,18 @@ function settingApp() {
             { value: 'sm',   label: 'Kecil',   px: 4  },
             { value: 'xl',   label: 'Rounded', px: 12 },
             { value: 'full', label: 'Bulat',   px: 24 },
+        ],
+
+        densities: [
+            { value: 'compact', label: 'Compact', desc: 'Jarak padat, hemat ruang' },
+            { value: 'comfortable', label: 'Comfortable', desc: 'Jarak sedang, bersih' },
+            { value: 'spacious', label: 'Spacious', desc: 'Jarak luas, lega' },
+        ],
+
+        fontOptions: [
+            { value: 'poppins', label: 'Poppins', family: 'Poppins' },
+            { value: 'inter', label: 'Inter', family: 'Inter' },
+            { value: 'outfit', label: 'Outfit', family: 'Outfit' },
         ],
 
         init() {
@@ -380,6 +493,7 @@ function settingApp() {
             this.appearance.scheme = 'custom';
             this._applyColors(this.appearance.primary, this.appearance.secondary);
         },
+
         _applyColors(primary, secondary) {
             document.documentElement.style.setProperty('--color-primary', primary);
             document.documentElement.style.setProperty('--color-secondary', secondary);
@@ -394,6 +508,7 @@ function settingApp() {
                 document.documentElement.style.setProperty('--color-primary-rgb', r + ',' + g + ',' + b);
             }
         },
+
         applyFontSize(val) {
             this.appearance.fontSize = val;
             const map = { sm: '13px', md: '15px', lg: '17px', xl: '19px' };
@@ -411,12 +526,32 @@ function settingApp() {
             document.documentElement.style.setProperty('--radius-base', map[val] || '12px');
         },
 
+        applyDensity(val) {
+            this.appearance.density = val;
+            document.documentElement.setAttribute('data-density', val);
+        },
+
+        applyFontFamily(val) {
+            this.appearance.fontFamily = val;
+            const fontMap = { poppins: "'Poppins'", inter: "'Inter'", outfit: "'Outfit'" };
+            document.documentElement.style.setProperty('--font-family-base', fontMap[val] || "'Poppins'");
+        },
+
+        applyGlass() {
+            document.documentElement.style.setProperty('--glass-opacity', this.appearance.glassOpacity);
+            document.documentElement.style.setProperty('--glass-blur', this.appearance.glassBlur + 'px');
+            document.documentElement.setAttribute('data-glass', this.appearance.glassEnabled ? 'on' : 'off');
+        },
+
         applyAll() {
             this._applyTheme(this.appearance.theme);
             this._applyColors(this.appearance.primary, this.appearance.secondary);
             this.applyFontSize(this.appearance.fontSize);
             this.applyButtonStyle(this.appearance.buttonStyle);
             this.applyRounded(this.appearance.rounded);
+            this.applyDensity(this.appearance.density || 'comfortable');
+            this.applyFontFamily(this.appearance.fontFamily || 'poppins');
+            this.applyGlass();
         },
 
         saveAppearance() {

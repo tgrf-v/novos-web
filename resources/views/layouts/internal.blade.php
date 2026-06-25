@@ -12,7 +12,7 @@
     {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     {{-- Scripts --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -26,13 +26,16 @@
             --color-secondary: #3949ab;
             --font-size-base: 15px;
             --radius-base: 12px;
+            --font-family-base: 'Poppins';
+            --glass-opacity: 0.72;
+            --glass-blur: 8px;
         }
 
-        * { font-family: 'Poppins', sans-serif; font-size: var(--font-size-base); }
+        * { font-family: var(--font-family-base), sans-serif; font-size: var(--font-size-base); }
         [x-cloak] { display: none !important; }
 
         body.internal-body {
-            background: linear-gradient(135deg, #f0f4ff 0%, #f5f3ff 50%, #f0fdf4 100%) !important;
+            background: linear-gradient(135deg, #f4f6f9 0%, #eef2f7 100%) !important;
             transition: background 0.4s ease, color 0.3s ease;
             color: #212121;
         }
@@ -127,18 +130,23 @@
         }
 
         .glass-sidebar {
-            background: rgba(255, 255, 255, 0.68) !important;
-            backdrop-filter: blur(8px) saturate(110%) !important;
-            -webkit-backdrop-filter: blur(8px) saturate(110%) !important;
+            background: rgba(255, 255, 255, var(--glass-opacity)) !important;
+            backdrop-filter: blur(var(--glass-blur)) saturate(110%) !important;
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(110%) !important;
             border-right: 1px solid rgba(255, 255, 255, 0.45) !important;
+            transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.72) !important;
-            backdrop-filter: blur(8px) saturate(110%) !important;
-            -webkit-backdrop-filter: blur(8px) saturate(110%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.6) !important;
+        .glass-card,
+        .bg-white.rounded-xl,
+        .bg-white.rounded-2xl,
+        .bg-white.rounded-3xl {
+            background: rgba(255, 255, 255, var(--glass-opacity)) !important;
+            backdrop-filter: blur(var(--glass-blur)) saturate(110%) !important;
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(110%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+            transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
         }
 
         main table thead tr {
@@ -152,6 +160,49 @@
             background: rgba(255, 255, 255, 0.5) !important;
         }
 
+        /* ── Layout Density Overrides ── */
+        html[data-density='compact'] .p-5,
+        html[data-density='compact'] .p-6,
+        html[data-density='compact'] .p-7,
+        html[data-density='compact'] .p-8 { padding: 0.85rem !important; }
+        html[data-density='compact'] th,
+        html[data-density='compact'] td { padding: 0.35rem 0.5rem !important; }
+        html[data-density='compact'] .py-3 { padding-top: 0.4rem !important; padding-bottom: 0.4rem !important; }
+        html[data-density='compact'] .space-y-6 > * + * { margin-top: 0.75rem !important; }
+
+        html[data-density='spacious'] .p-5,
+        html[data-density='spacious'] .p-6,
+        html[data-density='spacious'] .p-7,
+        html[data-density='spacious'] .p-8 { padding: 2.25rem !important; }
+        html[data-density='spacious'] th,
+        html[data-density='spacious'] td { padding: 1.25rem 1.5rem !important; }
+        html[data-density='spacious'] .py-3 { padding-top: 1.1rem !important; padding-bottom: 1.1rem !important; }
+        html[data-density='spacious'] .space-y-6 > * + * { margin-top: 2rem !important; }
+
+        /* ── Glassmorphism Off Overrides ── */
+        html[data-glass='off'] .glass-card,
+        html[data-glass='off'] .bg-white.rounded-xl,
+        html[data-glass='off'] .bg-white.rounded-2xl,
+        html[data-glass='off'] .bg-white.rounded-3xl,
+        html[data-glass='off'] .glass-sidebar {
+            background: #ffffff !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border-color: #e5e7eb !important;
+        }
+        
+        html[data-glass='off'] body.theme-dark .glass-card,
+        html[data-glass='off'] body.theme-dark .bg-white,
+        html[data-glass='off'] body.theme-dark .bg-white.rounded-xl,
+        html[data-glass='off'] body.theme-dark .bg-white.rounded-2xl,
+        html[data-glass='off'] body.theme-dark .bg-white.rounded-3xl,
+        html[data-glass='off'] body.theme-dark .glass-sidebar {
+            background: #161c2d !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
         /* ── Dark Mode Theme Styles ── */
         body.theme-dark.internal-body {
             background: linear-gradient(135deg, #0e111a 0%, #121422 50%, #0e121d 100%) !important;
@@ -161,12 +212,16 @@
         body.theme-dark .bg-white,
         body.theme-dark .bg-white\/60,
         body.theme-dark .bg-white\/70 {
-            background: rgba(22, 28, 45, 0.9) !important;
+            background: rgba(22, 28, 45, var(--glass-opacity)) !important;
+            backdrop-filter: blur(var(--glass-blur)) saturate(110%) !important;
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(110%) !important;
             border-color: rgba(255, 255, 255, 0.08) !important;
             color: #cbd5e1 !important;
         }
         body.theme-dark .glass-sidebar {
-            background: rgba(13, 17, 28, 0.95) !important;
+            background: rgba(13, 17, 28, var(--glass-opacity)) !important;
+            backdrop-filter: blur(var(--glass-blur)) saturate(110%) !important;
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(110%) !important;
             border-right-color: rgba(255, 255, 255, 0.08) !important;
         }
         body.theme-dark .glass-sidebar span,
@@ -270,6 +325,12 @@
             var rrMap = {none:'0px', sm:'6px', xl:'12px', full:'9999px'};
             if (a.rounded)   root.style.setProperty('--radius-base', rrMap[a.rounded]||'12px');
             if (a.buttonStyle) root.setAttribute('data-btn-style', a.buttonStyle);
+            if (a.density) root.setAttribute('data-density', a.density);
+            var fontMap = { poppins: "'Poppins'", inter: "'Inter'", outfit: "'Outfit'" };
+            if (a.fontFamily) root.style.setProperty('--font-family-base', fontMap[a.fontFamily] || "'Poppins'");
+            if (a.glassOpacity !== undefined) root.style.setProperty('--glass-opacity', a.glassOpacity);
+            if (a.glassBlur !== undefined) root.style.setProperty('--glass-blur', a.glassBlur + 'px');
+            root.setAttribute('data-glass', a.glassEnabled === false ? 'off' : 'on');
             var dark = a.theme==='dark' || (a.theme==='auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
             if (dark) document.documentElement.classList.add('theme-dark-pending');
         } catch(e){}
