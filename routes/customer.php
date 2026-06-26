@@ -10,15 +10,10 @@ use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Customer\NotificationController;
 use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Customer\CartController;
+use App\Http\Controllers\Customer\HomeController;
 
 // Public routes
-Route::get('/tentang-kami', function () {
-    $tim = App\Models\User::with('role')
-        ->whereHas('role', fn($q) => $q->whereIn('name', ['Super Admin', 'Manager', 'Admin', 'Design', 'Produksi']))
-        ->orderBy('created_at')
-        ->get();
-    return view('customer.tentang-kami', compact('tim'));
-})->name('tentang');
+Route::get('/tentang-kami', [HomeController::class, 'tentang'])->name('tentang');
 
 Route::get('/katalog', [ProductController::class, 'index'])->name('katalog');
 

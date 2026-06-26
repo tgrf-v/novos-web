@@ -1320,7 +1320,7 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
         async deleteCartItem(item, index) {
             const result = await Swal.fire({
                 title: 'Hapus Produk?',
-                text: 'Produk "' + item.product.name + '" akan dihapus dari keranjang.',
+                text: 'Produk "' + (item.product?.name || 'Custom Design') + '" akan dihapus dari keranjang.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc2626',

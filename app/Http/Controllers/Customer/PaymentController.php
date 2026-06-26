@@ -293,13 +293,23 @@ class PaymentController extends Controller
 
     public function unfinish(Request $request)
     {
-        $orderId = $request->query('order_id');
-        return view('customer.payment-finish', compact('orderId'));
+        $midtransOrderId = $request->query('order_id');
+        $orderNumber = null;
+        if ($midtransOrderId) {
+            $payment = Payment::where('midtrans_order_id', $midtransOrderId)->first();
+            $orderNumber = $payment?->order?->order_number;
+        }
+        return view('customer.payment-finish', compact('orderNumber'));
     }
 
     public function error(Request $request)
     {
-        $orderId = $request->query('order_id');
-        return view('customer.payment-finish', compact('orderId'));
+        $midtransOrderId = $request->query('order_id');
+        $orderNumber = null;
+        if ($midtransOrderId) {
+            $payment = Payment::where('midtrans_order_id', $midtransOrderId)->first();
+            $orderNumber = $payment?->order?->order_number;
+        }
+        return view('customer.payment-finish', compact('orderNumber'));
     }
 }

@@ -110,17 +110,15 @@ class ChatController extends Controller
             $fileType = $file->getMimeType();
         }
 
-                $message = ChatMessage::create([
-                    'chat_id'   => $chat->id,
-                    'sender_id' => $user->id,
-                    'message'   => $data['message'] ?? null,
-                    'file_path' => $filePath,
-                    'file_name' => $fileName,
-                    'file_size' => $fileSize,
-                    'file_type' => $fileType,
-                ]);
-
-                $sender = $user->id === $chat->admin_id ? $chat->admin : $chat->customer;
+        $message = ChatMessage::create([
+            'chat_id'   => $chat->id,
+            'sender_id' => $user->id,
+            'message'   => $data['message'] ?? null,
+            'file_path' => $filePath,
+            'file_name' => $fileName,
+            'file_size' => $fileSize,
+            'file_type' => $fileType,
+        ]);
 
         $message->load('sender');
 

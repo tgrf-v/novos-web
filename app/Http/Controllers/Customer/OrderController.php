@@ -319,9 +319,12 @@ class OrderController extends Controller
             'customer_id' => $order->user_id,
         ]);
 
+        $admin = User::whereHas('role', fn($q) => $q->whereIn('name', ['Super Admin', 'Manager', 'Admin']))
+            ->first();
+
         ChatMessage::create([
             'chat_id'   => $chat->id,
-            'sender_id' => $order->user_id,
+            'sender_id' => $admin?->id,
             'message'   => $message,
         ]);
     }
