@@ -6,17 +6,20 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
 use Laravel\Dusk\Browser;
+use Tests\Browser\Concerns\WithTestOrders;
 use Tests\Browser\Concerns\WithTestUsers;
 use Tests\DuskTestCase;
 
 class StaffManagementTest extends DuskTestCase
 {
     use WithTestUsers;
+    use WithTestOrders;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->ensureRolesAndUsersExist();
+        $this->ensureTestOrdersExist();
     }
     public function test_kelola_produk_page_loads(): void
     {
@@ -55,11 +58,15 @@ class StaffManagementTest extends DuskTestCase
     {
         $admin = User::where('email', 'admin@novos.com')->firstOrFail();
         $product = Product::first();
-
         if (!$product) {
-            echo "\n[!] SKIP: Tidak ada produk\n";
-            $this->assertTrue(true);
-            return;
+            $category = Category::firstOrCreate(['name' => 'Dusk Test']);
+            $product = Product::create([
+                'category_id' => $category->id,
+                'name' => 'DUSK-TEST-PRODUCT',
+                'price' => 100000,
+                'min_qty' => 1,
+                'is_active' => true,
+            ]);
         }
 
         $this->browse(function (Browser $b) use ($admin, $product) {

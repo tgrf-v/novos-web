@@ -5,17 +5,20 @@ namespace Tests\Browser;
 use App\Models\Order;
 use App\Models\User;
 use Laravel\Dusk\Browser;
+use Tests\Browser\Concerns\WithTestOrders;
 use Tests\Browser\Concerns\WithTestUsers;
 use Tests\DuskTestCase;
 
 class StaffDesignProduksiTest extends DuskTestCase
 {
     use WithTestUsers;
+    use WithTestOrders;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->ensureRolesAndUsersExist();
+        $this->ensureTestOrdersExist();
     }
     public function test_design_updates_order_to_siap_cetak(): void
     {

@@ -131,8 +131,7 @@ class PublicPagesTest extends DuskTestCase
         $this->browse(function (Browser $b) {
             $b->visit('/pesan');
             $b->waitForText('Buat Pesanan', 5);
-            $b->pause(2000); // Wait for Alpine.js to initialize
-            $b->assertSee('Pilih');
+            $b->waitForText('Pilih', 8);
             echo "\n[✓] PESAN: Halaman pesanan bisa diakses guest (tanpa auth)\n";
         });
     }
