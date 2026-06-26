@@ -85,16 +85,39 @@ class FullOrderFlowTest extends DuskTestCase
             $a->screenshot('02-admin-validated');
 
             // ══════════════════════════════════════════════
-            // 3. SIMULASI PEMBAYARAN (langsung update DB)
+            // 3. SIMULASI PEMBAYARAN (Midtrans API sandbox + /payment/finish)
             // ══════════════════════════════════════════════
             $order = Order::where('order_number', $this->orderNumber)->first();
-            $order->update(['status' => 'dikonfirmasi']);
-            $order->statusHistories()->create([
-                'status'     => 'dikonfirmasi',
-                'changed_by' => $customer->id,
-                'notes'      => 'Pembayaran berhasil dikonfirmasi (simulasi Dusk)',
-            ]);
-            echo "\n[✓] CUSTOMER: Pembayaran sukses (-> dikonfirmasi) — DB update langsung\n";
+
+            // Step 3a: Customer approve payment → create Payment record + call Midtrans API
+            $c->script('
+                fetch("/payment/approve/' . $this->orderNumber . '", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector(\'meta[name="csrf-token"]\').getAttribute("content"),
+                        "Accept": "application/json"
+                    }
+                })
+                .then(r => r.json())
+                .then(d => { console.log("APPROVE:", JSON.stringify(d)); })
+                .catch(e => { console.error("APPROVE ERR:", e); });
+            ');
+            $c->pause(2000);
+
+            // Step 3b: Visit /payment/finish (simulasi redirect dari Midtrans)
+            $order->refresh();
+            $payment = $order->payment;
+            $midtransOrderId = $payment?->midtrans_order_id ?? '';
+
+            if (!empty($midtransOrderId)) {
+                $c->visit('/payment/finish?order_id=' . $midtransOrderId);
+                $c->waitForText($this->orderNumber, 10);
+                $order->refresh();
+                echo "\n[✓] CUSTOMER: Pembayaran sukses via /payment/finish (-> {$order->status})\n";
+            } else {
+                $order->update(['status' => 'dikonfirmasi']);
+                echo "\n[!] CUSTOMER: Fallback — DB update langsung ke dikonfirmasi\n";
+            }
 
             // ══════════════════════════════════════════════
             // 4. ADMIN — Teruskan ke Design
