@@ -4,7 +4,7 @@
 
 @section('topbar-left')
     <h1 class="text-xl font-bold text-[#1a237e]">Pengaturan</h1>
-    <p class="text-sm text-gray-500 mt-0.5">Kelola pengaturan toko & tampilan</p>
+
 @endsection
 
 @section('internal-content')
@@ -354,6 +354,29 @@
             </div>
         </div>
 
+        {{-- Efek Transisi --}}
+        <div class="glass-card rounded-2xl p-7">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-cyan-50 rounded-xl flex items-center justify-center">
+                    <i data-lucide="move" class="w-5 h-5 text-cyan-600"></i>
+                </div>
+                <div>
+                    <h2 class="text-base font-bold text-gray-900">Efek Transisi</h2>
+                    <p class="text-xs text-gray-500">Pilih efek transisi halaman untuk seluruh menu internal</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <template x-for="t in transitionEffects" :key="t.value">
+                    <button @click="applyTransition(t.value)"
+                        :class="appearance.transition===t.value ? 'ring-2 ring-[#1a237e] bg-[#1a237e]/5' : 'hover:bg-gray-50'"
+                        class="flex flex-col items-center gap-2.5 p-4 rounded-xl border-2 border-transparent transition-all">
+                        <div class="w-full h-14 rounded-lg overflow-hidden border border-gray-100 bg-gradient-to-br from-[#1a237e]/5 to-purple-50 flex items-center justify-center" x-html="t.preview"></div>
+                        <span class="text-xs font-semibold text-gray-700" x-text="t.label"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+
         {{-- Preview & Reset --}}
         <div class="flex items-center justify-between">
             <button @click="resetAppearance()"
@@ -383,6 +406,7 @@ function settingApp() {
         glassOpacity: 0.72,
         glassBlur: 8,
         glassEnabled: true,
+        transition: 'fade',
     };
 
     return {
@@ -445,6 +469,15 @@ function settingApp() {
             { value: 'poppins', label: 'Poppins', family: 'Poppins' },
             { value: 'inter', label: 'Inter', family: 'Inter' },
             { value: 'outfit', label: 'Outfit', family: 'Outfit' },
+        ],
+
+        transitionEffects: [
+            { value: 'fade',        label: 'Fade',       preview: '<div class="w-8 h-8 rounded-lg bg-[#1a237e]/20 animate-pulse"></div>' },
+            { value: 'slide-up',    label: 'Slide Up',   preview: '<svg class="w-6 h-6 text-[#1a237e]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>' },
+            { value: 'slide-down',  label: 'Slide Down', preview: '<svg class="w-6 h-6 text-[#1a237e]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>' },
+            { value: 'zoom-in',     label: 'Zoom In',    preview: '<svg class="w-6 h-6 text-[#1a237e]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>' },
+            { value: 'flip',        label: 'Flip',       preview: '<svg class="w-6 h-6 text-[#1a237e]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' },
+            { value: 'elastic',     label: 'Elastic',    preview: '<svg class="w-6 h-6 text-[#1a237e]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>' },
         ],
 
         init() {
@@ -550,6 +583,11 @@ function settingApp() {
             document.documentElement.setAttribute('data-glass', this.appearance.glassEnabled ? 'on' : 'off');
         },
 
+        applyTransition(val) {
+            this.appearance.transition = val;
+            document.documentElement.setAttribute('data-transition', val);
+        },
+
         applyAll() {
             this._applyTheme(this.appearance.theme);
             this._applyColors(this.appearance.primary, this.appearance.secondary);
@@ -559,6 +597,7 @@ function settingApp() {
             this.applyDensity(this.appearance.density || 'comfortable');
             this.applyFontFamily(this.appearance.fontFamily || 'poppins');
             this.applyGlass();
+            this.applyTransition(this.appearance.transition || 'fade');
         },
 
         saveAppearance() {
