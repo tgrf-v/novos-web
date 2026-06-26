@@ -178,7 +178,6 @@ class PaymentController extends Controller
                 $transactionStatus == 'settlement' => 'success',
                 $transactionStatus == 'pending' => 'pending',
                 in_array($transactionStatus, ['deny', 'cancel', 'expire']) => 'failed',
-                $transactionStatus == 'expire' => 'expired',
                 default => $payment->status,
             };
 
@@ -234,6 +233,42 @@ class PaymentController extends Controller
                     'Pembayaran Berhasil',
                     'Pembayaran untuk pesanan ' . $order->order_number . ' telah berhasil dikonfirmasi. Pesanan Anda akan segera diproses.',
                     [
+                        'order_number' => $order->order_number,
+                    ]
+                );
+            }
+
+            if (in_array($status, ['failed', 'expired'])) {
+                $order = $payment->order;
+
+                $order->update(['status' => 'dibatalkan']);
+
+                OrderStatusHistory::create([
+                    'order_id'   => $order->id,
+                    'status'     => 'dibatalkan',
+                    'changed_by' => $order->user_id,
+                    'notes'      => 'Pembayaran ' . $status . ' — otomatis dibatalkan oleh sistem',
+                ]);
+
+                Notification::sendToCustomer(
+                    $order->user_id,
+                    'payment_failed',
+                    'Pembayaran Gagal',
+                    'Pembayaran untuk ' . $order->order_number . ' ' . $status . '. Pesanan dibatalkan.',
+                    [
+                        'order_number' => $order->order_number,
+                    ]
+                );
+
+                Notification::sendToAllStaff(
+                    'payment_failed',
+                    'Pembayaran Gagal',
+                    "Pembayaran untuk <strong>{$order->order_number}</strong> {$status}.",
+                    [
+                        'initials' => collect(explode(' ', $order->user->name))->map(fn($w) => substr($w, 0, 1))->take(2)->implode(''),
+                        'role' => 'Customer',
+                        'role_initial' => 'C',
+                        'role_color' => '#dc2626',
                         'order_number' => $order->order_number,
                     ]
                 );
