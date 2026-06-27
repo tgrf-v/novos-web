@@ -696,7 +696,7 @@
                             </div>
                         </div>
                     </div>
-                <div x-data="{ open: false }" class="relative">
+                <div x-data="{ open: false }" class="relative ml-5">
                     <button @click="open = !open" @click.away="open = false" class="flex items-center gap-2 focus:outline-none">
                         @if(auth()->user()->avatar)
                             <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="Avatar" class="w-8 h-8 rounded-full object-cover shrink-0">
