@@ -239,7 +239,7 @@
                     <p class="text-xs text-gray-500">Atur tingkat kelengkungan sudut elemen UI</p>
                 </div>
             </div>
-            <div class="grid grid-cols-4 gap-3">
+            <div class="grid grid-cols-3 gap-3">
                 <template x-for="r in roundedOptions" :key="r.value">
                     <button @click="applyRounded(r.value)"
                         :class="appearance.rounded===r.value ? 'ring-2 ring-[#1a237e] bg-[#1a237e]/5' : 'hover:bg-gray-50'"
@@ -397,7 +397,6 @@ function settingApp() {
             { value: 'none', label: 'Kotak',   px: 0  },
             { value: 'sm',   label: 'Kecil',   px: 4  },
             { value: 'xl',   label: 'Rounded', px: 12 },
-            { value: 'full', label: 'Bulat',   px: 24 },
         ],
 
         densities: [
