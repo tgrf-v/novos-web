@@ -812,13 +812,8 @@
                 </div>
             </div>
         </div>
-    </div>
-
-</div>
-
-{{-- ========== MODAL: KELOLA POSTER (Super Admin only) ========== --}}
-<template x-if="userRole === 'Super Admin'">
-    <div x-show="managePosterOpen" x-cloak
+    {{-- ========== MODAL: KELOLA POSTER (Super Admin only) ========== --}}
+    <div x-show="managePosterOpen && userRole === 'Super Admin'" x-cloak
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
@@ -904,7 +899,7 @@
             </div>
         </div>
     </div>
-</template>
+</div>
 
 <script>
 function dailyMentalCheck(config = {}) {
@@ -1189,7 +1184,7 @@ function dailyMentalCheck(config = {}) {
                 this.posterList = data.posters;
                 this.rotationPeriod = data.rotation;
                 this.$nextTick(() => {
-                    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+                    try { if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons({ icons: window.lucide.icons }); } catch(e) {}
                 });
             } catch (e) { console.error('Failed to load posters:', e); }
         },
@@ -1212,7 +1207,7 @@ function dailyMentalCheck(config = {}) {
                     this.posterUrl = data.poster.url;
                     this.uploadFile = null;
                     this.$nextTick(() => {
-                        if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+                        try { if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons({ icons: window.lucide.icons }); } catch(e) {}
                     });
                 }
             } catch (e) { console.error('Failed to upload poster:', e); }
