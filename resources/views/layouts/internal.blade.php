@@ -41,26 +41,57 @@
 
         /* ── Dynamic Brand Color Mappings ── */
         .bg-\[\#1a237e\] { background-color: var(--color-primary) !important; }
-        .bg-\[\#1a237e\]\/90 { background-color: var(--color-primary) !important; }
-        .hover\:bg-\[\#283593\]:hover { background-color: var(--color-secondary) !important; }
-        .text-\[\#1a237e\] { color: var(--color-primary) !important; }
-        .hover\:text-\[\#1a237e\]:hover { color: var(--color-primary) !important; }
-        .border-\[\#1a237e\] { border-color: var(--color-primary) !important; }
-        
         .bg-\[\#1a237e\]\/5 { background-color: rgba(var(--color-primary-rgb), 0.05) !important; }
         .bg-\[\#1a237e\]\/10 { background-color: rgba(var(--color-primary-rgb), 0.1) !important; }
+        .bg-\[\#1a237e\]\/15 { background-color: rgba(var(--color-primary-rgb), 0.15) !important; }
         .bg-\[\#1a237e\]\/20 { background-color: rgba(var(--color-primary-rgb), 0.2) !important; }
+        .bg-\[\#1a237e\]\/30 { background-color: rgba(var(--color-primary-rgb), 0.3) !important; }
         .bg-\[\#1a237e\]\/80 { background-color: rgba(var(--color-primary-rgb), 0.8) !important; }
+        .bg-\[\#1a237e\]\/90 { background-color: rgba(var(--color-primary-rgb), 0.9) !important; }
+        .hover\:bg-\[\#1a237e\]\/90:hover { background-color: rgba(var(--color-primary-rgb), 0.9) !important; }
+        .hover\:bg-\[\#283593\]:hover { background-color: var(--color-secondary) !important; }
+        .hover\:bg-\[\#1a237e\]:hover { background-color: var(--color-primary) !important; }
+        .hover\:bg-\[\#1a237e\]\/5:hover { background-color: rgba(var(--color-primary-rgb), 0.05) !important; }
+        .hover\:bg-\[\#1a237e\]\/10:hover { background-color: rgba(var(--color-primary-rgb), 0.1) !important; }
+        .hover\:bg-\[\#1a237e\]\/20:hover { background-color: rgba(var(--color-primary-rgb), 0.2) !important; }
+
+        .text-\[\#1a237e\] { color: var(--color-primary) !important; }
+        .text-\[\#1a237e\]\/50 { color: rgba(var(--color-primary-rgb), 0.5) !important; }
+        .text-\[\#1a237e\]\/70 { color: rgba(var(--color-primary-rgb), 0.7) !important; }
+        .hover\:text-\[\#1a237e\]:hover { color: var(--color-primary) !important; }
+        .hover\:text-\[\#283593\]:hover { color: rgba(var(--color-primary-rgb), 0.7) !important; }
+        .group:hover .group-hover\:text-\[\#1a237e\] { color: var(--color-primary) !important; }
+
+        .border-\[\#1a237e\] { border-color: var(--color-primary) !important; }
+        .border-\[\#1a237e\]\/15 { border-color: rgba(var(--color-primary-rgb), 0.15) !important; }
         .border-\[\#1a237e\]\/20 { border-color: rgba(var(--color-primary-rgb), 0.2) !important; }
         .border-\[\#1a237e\]\/30 { border-color: rgba(var(--color-primary-rgb), 0.3) !important; }
+        .hover\:border-\[\#1a237e\]:hover { border-color: var(--color-primary) !important; }
+        .hover\:border-\[\#1a237e\]\/30:hover { border-color: rgba(var(--color-primary-rgb), 0.3) !important; }
+        .hover\:border-\[\#1a237e\]\/40:hover { border-color: rgba(var(--color-primary-rgb), 0.4) !important; }
+
+        .ring-\[\#1a237e\] { --tw-ring-color: rgba(var(--color-primary-rgb), 1) !important; }
+        .ring-\[\#1a237e\]\/20 { --tw-ring-color: rgba(var(--color-primary-rgb), 0.2) !important; }
+        .focus\:ring-\[\#1a237e\]:focus,
+        .focus\:ring-\[\#1a237e\/20\]:focus,
+        .focus\:ring-\[\#1a237e\/30\]:focus {
+            --tw-ring-color: rgba(var(--color-primary-rgb), var(--tw-ring-opacity, 1)) !important;
+        }
+        .focus\:border-\[\#1a237e\]:focus,
+        .focus\:border-\[\#1a237e\/50\]:focus {
+            border-color: var(--color-primary) !important;
+        }
+
+        .accent-\[\#1a237e\] { accent-color: var(--color-primary) !important; }
+
         .shadow-\[\#1a237e\]\/5 { --tw-shadow-color: rgba(var(--color-primary-rgb), 0.05) !important; }
         .shadow-\[\#1a237e\]\/20 { --tw-shadow-color: rgba(var(--color-primary-rgb), 0.2) !important; }
+        .shadow-\[\#1a237e\]\/25 { --tw-shadow-color: rgba(var(--color-primary-rgb), 0.25) !important; }
 
-        .focus\:ring-\[\#1a237e\]:focus, .focus\:ring-\[\#1a237e\/30\]:focus {
-            --tw-ring-color: var(--color-primary) !important;
-        }
-        .focus\:border-\[\#1a237e\]:focus {
-            border-color: var(--color-primary) !important;
+        /* ── Sidebar icon safety ── */
+        aside nav a i.text-\[\#1a237e\],
+        aside nav a svg.text-\[\#1a237e\] {
+            color: var(--color-primary) !important;
         }
 
         /* ── Button Styles ── */
@@ -339,33 +370,50 @@
     (function(){
         try {
             var s = localStorage.getItem('novos_appearance');
-            if (!s) return;
-            var a = JSON.parse(s);
+            var a = s ? JSON.parse(s) : {};
             var root = document.documentElement;
-            if (a.primary) {
-                root.style.setProperty('--color-primary', a.primary);
-                var hex = a.primary.replace('#', '');
-                if (hex.length === 3) {
-                    hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-                }
-                var r = parseInt(hex.substring(0,2), 16);
-                var g = parseInt(hex.substring(2,4), 16);
-                var b = parseInt(hex.substring(4,6), 16);
-                if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
-                    root.style.setProperty('--color-primary-rgb', r + ',' + g + ',' + b);
-                }
+            
+            // Set defaults or saved colors
+            var primary = a.primary || '#1a237e';
+            var secondary = a.secondary || '#3949ab';
+            
+            root.style.setProperty('--color-primary', primary);
+            var hex = primary.replace('#', '');
+            if (hex.length === 3) {
+                hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
             }
-            if (a.secondary) root.style.setProperty('--color-secondary', a.secondary);
+            var r = parseInt(hex.substring(0,2), 16);
+            var g = parseInt(hex.substring(2,4), 16);
+            var b = parseInt(hex.substring(4,6), 16);
+            if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
+                root.style.setProperty('--color-primary-rgb', r + ',' + g + ',' + b);
+            }
+            
+            root.style.setProperty('--color-secondary', secondary);
+            
             var fsMap = {sm:'13px', md:'15px', lg:'17px', xl:'19px'};
-            if (a.fontSize)  root.style.setProperty('--font-size-base', fsMap[a.fontSize]||'15px');
+            var fontSize = a.fontSize || 'md';
+            root.style.setProperty('--font-size-base', fsMap[fontSize] || '15px');
+            
             var rrMap = {none:'0px', sm:'6px', xl:'12px', full:'9999px'};
-            if (a.rounded)   root.style.setProperty('--radius-base', rrMap[a.rounded]||'12px');
-            if (a.buttonStyle) root.setAttribute('data-btn-style', a.buttonStyle);
-            if (a.density) root.setAttribute('data-density', a.density);
+            var rounded = a.rounded || 'xl';
+            root.style.setProperty('--radius-base', rrMap[rounded] || '12px');
+            
+            var buttonStyle = a.buttonStyle || 'flat';
+            root.setAttribute('data-btn-style', buttonStyle);
+            
+            var density = a.density || 'comfortable';
+            root.setAttribute('data-density', density);
+            
             var fontMap = { poppins: "'Poppins'", inter: "'Inter'", outfit: "'Outfit'" };
-            if (a.fontFamily) root.style.setProperty('--font-family-base', fontMap[a.fontFamily] || "'Poppins'");
-            if (a.transition) root.setAttribute('data-transition', a.transition);
-            var dark = a.theme==='dark' || (a.theme==='auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            var fontFamily = a.fontFamily || 'poppins';
+            root.style.setProperty('--font-family-base', fontMap[fontFamily] || "'Poppins'");
+            
+            var transition = a.transition || 'fade';
+            root.setAttribute('data-transition', transition);
+            
+            var theme = a.theme || 'light';
+            var dark = theme==='dark' || (theme==='auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
             if (dark) document.documentElement.classList.add('theme-dark-pending');
         } catch(e){}
     })();
@@ -758,5 +806,16 @@ function notifDropdown() {
         }
     }
 }
+</script>
+
+{{-- Global Lucide init for pages without explicit createIcons() call --}}
+<script>
+document.addEventListener('alpine:init', function () {
+    if (window.Alpine && window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.Alpine.nextTick(function () {
+            window.lucide.createIcons();
+        });
+    }
+});
 </script>
 </html>
