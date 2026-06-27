@@ -603,7 +603,7 @@
     <div class="flex-1 flex flex-col h-screen overflow-hidden">
         
         <!-- Topbar -->
-        <header class="py-3 px-8 flex items-center justify-between shrink-0">
+        <header class="py-4 px-8 flex items-center justify-between shrink-0">
             <div class="flex items-center gap-3">
                 <button @click="$dispatch('sidebar-toggle')" class="text-gray-500 hover:text-[#1a237e]">
                     <i data-lucide="menu" class="w-6 h-6"></i>
@@ -618,23 +618,27 @@
                 <!-- Chat & Notifikasi -->
                 <div class="flex items-center gap-4">
                     <div x-data="staffChatBadge()" x-init="init()" class="relative">
-                        <a href="{{ route('staf.chat') }}" class="relative p-2 text-gray-500 hover:text-[#1a237e] block">
-                            <i data-lucide="message-circle" class="w-5 h-5"></i>
-                            <span x-show="unreadCount > 0" x-cloak
-                                  x-text="unreadCount > 9 ? '9+' : unreadCount"
-                                  class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white transform translate-x-1/3 -translate-y-1/3 bg-red-500 rounded-full min-w-[18px] h-[18px]">
-                            </span>
-                        </a>
+                        <div class="bg-white rounded-full shadow-sm">
+                            <a href="{{ route('staf.chat') }}" class="relative p-2 text-gray-500 hover:text-[#1a237e] flex items-center justify-center">
+                                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                                <span x-show="unreadCount > 0" x-cloak
+                                      x-text="unreadCount > 9 ? '9+' : unreadCount"
+                                      class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white transform translate-x-1/3 -translate-y-1/3 bg-[#1a237e] rounded-full min-w-[18px] h-[18px]">
+                                </span>
+                            </a>
+                        </div>
                     </div>
                     {{-- Notifikasi Dropdown --}}
                     <div x-data="notifDropdown()" x-init="init()" class="relative" @mouseenter="open = true" @mouseleave="open = false" @click.away="open = false">
-                        <button @click="open = !open" class="relative p-2 text-gray-500 hover:text-[#1a237e] transition-colors">
-                            <i data-lucide="bell" class="w-5 h-5"></i>
-                            <span x-show="unreadCount > 0" x-cloak
-                                  x-text="unreadCount > 9 ? '9+' : unreadCount"
-                                  class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white transform translate-x-1/3 -translate-y-1/3 bg-[#1a237e] rounded-full min-w-[18px] h-[18px]">
-                            </span>
-                        </button>
+                        <div class="bg-white rounded-full shadow-sm">
+                            <button @click="open = !open" class="relative p-2 text-gray-500 hover:text-[#1a237e] transition-colors flex items-center justify-center">
+                                <i data-lucide="bell" class="w-5 h-5"></i>
+                                <span x-show="unreadCount > 0" x-cloak
+                                      x-text="unreadCount > 9 ? '9+' : unreadCount"
+                                      class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white transform translate-x-1/3 -translate-y-1/3 bg-[#1a237e] rounded-full min-w-[18px] h-[18px]">
+                                </span>
+                            </button>
+                        </div>
 
                         {{-- Dropdown Panel --}}
                         <div x-show="open" x-cloak
@@ -696,7 +700,7 @@
                             </div>
                         </div>
                     </div>
-                <div x-data="{ open: false }" class="relative">
+                <div x-data="{ open: false }" class="relative ml-5">
                     <button @click="open = !open" @click.away="open = false" class="flex items-center gap-2 focus:outline-none">
                         @if(auth()->user()->avatar)
                             <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="Avatar" class="w-8 h-8 rounded-full object-cover shrink-0">
@@ -862,7 +866,7 @@
             if (!container) {
                 container = document.createElement('div');
                 container.id = 'notify-container';
-                container.className = 'fixed top-4 right-4 z-[9999] flex flex-col gap-3 pointer-events-none';
+                container.className = 'fixed top-20 right-4 z-[9999] flex flex-col gap-3 pointer-events-none';
                 document.body.appendChild(container);
             }
             let el = document.createElement('div');
