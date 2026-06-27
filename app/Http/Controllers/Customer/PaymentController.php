@@ -178,7 +178,6 @@ class PaymentController extends Controller
                 $transactionStatus == 'settlement' => 'success',
                 $transactionStatus == 'pending' => 'pending',
                 in_array($transactionStatus, ['deny', 'cancel', 'expire']) => 'failed',
-                $transactionStatus == 'expire' => 'expired',
                 default => $payment->status,
             };
 
@@ -239,6 +238,42 @@ class PaymentController extends Controller
                 );
             }
 
+            if (in_array($status, ['failed', 'expired'])) {
+                $order = $payment->order;
+
+                $order->update(['status' => 'dibatalkan']);
+
+                OrderStatusHistory::create([
+                    'order_id'   => $order->id,
+                    'status'     => 'dibatalkan',
+                    'changed_by' => $order->user_id,
+                    'notes'      => 'Pembayaran ' . $status . ' — otomatis dibatalkan oleh sistem',
+                ]);
+
+                Notification::sendToCustomer(
+                    $order->user_id,
+                    'payment_failed',
+                    'Pembayaran Gagal',
+                    'Pembayaran untuk ' . $order->order_number . ' ' . $status . '. Pesanan dibatalkan.',
+                    [
+                        'order_number' => $order->order_number,
+                    ]
+                );
+
+                Notification::sendToAllStaff(
+                    'payment_failed',
+                    'Pembayaran Gagal',
+                    "Pembayaran untuk <strong>{$order->order_number}</strong> {$status}.",
+                    [
+                        'initials' => collect(explode(' ', $order->user->name))->map(fn($w) => substr($w, 0, 1))->take(2)->implode(''),
+                        'role' => 'Customer',
+                        'role_initial' => 'C',
+                        'role_color' => '#dc2626',
+                        'order_number' => $order->order_number,
+                    ]
+                );
+            }
+
             return response()->json(['message' => 'OK']);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
@@ -293,13 +328,23 @@ class PaymentController extends Controller
 
     public function unfinish(Request $request)
     {
-        $orderId = $request->query('order_id');
-        return view('customer.payment-finish', compact('orderId'));
+        $midtransOrderId = $request->query('order_id');
+        $orderNumber = null;
+        if ($midtransOrderId) {
+            $payment = Payment::where('midtrans_order_id', $midtransOrderId)->first();
+            $orderNumber = $payment?->order?->order_number;
+        }
+        return view('customer.payment-finish', compact('orderNumber'));
     }
 
     public function error(Request $request)
     {
-        $orderId = $request->query('order_id');
-        return view('customer.payment-finish', compact('orderId'));
+        $midtransOrderId = $request->query('order_id');
+        $orderNumber = null;
+        if ($midtransOrderId) {
+            $payment = Payment::where('midtrans_order_id', $midtransOrderId)->first();
+            $orderNumber = $payment?->order?->order_number;
+        }
+        return view('customer.payment-finish', compact('orderNumber'));
     }
 }

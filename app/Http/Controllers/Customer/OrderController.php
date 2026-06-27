@@ -11,15 +11,18 @@ use App\Models\Chat;
 use App\Models\ChatMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Notification;
+use App\Models\User;
+use App\Services\ImageService;
 
 class OrderController extends Controller
 {
     public function store(Request $request)
     {
         $data = $request->validate([
-            'team_name'      => 'required|string|max:255',
-            'no_punggung'    => 'nullable|string|max:100',
+            'team_name'      => 'nullable|string|max:255',
+            'no_punggung'    => 'nullable|integer',
             'detail_sponsor' => 'nullable|string|max:255',
             'kerah'          => 'required|string|max:100',
             'bahan'          => 'required|string|max:100',
@@ -90,8 +93,13 @@ class OrderController extends Controller
 
             $designFiles = [];
             if ($request->hasFile('design_files')) {
+                $imageService = app(ImageService::class);
                 foreach ($request->file('design_files') as $file) {
-                    $path = $file->store('design-files/' . $orderNumber, 'public');
+                    $extension = strtolower($file->getClientOriginalExtension());
+                    $isImage = in_array($extension, ['jpg', 'jpeg', 'png']);
+                    $path = $isImage
+                        ? $imageService->compressAndStore($file, 'design-files/' . $orderNumber)
+                        : $file->store('design-files/' . $orderNumber, 'public');
                     $designFiles[] = [
                         'name' => $file->getClientOriginalName(),
                         'path' => $path,
@@ -319,9 +327,12 @@ class OrderController extends Controller
             'customer_id' => $order->user_id,
         ]);
 
+        $admin = User::whereHas('role', fn($q) => $q->whereIn('name', ['Super Admin', 'Manager', 'Admin']))
+            ->first();
+
         ChatMessage::create([
             'chat_id'   => $chat->id,
-            'sender_id' => $order->user_id,
+            'sender_id' => $admin?->id,
             'message'   => $message,
         ]);
     }

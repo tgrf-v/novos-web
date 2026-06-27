@@ -3,10 +3,10 @@
 @section('title', 'Notifikasi — Novos')
 
 @section('content')
-<div class="max-w-3xl mx-auto px-4 py-8">
+<div x-data="notifPage()" x-init="init()" class="max-w-3xl mx-auto px-4 py-8">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Notifikasi</h1>
-        <button wire:click="markAllRead" class="text-sm text-blue-600 hover:underline">Tandai semua dibaca</button>
+        <button @click="markAllRead()" class="text-sm text-blue-600 hover:underline">Tandai semua dibaca</button>
     </div>
 
     @if($notifications->isEmpty())
@@ -20,7 +20,7 @@
     @else
         <div class="bg-white rounded-2xl border border-gray-200 shadow-sm divide-y divide-gray-100">
             @foreach($notifications as $notif)
-                <div class="p-5 hover:bg-gray-50 transition-colors {{ !$notif->is_read ? 'bg-blue-50/30' : '' }}">
+                <div @click="markRead({{ $notif->id }})" class="p-5 hover:bg-gray-50 transition-colors cursor-pointer {{ !$notif->is_read ? 'bg-blue-50/30' : '' }}">
                     <div class="flex items-start gap-4">
                         <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
                             <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -43,7 +43,7 @@
                             @endif
                         </div>
                         @if(!$notif->is_read)
-                            <button wire:click="markRead({{ $notif->id }})" class="w-5 h-5 rounded-full bg-blue-600 shrink-0"></button>
+                            <div class="w-5 h-5 rounded-full bg-blue-600 shrink-0"></div>
                         @endif
                     </div>
                 </div>
@@ -56,4 +56,35 @@
         </div>
     @endif
 </div>
+
+@push('scripts')
+<script>
+function notifPage() {
+    return {
+        init() {},
+        async markRead(id) {
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            try {
+                await fetch('{{ route("notifikasi.read", ":id") }}'.replace(':id', id), {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+                });
+                location.reload();
+            } catch (e) {}
+        },
+        async markAllRead() {
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            try {
+                const res = await fetch('{{ route("notifikasi.read-all") }}', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+                });
+                const data = await res.json();
+                if (data.success) location.reload();
+            } catch (e) {}
+        }
+    }
+}
+</script>
+@endpush
 @endsection

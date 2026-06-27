@@ -10,15 +10,11 @@ use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Customer\NotificationController;
 use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Customer\CartController;
+use App\Http\Controllers\Customer\HomeController;
+use App\Http\Controllers\Api\SummaryController;
 
 // Public routes
-Route::get('/tentang-kami', function () {
-    $tim = App\Models\User::with('role')
-        ->whereHas('role', fn($q) => $q->whereIn('name', ['Super Admin', 'Manager', 'Admin', 'Design', 'Produksi']))
-        ->orderBy('created_at')
-        ->get();
-    return view('customer.tentang-kami', compact('tim'));
-})->name('tentang');
+Route::get('/tentang-kami', [HomeController::class, 'tentang'])->name('tentang');
 
 Route::get('/katalog', [ProductController::class, 'index'])->name('katalog');
 
@@ -27,8 +23,12 @@ Route::get('/pesan', function () {
         $kategori = request('kategori');
         $harga = request('harga');
         $gambar = request('gambar');
+        $kerah = request('kerah');
+        $bahan = request('bahan');
+        $jenis_potongan = request('jenis_potongan');
+        $lengan_jahitan = request('lengan_jahitan');
 
-        $produkData = $produk ? compact('produk', 'kategori', 'harga', 'gambar') : null;
+        $produkData = $produk ? compact('produk', 'kategori', 'harga', 'gambar', 'kerah', 'bahan', 'jenis_potongan', 'lengan_jahitan') : null;
         $addresses = auth()->check() ? auth()->user()->addresses : collect([]);
 
         return view('customer.pemesanan', compact('produkData', 'addresses'));
@@ -37,8 +37,13 @@ Route::get('/pesan', function () {
 // Public routes (Midtrans callback)
 Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 
+// Public route (shared tracking)
+Route::get('/tracking/shared/{token}', [TrackingController::class, 'shared'])->name('tracking.shared');
+
 // Authenticated routes
 Route::middleware('auth')->group(function () {
+
+    Route::get('/api/user-summary', [SummaryController::class, 'index'])->name('api.user-summary');
 
     Route::post('/pesan', [OrderController::class, 'store'])->name('pesan.store');
     Route::post('/pesan/cart', [OrderController::class, 'storeCart'])->name('pesan.store-cart');
@@ -51,6 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tracking', [TrackingController::class, 'index'])->name('tracking');
     Route::post('/tracking/{id}/acc', [TrackingController::class, 'accDesign'])->name('tracking.acc');
     Route::post('/tracking/{id}/revision', [TrackingController::class, 'revision'])->name('tracking.revision');
+    Route::post('/tracking/{id}/share-token', [TrackingController::class, 'generateToken'])->name('tracking.share-token');
 
     Route::get('/chat', [ChatController::class, 'index'])->name('chat');
     Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unread-count');

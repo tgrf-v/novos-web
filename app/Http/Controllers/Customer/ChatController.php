@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Chat;
 use App\Models\ChatMessage;
 use App\Models\Notification;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -104,23 +105,25 @@ class ChatController extends Controller
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $filePath = $file->store('chat-files', 'public');
+            $extension = strtolower($file->getClientOriginalExtension());
+            $isImage = in_array($extension, ['jpg', 'jpeg', 'png']);
+            $filePath = $isImage
+                ? app(ImageService::class)->compressAndStore($file, 'chat-files')
+                : $file->store('chat-files', 'public');
             $fileName = $file->getClientOriginalName();
-            $fileSize = $file->getSize();
+            $fileSize = $isImage ? Storage::disk('public')->size($filePath) : $file->getSize();
             $fileType = $file->getMimeType();
         }
 
-                $message = ChatMessage::create([
-                    'chat_id'   => $chat->id,
-                    'sender_id' => $user->id,
-                    'message'   => $data['message'] ?? null,
-                    'file_path' => $filePath,
-                    'file_name' => $fileName,
-                    'file_size' => $fileSize,
-                    'file_type' => $fileType,
-                ]);
-
-                $sender = $user->id === $chat->admin_id ? $chat->admin : $chat->customer;
+        $message = ChatMessage::create([
+            'chat_id'   => $chat->id,
+            'sender_id' => $user->id,
+            'message'   => $data['message'] ?? null,
+            'file_path' => $filePath,
+            'file_name' => $fileName,
+            'file_size' => $fileSize,
+            'file_type' => $fileType,
+        ]);
 
         $message->load('sender');
 
