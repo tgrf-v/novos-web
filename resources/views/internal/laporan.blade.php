@@ -254,9 +254,9 @@
     </div>
 </div>
 
-<p class="text-[11px] text-gray-400 text-center pb-2">
-    <i data-lucide="info" class="w-3 h-3 inline-block mr-1"></i>
-    Data diperbarui secara real-time &bull; {{ \Carbon\Carbon::now()->locale('id')->isoFormat('dddd, D MMMM YYYY HH:mm') }} WIB
+<p class="text-[11px] text-gray-400 text-center pb-2 inline-flex items-center justify-center gap-1">
+    <i data-lucide="info" class="w-3 h-3"></i>
+    <span>Data diperbarui secara real-time &bull; {{ \Carbon\Carbon::now()->locale('id')->isoFormat('dddd, D MMMM YYYY HH:mm') }} WIB</span>
 </p>
 
 @endsection
