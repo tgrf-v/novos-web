@@ -146,51 +146,14 @@
         html[data-density='spacious'] .space-y-6 > * + * { margin-top: 2rem !important; }
 
         
-        /* ── Page Transition Effects ── */
-        @keyframes transition-fade-in {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
-        @keyframes transition-slide-up-in {
-            from { opacity: 0; transform: translateY(24px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes transition-slide-down-in {
-            from { opacity: 0; transform: translateY(-24px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes transition-zoom-in {
-            from { opacity: 0; transform: scale(0.95); }
-            to   { opacity: 1; transform: scale(1); }
-        }
-        @keyframes transition-flip-in {
-            from { opacity: 0; transform: perspective(600px) rotateX(12deg); }
-            to   { opacity: 1; transform: perspective(600px) rotateX(0); }
-        }
-        @keyframes transition-elastic-in {
-            0%   { opacity: 0; transform: scale(0.85); }
-            60%  { opacity: 1; transform: scale(1.05); }
-            100% { opacity: 1; transform: scale(1); }
+        /* ── Entrance Animation ── */
+        @keyframes slideUpEntrance {
+            0%   { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
-        html[data-transition='fade'] #transition-content {
-            animation: transition-fade-in 0.4s ease both;
-        }
-        html[data-transition='slide-up'] #transition-content {
-            animation: transition-slide-up-in 0.4s ease both;
-        }
-        html[data-transition='slide-down'] #transition-content {
-            animation: transition-slide-down-in 0.4s ease both;
-        }
-        html[data-transition='zoom-in'] #transition-content {
-            animation: transition-zoom-in 0.4s ease both;
-        }
-        html[data-transition='flip'] #transition-content {
-            animation: transition-flip-in 0.5s ease both;
-            transform-origin: top center;
-        }
-        html[data-transition='elastic'] #transition-content {
-            animation: transition-elastic-in 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) both;
+        .animate-entrance {
+            animation: slideUpEntrance 0.5s ease-out forwards;
         }
 
         /* ── Dark Mode Theme Styles ── */
@@ -288,7 +251,6 @@
             if (a.density) root.setAttribute('data-density', a.density);
             var fontMap = { poppins: "'Poppins'", inter: "'Inter'", outfit: "'Outfit'" };
             if (a.fontFamily) root.style.setProperty('--font-family-base', fontMap[a.fontFamily] || "'Poppins'");
-            if (a.transition) root.setAttribute('data-transition', a.transition);
             var dark = a.theme==='dark' || (a.theme==='auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
             if (dark) document.documentElement.classList.add('theme-dark-pending');
         } catch(e){}
@@ -449,11 +411,9 @@
         </header>
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-8">
+        <main class="flex-1 overflow-y-auto p-8 animate-entrance">
             @include('components.alert')
-            <div id="transition-content">
-                @yield('internal-content')
-            </div>
+            @yield('internal-content')
         </main>
         
     </div>
