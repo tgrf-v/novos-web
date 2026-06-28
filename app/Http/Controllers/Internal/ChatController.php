@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Internal;
 use App\Http\Controllers\Controller;
 use App\Models\Chat;
 use App\Models\ChatMessage;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -125,9 +126,13 @@ class ChatController extends Controller
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $filePath = $file->store('chat-files', 'public');
+            $extension = strtolower($file->getClientOriginalExtension());
+            $isImage = in_array($extension, ['jpg', 'jpeg', 'png']);
+            $filePath = $isImage
+                ? app(ImageService::class)->compressAndStore($file, 'chat-files')
+                : $file->store('chat-files', 'public');
             $fileName = $file->getClientOriginalName();
-            $fileSize = $file->getSize();
+            $fileSize = $isImage ? Storage::disk('public')->size($filePath) : $file->getSize();
             $fileType = $file->getMimeType();
         }
 
