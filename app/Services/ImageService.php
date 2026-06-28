@@ -35,7 +35,8 @@ class ImageService
         $fileContent = fread($file, filesize($tempPath));
         fclose($file);
 
-        $storedPath = Storage::disk($disk)->put($directory . '/' . $storedName, $fileContent);
+        $storedPath = $directory . '/' . $storedName;
+        Storage::disk($disk)->put($storedPath, $fileContent);
 
         @unlink($tempPath);
 
