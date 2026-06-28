@@ -61,11 +61,11 @@ class CompressExistingPosters extends Command
             imagedestroy($image);
 
             $storedPath = 'posters/' . $storedName;
-            Storage::disk('public')->put($storedPath, file_get_contents($tempPath));
+            Storage::disk('public')->put($storedPath, fopen($tempPath, 'r'));
             @unlink($tempPath);
 
-            Storage::disk('public')->delete($path);
             $poster->update(['image_path' => $storedPath]);
+            Storage::disk('public')->delete($path);
 
             $newSize = Storage::disk('public')->size($storedPath);
             $saved = $originalSize - $newSize;
