@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\OrderStatusHistory;
-use Illuminate\Http\Request;
+use App\Http\Requests\RevisionRequest;
+use App\Models\Chat;
 use Illuminate\Support\Str;
 use App\Models\Notification;
 
@@ -14,6 +13,7 @@ class TrackingController extends Controller
     public function index(Request $request)
     {
         $orderData = null;
+        $shareUrl = null;
 
         if ($request->q) {
             $order = Order::with(['designRequest', 'orderItems'])
@@ -180,9 +180,9 @@ class TrackingController extends Controller
         ]);
     }
 
-    public function revision(Request $request, $id)
+    public function revision(RevisionRequest $request, $id)
     {
-        $request->validate(['note' => 'required|string|max:2000']);
+        $note = $request->validated()['note'];
 
         $order = Order::where('order_number', $id)
             ->where('user_id', auth()->id())
