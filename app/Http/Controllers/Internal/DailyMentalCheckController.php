@@ -8,6 +8,7 @@ use App\Models\MentalHealthPoster;
 use App\Models\MicroBreak;
 use App\Models\PosterSetting;
 use App\Models\User;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -73,7 +74,9 @@ class DailyMentalCheckController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
-        $path = $request->file('image')->store('posters', 'public');
+        $path = app(ImageService::class)->compressAndStore(
+            $request->file('image'), 'posters', quality: 70
+        );
 
         $poster = MentalHealthPoster::create([
             'image_path'  => $path,

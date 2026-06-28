@@ -32,7 +32,7 @@ class ImageService
 
         // Create temp file with proper permissions
         $file = fopen($tempPath, 'r');
-        $fileContent = fread($file);
+        $fileContent = fread($file, filesize($tempPath));
         fclose($file);
 
         $storedPath = Storage::disk($disk)->put($directory . '/' . $storedName, $fileContent);
