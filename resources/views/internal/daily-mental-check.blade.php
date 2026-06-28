@@ -1245,7 +1245,7 @@ function dailyMentalCheck(config = {}) {
                     } else {
                         this.posterUrl = '{{ asset('images/poster-daily-mental-check.jpg') }}';
                     }
-                    Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Poster berhasil dihapus', timer: 1500, showConfirmButton: false });
+                    Notify.success('Poster berhasil dihapus');
                 }
             } catch (e) { console.error('Failed to delete poster:', e); }
         },
@@ -1262,7 +1262,7 @@ function dailyMentalCheck(config = {}) {
                 if (res.ok) {
                     const data = await res.json();
                     this.posterUrl = data.posterUrl;
-                    Swal.fire({ icon: 'success', title: 'Berhasil', text: 'Periode pergantian poster diperbarui', timer: 1500, showConfirmButton: false });
+                    Notify.success('Periode pergantian poster diperbarui');
                 }
             } catch (e) { console.error('Failed to save rotation:', e); }
             this.rotationSaving = false;
