@@ -361,6 +361,9 @@ function chatApp() {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
                 });
+                if (window.Alpine && Alpine.store('summary')) {
+                    Alpine.store('summary').fetch();
+                }
             } catch (e) {}
         },
 
