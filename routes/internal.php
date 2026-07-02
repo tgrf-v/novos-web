@@ -59,7 +59,6 @@ Route::prefix('staf')
         Route::get('/kategori', [CategoryController::class, 'index'])->name('kategori');
 
         Route::get('/pengaturan', [SettingController::class, 'index'])->name('pengaturan');
-        Route::post('/pengaturan', [SettingController::class, 'update'])->name('pengaturan.update');
     });
 
 // Poster management — Super Admin only
