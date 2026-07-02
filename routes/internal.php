@@ -34,8 +34,6 @@ Route::prefix('staf')
 
         Route::get('/chat', [ChatController::class, 'index'])->name('chat');
         Route::get('/chat/unread-count', [ChatController::class, 'unreadCount'])->name('chat.unread-count');
-        Route::post('/chat/{chat}/read', [ChatController::class, 'markRead'])->name('chat.read');
-        Route::post('/chat/send', [ChatController::class, 'store'])->name('chat.send');
         Route::get('/daily-mental-check', [DailyMentalCheckController::class, 'index'])->name('daily-mental-check');
         Route::get('/notifikasi', [NotificationController::class, 'viewPage'])->name('notifikasi');
         Route::get('/notifikasi/preview', [NotificationController::class, 'preview'])->name('notifikasi.preview');
