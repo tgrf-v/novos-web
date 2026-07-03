@@ -18,7 +18,6 @@
             </h2>
             <div class="flex gap-2">
                 <span class="px-3 py-1 bg-blue-100 text-[#1a237e] text-xs font-semibold rounded-full flex items-center gap-1">
-                    <i data-lucide="loader" class="w-3.5 h-3.5"></i>
                     <span x-text="orders.length"></span> Antrean
                 </span>
             </div>
