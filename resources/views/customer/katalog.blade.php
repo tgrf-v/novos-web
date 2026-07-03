@@ -268,15 +268,15 @@ function katalogData() {
                                     </template>
                                 </div>
                                 {{-- Prev Arrow --}}
-                                <template x-if="product.image_belakang">
-                                    <button @click.stop="currentImages[product.id] = (currentImages[product.id] || 0) === 0 ? 1 : 0"
+                                <template x-if="product.image_belakang && (currentImages[product.id] || 0) === 1">
+                                    <button @click.stop="currentImages[product.id] = 0"
                                         class="absolute left-1 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 text-gray-700 shadow-sm opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hover:bg-white">
                                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                                     </button>
                                 </template>
                                 {{-- Next Arrow --}}
-                                <template x-if="product.image_belakang">
-                                    <button @click.stop="currentImages[product.id] = (currentImages[product.id] || 0) === 0 ? 1 : 0"
+                                <template x-if="product.image_belakang && (currentImages[product.id] || 0) === 0">
+                                    <button @click.stop="currentImages[product.id] = 1"
                                         class="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 text-gray-700 shadow-sm opacity-0 md:group-hover:opacity-100 transition-opacity duration-200 hover:bg-white">
                                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                                     </button>
