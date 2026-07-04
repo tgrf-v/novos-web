@@ -26,6 +26,13 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
+                    <template x-if="loading">
+                        <tr>
+                            <td colspan="3" class="px-6 py-12 text-center">
+                                <span class="loading loading-spinner loading-md text-[#1a237e]"></span>
+                            </td>
+                        </tr>
+                    </template>
                     <template x-for="cat in categories" :key="cat.id">
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 font-medium text-gray-900" x-text="cat.name"></td>
@@ -40,9 +47,11 @@
                             </td>
                         </tr>
                     </template>
-                    <tr x-show="categories.length === 0">
-                        <td colspan="3" class="px-6 py-10 text-center text-gray-400">Belum ada kategori</td>
-                    </tr>
+                    <template x-if="!loading && categories.length === 0">
+                        <tr>
+                            <td colspan="3" class="px-6 py-10 text-center text-gray-400">Belum ada kategori</td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
         </div>
@@ -78,6 +87,7 @@
 function kategoriApp() {
     return {
         categories: [],
+        loading: true,
         modalOpen: false,
         editId: null,
         name: '',
@@ -92,6 +102,8 @@ function kategoriApp() {
                 this.categories = await res.json();
             } catch (e) {
                 Notify.error('Gagal memuat data kategori.');
+            } finally {
+                this.loading = false;
             }
             this.$nextTick(() => { if (window.lucide) lucide.createIcons({ icons: window.lucide.icons }); });
         },
