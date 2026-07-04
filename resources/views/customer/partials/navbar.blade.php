@@ -102,7 +102,15 @@
                             <button @click="markAllRead" class="text-xs text-blue-600 hover:underline">Tandai semua dibaca</button>
                         </div>
                         <div class="max-h-96 overflow-y-auto">
-                            <template x-if="notifications.length === 0">
+                            <template x-if="loadingNotif && notifications.length === 0">
+                                <div class="px-4 py-8 text-center">
+                                    <svg class="w-6 h-6 mx-auto text-gray-300 mb-2 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                                    </svg>
+                                    <p class="text-xs text-gray-400">Memuat notifikasi...</p>
+                                </div>
+                            </template>
+                            <template x-if="!loadingNotif && notifications.length === 0">
                                 <div class="px-4 py-8 text-center text-gray-400 text-sm">Belum ada notifikasi</div>
                             </template>
                             <template x-for="notif in notifications" :key="notif.id">
@@ -716,15 +724,20 @@
             notifOpen: false,
             notifications: [],
             hoverTimer: null,
+            loadingNotif: false,
 
             async fetchNotifications() {
+                this.loadingNotif = true;
                 try {
                     const res = await fetch('{{ route("notifikasi.recent") }}', {
                         headers: { 'Accept': 'application/json' }
                     });
                     if (!res.ok) return;
                     this.notifications = await res.json();
-                } catch (e) {}
+                } catch (e) {
+                } finally {
+                    this.loadingNotif = false;
+                }
             },
 
             async markRead(notificationId) {
