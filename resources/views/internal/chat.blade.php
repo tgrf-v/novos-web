@@ -21,19 +21,25 @@
                 <template x-for="chat in chats" :key="chat.id">
                     <button
                         @click="selectChat(chat)"
-                        :class="activeChat === chat.id ? 'bg-blue-50 border-l-4 border-[#1a237e]' : 'hover:bg-gray-50 border-l-4 border-transparent'"
+                        :class="activeChat === chat.id ? 'bg-blue-50 border-l-4' : 'hover:bg-gray-50 border-l-4 border-transparent'"
                         class="w-full text-left p-4 transition-colors border-b border-gray-50"
+                        :style="activeChat === chat.id ? 'border-radius: 0 !important; border-left-color: #1a237e !important;' : 'border-radius: 0 !important;'"
                     >
                         <div class="flex items-start gap-3">
                             <div class="relative shrink-0">
-                                <div class="w-9 h-9 rounded-full bg-[#1a237e]/10 flex items-center justify-center text-[#1a237e] font-bold text-sm">
-                                    <span x-text="chat.name.charAt(0)"></span>
-                                </div>
-                                <span x-show="chat.online" class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+                                <template x-if="chat.sender_avatar_url">
+                                    <img :src="chat.sender_avatar_url" class="w-10 h-10 rounded-full object-cover" alt="Avatar">
+                                </template>
+                                <template x-if="!chat.sender_avatar_url">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-900 font-bold text-sm">
+                                        <span x-text="chat.name.charAt(0)"></span>
+                                    </div>
+                                </template>
+                                <span x-show="chat.online" class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></span>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex items-center justify-between">
-                                    <span class="font-semibold text-xs text-gray-900 truncate" x-text="chat.name"></span>
+                                    <span class="font-semibold text-sm text-gray-900 truncate" x-text="chat.name"></span>
                                     <span class="text-xs text-gray-400 shrink-0" x-text="chat.time"></span>
                                 </div>
                                 <p class="text-xs text-gray-500 truncate mt-0.5" x-text="chat.lastMessage"></p>
@@ -50,9 +56,7 @@
             {{-- No chat selected --}}
             <div x-show="!activeChat" class="flex-1 flex items-center justify-center">
                 <div class="text-center">
-                    <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto text-gray-300 mb-3"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     <p class="text-gray-500 font-medium text-sm">Pilih percakapan</p>
                     <p class="text-gray-400 text-xs mt-1">Klik chat di kiri untuk mulai</p>
                 </div>
@@ -62,9 +66,16 @@
             <template x-if="activeChat">
                 <div class="flex-1 flex flex-col min-h-0 min-w-0">
                     {{-- Header --}}
-                    <div class="bg-white border-b border-gray-200 px-6 py-3.5 flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-full bg-[#1a237e]/10 flex items-center justify-center text-[#1a237e] font-bold text-sm shrink-0">
-                            <span x-text="currentChat.name.charAt(0)"></span>
+                    <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full shrink-0">
+                            <template x-if="currentChat.sender_avatar_url">
+                                <img :src="currentChat.sender_avatar_url" class="w-10 h-10 rounded-full object-cover" alt="Avatar">
+                            </template>
+                            <template x-if="!currentChat.sender_avatar_url">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-900 font-bold text-sm">
+                                    <span x-text="currentChat.name.charAt(0)"></span>
+                                </div>
+                            </template>
                         </div>
                         <div>
                             <p class="font-semibold text-gray-900 text-sm" x-text="currentChat.name"></p>
@@ -164,22 +175,53 @@
                             </div>
                         </template>
                         <div class="flex items-center gap-3">
-                            <label class="cursor-pointer p-2 text-gray-400 hover:text-[#1a237e] transition-colors rounded-lg hover:bg-gray-100">
-                                <input type="file" @change="handleFileSelect" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar" class="hidden">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18.84 5.6l-8.11 8.11a2 2 0 1 1-2.83-2.83l8.49-8.49"/></svg>
-                            </label>
+                            <div class="relative" @click.outside="fileDropdownOpen = false">
+                                <button @click.prevent="fileDropdownOpen = !fileDropdownOpen"
+                                    class="cursor-pointer p-2 text-gray-400 hover:text-[#1a237e] transition-colors rounded-lg hover:bg-gray-100"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18.84 5.6l-8.11 8.11a2 2 0 1 1-2.83-2.83l8.49-8.49"/></svg>
+                                </button>
+                                <input type="file" x-ref="fileInput" @change="handleFileSelect" class="hidden">
+                                <div x-show="fileDropdownOpen"
+                                    @click="fileDropdownOpen = false"
+                                    class="absolute bottom-full mb-2 left-0 bg-white rounded-xl shadow-lg border border-gray-200 py-2 w-44 z-50"
+                                    x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="opacity-0 translate-y-1"
+                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="opacity-100 translate-y-0"
+                                    x-transition:leave-end="opacity-0 translate-y-1"
+                                >
+                                    <button @click="uploadFileType('image/*')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500 shrink-0"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                        Gambar
+                                    </button>
+                                    <button @click="uploadFileType('.pdf,.doc,.docx')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500 shrink-0"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                        Dokumen
+                                    </button>
+                                    <button @click="uploadFileType('.xls,.xlsx')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-600 shrink-0"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                        Spreadsheet
+                                    </button>
+                                    <button @click="uploadFileType('.zip,.rar')" class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-orange-500 shrink-0"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                                        Arsip
+                                    </button>
+                                </div>
+                            </div>
                             <input
                                 type="text"
                                 x-model="message"
                                 @keydown.enter="sendMessage"
                                 placeholder="Tulis pesan ke customer..."
-                                class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30 focus:border-[#1a237e]/50 transition-shadow"
+                                class="flex-1 px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
                             >
                             <button
                                 @click="sendMessage"
                                 :disabled="(!message.trim() && !selectedFile) || sending"
-                                :class="(message.trim() || selectedFile) && !sending ? 'bg-[#1a237e] hover:bg-[#1a237e]/90 cursor-pointer' : 'bg-gray-200 cursor-not-allowed'"
-                                class="text-white p-2.5 rounded-xl transition-colors"
+                                :class="(message.trim() || selectedFile) && !sending ? 'bg-[#1a237e] hover:bg-[#283593] cursor-pointer' : 'bg-gray-300 cursor-not-allowed'"
+                                class="text-white p-3 rounded-xl transition-colors"
                             >
                                 <template x-if="!sending">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -237,6 +279,10 @@
     </div>
 </div>
 
+<style>
+.messages-scroll { scroll-behavior: smooth; }
+</style>
+
 <script>
 function internalChatApp() {
     return {
@@ -247,6 +293,7 @@ function internalChatApp() {
         selectedFile: null,
         selectedFilePreview: null,
         selectedFileIsImage: false,
+        fileDropdownOpen: false,
         chats: @json($chats),
         previewImgUrl: null,
         previewImgName: '',
@@ -347,6 +394,14 @@ function internalChatApp() {
             this.selectedFileIsImage = false;
         },
 
+        uploadFileType(accept) {
+            const input = this.$refs.fileInput;
+            input.setAttribute('accept', accept);
+            input.value = '';
+            input.click();
+            this.fileDropdownOpen = false;
+        },
+
         async sendMessage() {
             if ((!this.message.trim() && !this.selectedFile) || this.sending) return;
 
@@ -382,6 +437,7 @@ function internalChatApp() {
                 const msg = result.message;
 
                 chat.messages.push({
+                    id: msg.id,
                     from: 'admin',
                     text: msg.text || '',
                     time: msg.time,
@@ -395,7 +451,7 @@ function internalChatApp() {
                 if (msg.text) {
                     chat.lastMessage = msg.text;
                 } else if (msg.file_name) {
-                    chat.lastMessage = '📎 ' + msg.file_name;
+                    chat.lastMessage = '\u{1F4CE} ' + msg.file_name;
                 }
                 chat.time = msg.time;
 
@@ -449,9 +505,4 @@ function internalChatApp() {
     }
 }
 </script>
-@push('styles')
-<style>
-.messages-scroll { scroll-behavior: smooth; }
-</style>
-@endpush
 @endsection

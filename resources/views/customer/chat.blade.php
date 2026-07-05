@@ -479,17 +479,19 @@ function chatApp() {
                 const result = await response.json();
                 const msg = result.message;
 
-                chat.messages.push({
-                    id: msg.id,
-                    from: 'customer',
-                    text: msg.message || '',
-                    time: msg.created_at,
-                    file_url: msg.file_url,
-                    file_name: msg.file_name,
-                    file_size_formatted: msg.file_size_formatted,
-                    is_image: msg.is_image,
-                    is_video: msg.is_video,
-                });
+                if (!chat.messages.some(m => m.id === msg.id)) {
+                    chat.messages.push({
+                        id: msg.id,
+                        from: 'customer',
+                        text: msg.message || '',
+                        time: msg.created_at,
+                        file_url: msg.file_url,
+                        file_name: msg.file_name,
+                        file_size_formatted: msg.file_size_formatted,
+                        is_image: msg.is_image,
+                        is_video: msg.is_video,
+                    });
+                }
 
                 if (msg.message) {
                     chat.lastMessage = msg.message;

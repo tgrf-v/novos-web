@@ -57,6 +57,7 @@ class ChatController extends Controller
                 return [
                     'id'           => $chat->id,
                     'name'         => $chat->customer->name ?? 'Unknown',
+                    'sender_avatar_url' => $chat->customer?->avatar ? Storage::url($chat->customer->avatar) : null,
                     'time'         => $lastMsg?->created_at->format('H:i') ?? $chat->created_at->format('H:i'),
                     'lastMessage'  => $lastMsg?->message
                         ?? ($lastMsg?->file_name
@@ -113,15 +114,16 @@ class ChatController extends Controller
                     ->count();
 
                 return [
-                    'id'          => $chat->id,
-                    'name'        => $chat->customer->name ?? 'Unknown',
-                    'time'        => $lastMsg?->created_at->format('H:i') ?? $chat->created_at->format('H:i'),
-                    'lastMessage' => $lastMsg?->message
+                    'id'               => $chat->id,
+                    'name'             => $chat->customer->name ?? 'Unknown',
+                    'sender_avatar_url' => $chat->customer?->avatar ? Storage::url($chat->customer->avatar) : null,
+                    'time'             => $lastMsg?->created_at->format('H:i') ?? $chat->created_at->format('H:i'),
+                    'lastMessage'      => $lastMsg?->message
                         ?? ($lastMsg?->file_name
                             ? '📎 ' . $lastMsg->file_name
                             : 'Belum ada pesan'),
-                    'unread'      => $unread,
-                    'online'      => $chat->customer?->chat_active_at && $chat->customer->chat_active_at->gt(now()->subMinutes(2)),
+                    'unread'           => $unread,
+                    'online'           => $chat->customer?->chat_active_at && $chat->customer->chat_active_at->gt(now()->subMinutes(2)),
                 ];
             })
             ->values()
