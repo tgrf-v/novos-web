@@ -20,7 +20,7 @@
             <div class="flex-1 overflow-y-auto">
                 <template x-for="chat in chats" :key="chat.id">
                     <button
-                        @click="activeChat = chat.id; chat.unread = 0; markRead(chat.id)"
+                        @click="selectChat(chat)"
                         :class="activeChat === chat.id ? 'bg-blue-50 border-l-4 border-[#1a237e]' : 'hover:bg-gray-50 border-l-4 border-transparent'"
                         class="w-full text-left p-4 transition-colors border-b border-gray-50"
                     >
@@ -73,7 +73,7 @@
                     </div>
 
                     {{-- Messages --}}
-                    <div x-ref="messages" class="flex-1 overflow-y-auto min-h-0 px-6 py-4 space-y-3">
+                    <div x-ref="messages" class="messages-scroll flex-1 overflow-y-auto min-h-0 px-6 py-4 space-y-3">
                         <template x-for="(msg, i) in currentChat.messages" :key="i">
                             <div class="flex" :class="msg.from === 'admin' ? 'justify-end' : 'justify-start'">
                                 <div
@@ -410,6 +410,13 @@ function internalChatApp() {
             } catch (e) {}
         },
 
+        selectChat(chat) {
+            this.activeChat = chat.id;
+            chat.unread = 0;
+            this.markRead(chat.id);
+            this.$nextTick(() => this.scrollToBottom());
+        },
+
         scrollToBottom() {
             const el = this.$refs.messages;
             if (el) el.scrollTop = el.scrollHeight;
@@ -431,4 +438,9 @@ function internalChatApp() {
     }
 }
 </script>
+@push('styles')
+<style>
+.messages-scroll { scroll-behavior: smooth; }
+</style>
+@endpush
 @endsection
