@@ -62,7 +62,7 @@ class ChatController extends Controller
                             ? '📎 ' . $lastMsg->file_name
                             : 'Belum ada pesan'),
                     'unread'       => $unread,
-                    'online'       => false,
+                    'online'       => $chat->customer?->last_active_at && $chat->customer->last_active_at->gt(now()->subMinutes(2)),
                     'messages'     => $messages,
                 ];
             })
@@ -161,6 +161,11 @@ class ChatController extends Controller
                 'is_video'           => $message->is_video,
             ],
         ]);
+    }
+
+    public function heartbeat()
+    {
+        return response()->json(['ok' => true]);
     }
 
     public function download(ChatMessage $chatMessage)

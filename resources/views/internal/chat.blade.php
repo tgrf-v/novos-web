@@ -240,6 +240,21 @@ function internalChatApp() {
         previewImgUrl: null,
         previewImgName: '',
         previewMsgId: null,
+        _heartbeatTimer: null,
+
+        init() {
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            this._heartbeatTimer = setInterval(() => {
+                fetch('{{ route("staf.chat.heartbeat") }}', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+                }).catch(() => {});
+            }, 30000);
+        },
+
+        destroy() {
+            clearInterval(this._heartbeatTimer);
+        },
 
         get currentChat() {
             return this.chats.find(c => c.id === this.activeChat);

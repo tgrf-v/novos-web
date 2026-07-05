@@ -37,7 +37,7 @@ class ChatController extends Controller
                     ->where('is_read', false)
                     ->where('sender_id', '!=', $user->id)
                     ->count(),
-                'online'    => false,
+                'online'    => $chat->admin?->last_active_at && $chat->admin->last_active_at->gt(now()->subMinutes(2)),
                 'unassigned' => $chat->admin_id === null,
                 'messages' => $chat->messages->map(fn($msg) => [
                     'id'                 => $msg->id,
@@ -116,6 +116,7 @@ class ChatController extends Controller
             'admin'     => $chat->admin_id ? [
                 'name'       => $chat->admin->name,
                 'avatar_url' => $chat->admin->avatar ? Storage::url($chat->admin->avatar) : null,
+                'online'     => $chat->admin->last_active_at && $chat->admin->last_active_at->gt(now()->subMinutes(2)),
             ] : null,
         ]);
     }

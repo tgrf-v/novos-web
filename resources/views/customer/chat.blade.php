@@ -88,7 +88,7 @@
                     </div>
                     <div>
                         <p class="font-semibold text-gray-900" x-text="currentChat.name"></p>
-                        <p x-show="!currentChat.unassigned" class="text-xs text-gray-400">Offline</p>
+                        <p x-show="!currentChat.unassigned" class="text-xs" :class="currentChat.online ? 'text-green-600' : 'text-gray-400'" x-text="currentChat.online ? 'Online' : 'Offline'"></p>
                     </div>
                 </div>
 
@@ -347,6 +347,7 @@ function chatApp() {
                     if (data.admin) {
                         chat.name = data.admin.name;
                         chat.sender_avatar_url = data.admin.avatar_url;
+                        chat.online = data.admin.online ?? false;
                     }
 
                     if (data.messages && data.messages.length > 0) {

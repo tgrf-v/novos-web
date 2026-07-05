@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
 
+        $middleware->appendToGroup('web', \App\Http\Middleware\UpdateLastActiveAt::class);
+
         $middleware->validateCsrfTokens(except: [
             'payment/callback',
         ]);
