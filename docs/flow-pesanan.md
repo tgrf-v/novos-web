@@ -24,12 +24,19 @@ Admin validasi → status: MENUNGGU_PEMBAYARAN
 [CUSTOMER]
 Customer buka Profil → lihat tombol "Setujui Detail & Bayar Sekarang"
   ↓
-Klik tombol → ACC detail pesanan + Midtrans payment popup
+Klik tombol → ACC detail pesanan
   ↓
-Bayar sukses → status: DIKONFIRMASI
-  ↓ chat otomatis ke admin: "Pembayaran untuk pesanan {number} telah dikonfirmasi."
+Pesanan dikonfirmasi → status: DIKONFIRMASI
+  ↓
+Customer transfer DP minimal 10% ke rekening bank (BCA/Mandiri/BNI)
+  ↓
+Customer upload bukti transfer di halaman tracking atau kirim via chat
 
 [ADMIN]
+Admin menerima notifikasi pembayaran masuk
+  ↓
+Admin cek dan konfirmasi pembayaran → status: LUNAS
+  ↓
 Admin teruskan ke tim Design → status: DISETUJUI / DI_DESIGN
 
 [DESIGN]
@@ -53,5 +60,7 @@ Customer bisa tracking status pesanan & chat kapan saja
 - Setiap perubahan status dicatat di `order_status_histories`
 - Customer bisa chat dengan admin di setiap tahap pesanan
 - Chat terikat ke pesanan (`order_id`), bukan chat umum
-- Pembayaran via Midtrans — dilakukan setelah admin validasi
+- Pembayaran manual via transfer bank (BCA, Mandiri, BNI) — DP minimal 10%
+- Customer upload bukti transfer di halaman tracking atau kirim via chat
+- Admin konfirmasi pembayaran secara manual di dashboard
 - Auto chat notification dikirim ke chat room terkait setiap perubahan status

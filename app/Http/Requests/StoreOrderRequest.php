@@ -23,7 +23,6 @@ class StoreOrderRequest extends FormRequest
             'catatan'        => 'nullable|string|max:5000',
             'total_qty'      => 'nullable|integer|min:1',
             'prioritas'      => 'nullable|string|in:normal,express,super_express',
-            'pembayaran'     => 'nullable|string|max:50',
             'warna_utama'    => 'nullable|string|max:7',
             'warna_sekunder' => 'nullable|string|max:7',
             'logo'           => 'nullable|file|mimes:jpg,jpeg,png,ai,eps,psd|max:5120',

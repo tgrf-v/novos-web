@@ -1240,8 +1240,8 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 translate-y-6">
-        <h2 class="text-lg font-semibold text-gray-900">Prioritas &amp; Pembayaran</h2>
-        <p class="text-sm text-gray-500 mt-1">Pilih prioritas pengerjaan dan metode pembayaran</p>
+        <h2 class="text-lg font-semibold text-gray-900">Prioritas &amp; Estimasi Biaya</h2>
+        <p class="text-sm text-gray-500 mt-1">Estimasi biaya berdasarkan jumlah pesanan. Pembayaran dilakukan setelah admin memvalidasi pesanan.</p>
 
         <div class="grid lg:grid-cols-2 gap-8 mt-6">
             {{-- Left: Prioritas Pengerjaan --}}
@@ -1350,6 +1350,57 @@
                         <span class="text-xl font-bold text-[#1a237e]" x-text="formatRupiah(estimasiTotal)"></span>
                     </div>
                 </div>
+
+                {{-- Info DP --}}
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-amber-800">DP Minimal 10%</p>
+                            <p class="text-xs text-amber-700 mt-0.5">Pembayaran dilakukan setelah admin memvalidasi pesanan. DP minimal <strong>10% dari total</strong> (Rp <span x-text="Math.ceil(estimasiTotal * 0.1).toLocaleString('id-ID')"></span>) via transfer bank ke rekening di bawah.</p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Info Rekening --}}
+                <div class="bg-white border border-gray-200 rounded-xl p-5">
+                    <h4 class="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a237e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                        Pembayaran via Transfer Bank
+                    </h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="text-sm font-semibold text-gray-900">BCA</p>
+                                <p class="text-xs text-gray-500">a.n. Novos Jersey</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-mono font-bold text-[#1a237e]">123 456 7890</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="text-sm font-semibold text-gray-900">Mandiri</p>
+                                <p class="text-xs text-gray-500">a.n. Novos Jersey</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-mono font-bold text-[#1a237e]">987 654 3210</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="text-sm font-semibold text-gray-900">BNI</p>
+                                <p class="text-xs text-gray-500">a.n. Novos Jersey</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-mono font-bold text-[#1a237e]">555 666 7777</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-3">Setelah transfer, kirimkan bukti pembayaran melalui halaman konfirmasi atau chat dengan admin.</p>
+                </div>
             </div>
 
         </div>
@@ -1368,7 +1419,7 @@
                 class="text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2"
             >
                 <span x-show="!loading" class="inline-flex items-center gap-2">
-                    Konfirmasi & Bayar
+                    Buat Pesanan
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                 </span>
                 <span x-show="loading" class="inline-flex items-center gap-2">
@@ -1474,8 +1525,51 @@
                 </div>
             </div>
 
+            {{-- Info Pembayaran DP --}}
+            <div class="bg-white border border-gray-200 rounded-xl p-5 mb-6 text-left max-w-sm mx-auto animate-fade-slide" style="animation-delay:0.7s">
+                <h4 class="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a237e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                    Pembayaran DP Minimal 10%
+                </h4>
+                <p class="text-xs text-gray-500 mb-3">Setelah admin memvalidasi pesanan, lakukan transfer DP minimal 10% ke salah satu rekening berikut:</p>
+                <div class="space-y-2 mb-3">
+                    <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
+                        <span class="text-xs font-semibold text-gray-700">BCA</span>
+                        <span class="text-xs font-mono font-bold text-[#1a237e]">123 456 7890</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
+                        <span class="text-xs font-semibold text-gray-700">Mandiri</span>
+                        <span class="text-xs font-mono font-bold text-[#1a237e]">987 654 3210</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
+                        <span class="text-xs font-semibold text-gray-700">BNI</span>
+                        <span class="text-xs font-mono font-bold text-[#1a237e]">555 666 7777</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400">a.n. <strong>Novos Jersey</strong></p>
+            </div>
+
+            {{-- Upload Bukti Bayar --}}
+            <div class="bg-white border border-gray-200 rounded-xl p-5 mb-6 text-left max-w-sm mx-auto animate-fade-slide" style="animation-delay:0.8s">
+                <h4 class="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a237e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Upload Bukti Pembayaran
+                </h4>
+                <p class="text-xs text-gray-500 mb-3">Setelah transfer, upload bukti pembayaran di sini atau kirim melalui chat.</p>
+                <div class="flex items-center gap-3">
+                    <label class="flex-1 flex items-center gap-2 px-4 py-2.5 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#1a237e] transition-colors text-xs text-gray-500 hover:text-[#1a237e]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <span>Pilih File Bukti</span>
+                        <input type="file" accept="image/*,.pdf" class="hidden">
+                    </label>
+                    <a :href="'/chat?order=' + orderNumber" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap">
+                        Kirim via Chat
+                    </a>
+                </div>
+            </div>
+
             {{-- Buttons --}}
-            <div class="flex flex-col sm:flex-row gap-3 justify-center animate-fade-slide" style="animation-delay:0.75s">
+            <div class="flex flex-col sm:flex-row gap-3 justify-center animate-fade-slide" style="animation-delay:0.9s">
                 <a :href="'/tracking?q=' + orderNumber" class="px-8 py-3 bg-[#1a237e] text-white rounded-lg font-semibold hover:bg-[#283593] transition-colors text-center">
                     Tracking Pesanan
                 </a>
@@ -1506,7 +1600,6 @@
 }
 </style>
 
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 <script>
 function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = true) {
     return {
@@ -1577,7 +1670,6 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             total_qty: '',
         },
         prioritas: 'normal',
-        pembayaran: 'midtrans',
         showUkuranRef: false,
         uploads: [],
         refUploads: [],
@@ -1602,7 +1694,6 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                     this.step = state.step;
                     this.subStep = state.subStep;
                     this.prioritas = state.prioritas || 'normal';
-                    this.pembayaran = state.pembayaran || 'midtrans';
                     this.selectedAddressId = state.selectedAddressId || null;
 
                     if (this.mode === 'cart_checkout') {
@@ -1650,7 +1741,6 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                 subStep: this.subStep,
                 form: this.form,
                 prioritas: this.prioritas,
-                pembayaran: this.pembayaran,
                 selectedAddressId: this.selectedAddressId,
                 cartItems: this.cartItemsToCheckout
             };
@@ -1714,7 +1804,7 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
         },
 
         get validateStep3() {
-            return this.pembayaran !== null;
+            return true;
         },
 
         nextFromStep2() {
@@ -1937,7 +2027,6 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             formData.append('catatan', this.form.catatan);
             formData.append('total_qty', this.form.total_qty || 0);
             formData.append('prioritas', this.prioritas);
-            formData.append('pembayaran', this.pembayaran);
             formData.append('warna_utama', this.form.warna_utama);
             formData.append('warna_sekunder', this.form.warna_sekunder);
             if (this.selectedAddressId) {
@@ -1987,7 +2076,6 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             const payload = {
                 cart_item_ids: this.cartItemsToCheckout.map(i => i.id),
                 prioritas: this.prioritas,
-                pembayaran: this.pembayaran,
                 address_id: this.selectedAddressId
             };
 

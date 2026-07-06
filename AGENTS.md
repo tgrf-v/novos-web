@@ -148,7 +148,7 @@ File: `tests/Browser/FullOrderFlowTest.php`
 |---|---|---|
 | 1. Buat pesanan | Customer | ✓ |
 | 2. Validasi pesanan (via SweetAlert) | Admin | ✓ |
-| 3. Simulasi pembayaran (DB langsung) | - | ✓ |
+| 3. Setujui pesanan (via fetch approve) | Customer | ✓ |
 | 4. Teruskan ke design (via fetch) | Admin | ✓ |
 | 5. Upload desain (via FormData fetch) | Design | ✓ |
 | 6. Proses produksi (via fetch) | Produksi | ✓ |
@@ -156,4 +156,4 @@ File: `tests/Browser/FullOrderFlowTest.php`
 
 Jalankan: `php artisan dusk tests/Browser/FullOrderFlowTest.php`
 
-> Catatan: Pembayaran di-skip langsung via DB karena Midtrans tidak bisa diotomatisasi. File upload design juga dilewatkan karena validasi MIME tidak lolos untuk file dummy dari JS.
+> Catatan: Pembayaran manual tidak diotomatisasi di test. File upload design juga dilewatkan karena validasi MIME tidak lolos untuk file dummy dari JS.

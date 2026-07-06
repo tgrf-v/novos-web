@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Customer\ProductController;
 use App\Http\Controllers\Customer\OrderController;
-use App\Http\Controllers\Customer\PaymentController;
 use App\Http\Controllers\Customer\TrackingController;
 use App\Http\Controllers\Customer\ChatController;
 use App\Http\Controllers\Customer\ProfileController;
@@ -35,9 +34,6 @@ Route::get('/pesan', function () {
         return view('customer.pemesanan', compact('produkData', 'addresses', 'hasOrders'));
     })->name('pemesanan');
 
-// Public routes (Midtrans callback)
-Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
-
 // Public route (shared tracking)
 Route::get('/tracking/shared/{token}', [TrackingController::class, 'shared'])->name('tracking.shared');
 
@@ -48,11 +44,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/pesan', [OrderController::class, 'store'])->name('pesan.store');
     Route::post('/pesan/cart', [OrderController::class, 'storeCart'])->name('pesan.store-cart');
-    Route::post('/payment/approve/{order:order_number}', [PaymentController::class, 'approveAndPay'])->name('payment.approve');
-    Route::post('/payment/snap/{order:order_number}', [PaymentController::class, 'snapToken'])->name('payment.snap');
-    Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('payment.finish');
-    Route::get('/payment/unfinish', [PaymentController::class, 'unfinish'])->name('payment.unfinish');
-    Route::get('/payment/error', [PaymentController::class, 'error'])->name('payment.error');
+    Route::post('/pesan/{order:order_number}/approve', [OrderController::class, 'approve'])->name('pesan.approve');
 
     Route::get('/tracking', [TrackingController::class, 'index'])->name('tracking');
     Route::post('/tracking/{id}/acc', [TrackingController::class, 'accDesign'])->name('tracking.acc');

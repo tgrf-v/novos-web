@@ -9,12 +9,13 @@ class Payment extends Model
 {
     protected $fillable = [
         'order_id',
-        'midtrans_order_id',
-        'midtrans_transaction_id',
         'amount',
         'status',
         'payment_method',
         'paid_at',
+        'payment_proof',
+        'payment_proof_name',
+        'notes',
     ];
 
     protected function casts(): array

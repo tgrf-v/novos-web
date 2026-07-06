@@ -321,6 +321,63 @@ class OrderController extends Controller
         ]);
     }
 
+    public function approve(Order $order)
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($order->status !== 'menunggu_pembayaran') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Status pesanan tidak memungkinkan untuk disetujui.',
+            ], 422);
+        }
+
+        DB::transaction(function () use ($order) {
+            $order->update([
+                'status' => 'dikonfirmasi',
+                'confirmed_at' => now(),
+            ]);
+
+            OrderStatusHistory::create([
+                'order_id'   => $order->id,
+                'status'     => 'dikonfirmasi',
+                'changed_by' => auth()->id(),
+                'notes'      => 'Customer menyetujui detail pesanan',
+            ]);
+
+            $chat = Chat::firstOrCreate([
+                'order_id'    => $order->id,
+                'customer_id' => $order->user_id,
+            ]);
+            ChatMessage::create([
+                'chat_id'   => $chat->id,
+                'sender_id' => auth()->id(),
+                'message'   => 'Saya telah menyetujui detail pesanan. ' . $order->order_number,
+            ]);
+        });
+
+        Notification::sendToAllStaff(
+            'payment_success',
+            'Pesanan Dikonfirmasi',
+            "Pesanan <strong>{$order->order_number}</strong> telah dikonfirmasi oleh customer. Menunggu pembayaran.",
+            [
+                'initials' => collect(explode(' ', $order->user->name))->map(fn($w) => substr($w, 0, 1))->take(2)->implode(''),
+                'role' => $order->user->role->name,
+                'role_initial' => 'C',
+                'role_color' => '#16a34a',
+                'order_number' => $order->order_number,
+            ]
+        );
+
+        return response()->json([
+            'success'     => true,
+            'order'       => $order,
+            'orderNumber' => $order->order_number,
+        ]);
+    }
+
     private function sendSystemMessage(Order $order, string $message): void
     {
         $chat = Chat::firstOrCreate([

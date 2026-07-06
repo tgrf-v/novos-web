@@ -854,7 +854,6 @@
 @endsection
 
 @push('scripts')
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 <script>
 window.profileOrders = @json($orders);
 window.profileUser = @json($user);
@@ -1479,7 +1478,6 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
                 step: 2,
                 subStep: 2,
                 prioritas: item.design_data ? (item.design_data.prioritas || 'normal') : 'normal',
-                pembayaran: 'midtrans',
             };
             localStorage.setItem('checkout_state', JSON.stringify(state));
             window.location.href = '{{ route('pemesanan') }}';
@@ -1498,7 +1496,6 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
                 step: 2,
                 subStep: 2,
                 prioritas: 'normal',
-                pembayaran: 'midtrans',
             };
             localStorage.setItem('checkout_state', JSON.stringify(state));
             window.location.href = '{{ route('pemesanan') }}';
@@ -1507,12 +1504,12 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
         async payOrder(orderId) {
             const confirm = await Swal.fire({
                 title: 'Setujui Detail Pesanan?',
-                text: 'Dengan melanjutkan, Anda menyetujui detail pesanan dan akan diarahkan ke pembayaran.',
+                text: 'Dengan melanjutkan, Anda menyetujui detail pesanan dan akan diarahkan ke informasi pembayaran.',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#1a237e',
                 cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Lanjutkan!',
+                confirmButtonText: 'Ya, Setujui!',
                 cancelButtonText: 'Batal'
             });
 
@@ -1528,49 +1525,36 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
             });
 
             try {
-                const res = await fetch('/payment/approve/' + orderId, {
+                const res = await fetch('/pesan/' + orderId + '/approve', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         'Accept': 'application/json'
                     }
                 });
-                
+
                 const data = await res.json();
                 Swal.close();
 
-                if (!data.snap_token) {
-                    throw new Error(data.message || 'Gagal mendapatkan token pembayaran');
+                if (!data.success) {
+                    throw new Error(data.message || 'Gagal menyetujui pesanan');
                 }
 
-                window.snap.pay(data.snap_token, {
-                    onSuccess: () => {
-                        window.location.href = '/payment/finish?order_id=' + data.midtrans_order_id;
-                    },
-                    onPending: () => {
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'Pembayaran Tertunda',
-                            text: 'Harap selesaikan pembayaran Anda.',
-                            confirmButtonColor: '#1a237e'
-                        });
-                    },
-                    onClose: () => {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Pembayaran Dibatalkan',
-                            text: 'Selesaikan transaksi di tab Menunggu Pembayaran.',
-                            confirmButtonColor: '#1a237e'
-                        });
-                    },
-                    onError: () => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Pembayaran Gagal',
-                            text: 'Gagal melakukan pembayaran. Silakan coba kembali.',
-                            confirmButtonColor: '#1a237e'
-                        });
-                    }
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Pesanan Disetujui!',
+                    html: '<div class="text-sm text-gray-500">Pesanan telah disetujui. Silakan lakukan transfer DP minimal 10% ke rekening berikut:</div>' +
+                        '<div class="mt-4 space-y-2 text-left mx-auto max-w-xs">' +
+                        '<div class="flex justify-between p-2 bg-gray-50 rounded-lg text-xs"><span class="font-semibold">BCA</span><span class="font-mono font-bold text-[#1a237e]">123 456 7890</span></div>' +
+                        '<div class="flex justify-between p-2 bg-gray-50 rounded-lg text-xs"><span class="font-semibold">Mandiri</span><span class="font-mono font-bold text-[#1a237e]">987 654 3210</span></div>' +
+                        '<div class="flex justify-between p-2 bg-gray-50 rounded-lg text-xs"><span class="font-semibold">BNI</span><span class="font-mono font-bold text-[#1a237e]">555 666 7777</span></div>' +
+                        '</div>' +
+                        '<p class="text-xs text-gray-400 mt-2">a.n. Novos Jersey</p>' +
+                        '<p class="text-xs text-gray-500 mt-3">Upload bukti transfer di halaman tracking atau kirim via chat.</p>',
+                    confirmButtonColor: '#1a237e',
+                    confirmButtonText: 'Tracking Pesanan',
+                }).then(() => {
+                    window.location.href = '/tracking?q=' + orderId;
                 });
             } catch (err) {
                 Swal.close();

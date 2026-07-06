@@ -8,7 +8,7 @@
 - Konfirmasi pesanan (ACC setelah dicek admin)
 - Tracking status pesanan
 - Riwayat pesanan
-- Pembayaran via Midtrans
+- Pembayaran manual via transfer bank (DP minimal 10%)
 - Chat dengan admin (terikat per pesanan)
 
 ## ADMIN
