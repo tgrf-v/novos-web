@@ -28,6 +28,7 @@ Route::prefix('staf')
         Route::patch('/pesanan/{order:order_number}/assign', [OrderController::class, 'assign'])->name('pesanan.assign');
         Route::post('/pesanan/{order:order_number}/update-status', [OrderController::class, 'updateStatus'])->name('pesanan.update-status');
         Route::get('/pesanan/{order:order_number}/allowed-statuses', [OrderController::class, 'allowedStatuses'])->name('pesanan.allowed-statuses');
+        Route::get('/pesanan/{order:order_number}/export-csv', [OrderController::class, 'exportCsv'])->name('pesanan.export-csv');
 
         Route::get('/design', [DesignController::class, 'index'])->name('design');
         Route::post('/design/update/{order:order_number}', [DesignController::class, 'updateStatus'])->name('design.update');

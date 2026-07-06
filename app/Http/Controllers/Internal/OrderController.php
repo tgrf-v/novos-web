@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AssignOrderRequest;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Models\Order;
+use App\Models\OrderItemDetail;
 use App\Models\OrderStatusHistory;
 use App\Models\User;
 use App\Models\Chat;
@@ -100,6 +101,7 @@ class OrderController extends Controller
         $order->load([
             'user',
             'orderItems',
+            'itemDetails',
             'designRequest',
             'payment',
             'statusHistories.changedBy',
@@ -262,6 +264,19 @@ class OrderController extends Controller
             ];
         }
 
+        $itemDetails = [];
+        if ($order->itemDetails && $order->itemDetails->isNotEmpty()) {
+            foreach ($order->itemDetails as $detail) {
+                $itemDetails[] = [
+                    'no_punggung'  => $detail->no_punggung,
+                    'nama_punggung' => $detail->nama_punggung,
+                    'model_lengan' => $detail->model_lengan,
+                    'size'         => $detail->size,
+                    'keterangan'   => $detail->keterangan,
+                ];
+            }
+        }
+
         $order = [
             'order_id'      => $order->order_number,
             'last_update'   => $order->updated_at->format('j M Y, H:i'),
@@ -276,6 +291,7 @@ class OrderController extends Controller
                 'notes' => $order->designRequest?->additional_notes ?? $order->notes ?? '-',
             ],
             'sizes'         => $sizes,
+            'item_details'  => $itemDetails,
             'design_files'  => $designFiles,
             'history_notes' => $historyNotes,
             'status_history' => $statusHistory,
@@ -575,5 +591,44 @@ class OrderController extends Controller
         }
 
         return response()->json(['statuses' => $result]);
+    }
+
+    public function exportCsv(Order $order)
+    {
+        $order->load('itemDetails');
+
+        $filename = $order->order_number . '-detail-items.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function () use ($order) {
+            $handle = fopen('php://output', 'w');
+
+            // BOM for UTF-8
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Header
+            fputcsv($handle, ['No Punggung', 'Nama Punggung', 'Model Lengan', 'Size', 'Keterangan']);
+
+            // Data
+            if ($order->itemDetails && $order->itemDetails->isNotEmpty()) {
+                foreach ($order->itemDetails as $detail) {
+                    fputcsv($handle, [
+                        $detail->no_punggung ?? '',
+                        $detail->nama_punggung ?? '',
+                        $detail->model_lengan ?? '',
+                        $detail->size ?? '',
+                        $detail->keterangan ?? '',
+                    ]);
+                }
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

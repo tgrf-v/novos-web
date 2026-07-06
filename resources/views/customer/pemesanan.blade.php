@@ -130,7 +130,7 @@
         </template>
 
         <div class="space-y-5 mt-6">
-            {{-- Row: Nama Tim + Ukuran --}}
+            {{-- Row: Nama Tim + Detail Sponsor --}}
             <div class="grid lg:grid-cols-2 gap-6">
                 {{-- Nama Tim / Event --}}
                 <div>
@@ -139,19 +139,6 @@
                         type="text"
                         x-model="form.team_name"
                         placeholder="Contoh: FC Harapan Jaya"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
-                    >
-                </div>
-
-                {{-- No Punggung --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">No Punggung</label>
-                    <input
-                        type="text"
-                        inputmode="numeric"
-                        x-model="form.no_punggung"
-                        oninput="this.value = this.value.replace(/\D/g, '')"
-                        placeholder="Contoh: 10, 7, 9"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
                     >
                 </div>
@@ -165,155 +152,6 @@
                         placeholder="Contoh: Logo sponsor di dada"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
                     >
-                </div>
-
-                {{-- Ukuran (Qty per Ukuran) --}}
-                <div x-data="{ showSizeGuide: false }">
-                    <div class="flex items-center justify-between mb-2">
-                        <label class="block text-sm font-medium text-gray-700">Ukuran (Qty per Ukuran) <span class="text-red-500">*</span></label>
-                        <button
-                            type="button"
-                            @click="showSizeGuide = true"
-                            class="underline p-0 text-gray-600 rounded-lg text-xs font-bold hover:bg-gray-50 transition-colors"
-                        >
-                            Panduan Ukuran
-                        </button>
-                    </div>
-
-                    {{-- Modal Panduan Ukuran Dinamis --}}
-                    <template x-teleport="body">
-                    <div
-                        x-show="showSizeGuide"
-                        x-cloak
-                        x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0"
-                        x-transition:enter-end="opacity-100"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="opacity-100"
-                        x-transition:leave-end="opacity-0"
-                        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45"
-                        @click.self="showSizeGuide = false"
-                    >
-                        <div
-                            x-show="showSizeGuide"
-                            x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="opacity-0 scale-95 translate-y-4"
-                            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                            x-transition:leave="transition ease-in duration-150"
-                            x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                            x-transition:leave-end="opacity-0 scale-95 translate-y-4"
-                            class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden"
-                            @click.stop
-                        >
-                            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.4 2.4 0 0 1 0-3.4l2.6-2.6a2.4 2.4 0 0 1 3.4 0Z"/>
-                                            <path d="m14.5 12.5 2-2"/>
-                                            <path d="m11.5 9.5 2-2"/>
-                                            <path d="m8.5 6.5 2-2"/>
-                                            <path d="m17.5 15.5 2-2"/>
-                                        </svg>
-                                    </div>
-                                    <h3 class="text-base font-bold text-gray-900">Panduan Ukuran Jersey</h3>
-                                </div>
-                                <button
-                                    @click="showSizeGuide = false"
-                                    class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 flex items-center justify-center transition-colors"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                </button>
-                            </div>
-
-                            <div class="px-6 py-4 overflow-y-auto max-h-[75vh]">
-                                <p class="text-xs text-gray-500 mb-4">Panduan ukuran untuk potongan <strong class="text-[#1a237e]" x-text="form.jenis_potongan || 'REGULER'"></strong>.</p>
-                                <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
-                                    <img :src="activeSizeChart" alt="Panduan Ukuran" class="w-full h-auto object-contain">
-                                </div>
-                                <p class="text-xs text-gray-400 mt-3">* Ukuran dapat sedikit berbeda tergantung bahan yang dipilih. Konsultasikan dengan tim kami jika ragu.</p>
-                            </div>
-
-                            <div class="px-6 py-4 border-t border-gray-100 flex justify-end">
-                                <button
-                                    @click="showSizeGuide = false"
-                                    class="px-6 py-2 bg-[#1a237e] hover:bg-[#283593] text-white text-sm font-semibold rounded-lg transition-colors"
-                                >
-                                    Mengerti
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    </template>
-
-                    {{-- Repeater: Select + Qty + Add --}}
-                    <div class="flex items-end gap-3">
-                        <div class="flex-1">
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Pilih Ukuran</label>
-                            <select x-model="tmpSize"
-                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow bg-white text-sm"
-                            >
-                                <option value="">Pilih Ukuran</option>
-                                <optgroup label="Dewasa">
-                                    <option value="XS">XS</option>
-                                    <option value="S">S</option>
-                                    <option value="M">M</option>
-                                    <option value="L">L</option>
-                                    <option value="XL">XL</option>
-                                    <option value="2XL / XXL">2XL / XXL</option>
-                                    <option value="3XL">3XL</option>
-                                    <option value="4XL">4XL</option>
-                                    <option value="5XL">5XL</option>
-                                    <option value="6XL">6XL</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-gray-500 mb-1">Qty (pcs)</label>
-                            <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-white">
-                                <button
-                                    @click="tmpQty = Math.max(1, tmpQty - 1)"
-                                    :class="tmpQty <= 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 cursor-pointer'"
-                                    class="w-9 h-[42px] flex items-center justify-center transition-colors text-lg font-semibold shrink-0"
-                                    type="button"
-                                >−</button>
-                                <span
-                                    class="w-10 text-center text-sm font-semibold text-gray-900 select-none"
-                                    x-text="tmpQty"
-                                ></span>
-                                <button
-                                    @click="tmpQty = tmpQty + 1"
-                                    class="w-9 h-[42px] flex items-center justify-center text-gray-600 hover:bg-gray-100 cursor-pointer transition-colors text-lg font-semibold shrink-0"
-                                    type="button"
-                                >+</button>
-                            </div>
-                        </div>
-                        <button
-                            @click="addSize()"
-                            :disabled="!tmpSize"
-                            :class="tmpSize ? 'bg-[#1a237e] hover:bg-[#283593] cursor-pointer' : 'bg-gray-300 cursor-not-allowed'"
-                            class="px-5 py-2.5 text-white rounded-lg font-semibold text-sm transition-colors shrink-0"
-                        >
-                            + Tambah Ukuran
-                        </button>
-                    </div>
-
-                    {{-- Summary Tags --}}
-                    <div x-show="totalQty > 0" class="flex flex-wrap gap-2 mt-3">
-                        <template x-for="(qty, size) in form.ukuran" :key="size">
-                            <template x-if="qty > 0">
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-800 rounded-full text-sm font-medium">
-                                    <span x-text="size"></span>
-                                    <span class="text-blue-500">(<span x-text="qty"></span> pcs)</span>
-                                    <button
-                                        @click="removeSize(size)"
-                                        class="w-4 h-4 rounded-full bg-blue-200 hover:bg-red-300 text-blue-700 hover:text-white flex items-center justify-center transition-colors text-xs leading-none"
-                                    >&times;</button>
-                                </span>
-                            </template>
-                        </template>
-                        <span class="text-xs text-gray-400 self-center ml-1" x-text="'Total: ' + totalQty + ' pcs'"></span>
-                    </div>
                 </div>
             </div>
 
@@ -702,15 +540,31 @@
                 </div>
             </div>
 
-            {{-- Catatan Desain --}}
+            {{-- Total Quantity --}}
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Total Quantity (pcs) <span class="text-red-500">*</span></label>
+                    <input
+                        type="number"
+                        x-model="form.total_qty"
+                        min="1"
+                        placeholder="Contoh: 20"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
+                    >
+                    <p class="text-xs text-gray-400 mt-1">Total keseluruhan jumlah jersey yang dipesan</p>
+                </div>
+            </div>
+
+            {{-- Detail Pesanan --}}
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1.5">Catatan Desain</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Detail Pesanan</label>
                 <textarea
                     x-model="form.catatan"
-                    rows="4"
-                    placeholder="Deskripsi keseluruhan desain Anda..."
+                    rows="6"
+                    placeholder="Isi detail per-item dengan format: NoPunggung, Nama Punggung, Model Lengan, Size, Keterangan&#10;&#10;Contoh:&#10;10, Jhon Doe, SHORT SLEVE, L,&#10;7, Jane Doe, LONG SLEVE, M,&#10;9, Alex, SHORT SLEVE, XL, Catatan khusus"
                     class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow resize-none"
                 ></textarea>
+                <p class="text-xs text-gray-400 mt-1">Pisahkan setiap item dengan baris baru. Format: NoPunggung, Nama Punggung, Model Lengan, Size, Keterangan</p>
             </div>
         </div>
 
@@ -1270,10 +1124,6 @@
                                 <span class="font-medium text-gray-900" x-text="form.team_name || '-'"></span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-500">No Punggung</span>
-                                <span class="font-medium text-gray-900" x-text="form.no_punggung || '-'"></span>
-                            </div>
-                            <div class="flex justify-between">
                                 <span class="text-gray-500">Sponsor</span>
                                 <span class="font-medium text-gray-900" x-text="form.detail_sponsor || '-'"></span>
                             </div>
@@ -1297,12 +1147,6 @@
                                 <span class="text-gray-500">Jumlah</span>
                                 <span class="font-medium text-gray-900" x-text="totalQty + ' pcs'"></span>
                             </div>
-                            <template x-for="(qty, size) in form.ukuran" :key="size">
-                                <div x-show="parseInt(qty) > 0" class="flex justify-between pl-4 text-xs text-gray-400">
-                                    <span class="font-medium" x-text="'Ukuran ' + size"></span>
-                                    <span x-text="parseInt(qty) + ' pcs'"></span>
-                                </div>
-                            </template>
                             <div class="flex justify-between">
                                 <span class="text-gray-500">Harga dasar</span>
                                 <span class="font-medium text-gray-900" x-text="formatRupiah(hargaDasar)"></span>
@@ -1417,10 +1261,6 @@
                             <span class="font-medium text-gray-900" x-text="form.team_name || '-'"></span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-500">No Punggung</span>
-                            <span class="font-medium text-gray-900" x-text="form.no_punggung || '-'"></span>
-                        </div>
-                        <div class="flex justify-between">
                             <span class="text-gray-500">Sponsor</span>
                             <span class="font-medium text-gray-900" x-text="form.detail_sponsor || '-'"></span>
                         </div>
@@ -1444,12 +1284,6 @@
                             <span class="text-gray-500">Jumlah</span>
                             <span class="font-medium text-gray-900" x-text="totalQty + ' pcs'"></span>
                         </div>
-                        <template x-for="(qty, size) in form.ukuran" :key="size">
-                            <div x-show="parseInt(qty) > 0" class="flex justify-between pl-4 text-xs text-gray-400">
-                                <span class="font-medium" x-text="'Ukuran ' + size"></span>
-                                <span x-text="parseInt(qty) + ' pcs'"></span>
-                            </div>
-                        </template>
                         <div class="flex justify-between">
                             <span class="text-gray-500">Prioritas</span>
                             <span class="font-medium text-gray-900 capitalize" x-text="prioritasText"></span>
@@ -1568,7 +1402,6 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
         },
         form: {
             team_name: '',
-            no_punggung: '',
             detail_sponsor: '',
             kerah: '',
             bahan: '',
@@ -1578,10 +1411,8 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             warna_utama: '#1a237e',
             warna_sekunder: '#ffffff',
             catatan: '',
-            ukuran: { XS: 0, S: 0, M: 0, L: 0, XL: 0, '2XL / XXL': 0, '3XL': 0, '4XL': 0, '5XL': 0, '6XL': 0, 'Anak 100': 0, 'Anak 110': 0, 'Anak 120': 0, 'Anak 130': 0, 'Anak 140': 0, 'Anak 150': 0 }
+            total_qty: '',
         },
-        tmpSize: '',
-        tmpQty: 1,
         prioritas: 'normal',
         pembayaran: 'midtrans',
         uploads: [],
@@ -1597,14 +1428,6 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             { value: 'super_express', label: 'Super Express', desc: '1\u20132 hari kerja', harga: '+Rp150.000' }
         ],
         basePricePerPcs: 85000,
-
-        sizeChartImages: {
-            'REGULER': '/images/unisex-regular.png',
-            'SLIMFIT CEWE': '/images/womens-slimfit.png',
-            'OVERSIZE': '/images/oversize-fit.png',
-            'TUNIK': '/images/tunik-fit.png',
-            'SLIM FIT UNISEX': '/images/unisex-slimfit.png',
-        },
 
         init() {
             const savedState = localStorage.getItem('checkout_state');
@@ -1674,8 +1497,7 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
 
 
         get totalQty() {
-            let sizes = this.form.ukuran;
-            return Object.values(sizes).reduce((a, b) => a + (parseInt(b) || 0), 0);
+            return parseInt(this.form.total_qty) || 0;
         },
 
         get selectedAddress() {
@@ -1704,10 +1526,6 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             if (this.prioritas === 'express') return 50000;
             if (this.prioritas === 'super_express') return 150000;
             return 0;
-        },
-
-        get activeSizeChart() {
-            return this.sizeChartImages[this.form.jenis_potongan] || this.sizeChartImages['REGULER'];
         },
 
         get estimasiTotal() {
@@ -1934,17 +1752,13 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
 
             const formData = new FormData();
             formData.append('team_name', this.form.team_name);
-            formData.append('no_punggung', this.form.no_punggung);
             formData.append('detail_sponsor', this.form.detail_sponsor);
             formData.append('kerah', this.form.kerah);
             formData.append('bahan', this.form.bahan);
             formData.append('jenis_potongan', this.form.jenis_potongan);
             formData.append('lengan_jahitan', this.form.lengan_jahitan);
             formData.append('catatan', this.form.catatan);
-            for (const [size, qty] of Object.entries(this.form.ukuran)) {
-                formData.append(`ukuran[${size}]`, qty);
-            }
-            formData.append('total_qty', this.totalQty || this.form.jumlah);
+            formData.append('total_qty', this.form.total_qty || 0);
             formData.append('prioritas', this.prioritas);
             formData.append('pembayaran', this.pembayaran);
             formData.append('warna_utama', this.form.warna_utama);
@@ -2041,17 +1855,6 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             });
         },
 
-        addSize() {
-            if (!this.tmpSize) return;
-            this.form.ukuran[this.tmpSize] = (this.form.ukuran[this.tmpSize] || 0) + this.tmpQty;
-            this.tmpSize = '';
-            this.tmpQty = 1;
-        },
-
-        removeSize(size) {
-            this.form.ukuran[size] = 0;
-        },
-
         addToCart() {
             if (this.loading) return;
             this.loading = true;
@@ -2067,7 +1870,6 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                 image: getFirstImage(),
                 design_data: {
                     team_name: this.form.team_name,
-                    no_punggung: this.form.no_punggung,
                     detail_sponsor: this.form.detail_sponsor,
                     kerah: this.form.kerah,
                     bahan: this.form.bahan,
@@ -2076,7 +1878,7 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                     warna_utama: this.form.warna_utama,
                     warna_sekunder: this.form.warna_sekunder,
                     catatan: this.form.catatan,
-                    ukuran: this.form.ukuran,
+                    total_qty: this.form.total_qty,
                     prioritas: this.prioritas,
                     base_price_per_pcs: this.basePricePerPcs,
                     biaya_prioritas: this.biayaPrioritas,
@@ -2133,7 +1935,6 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             this.jenis = null;
             this.form = {
                 team_name: '',
-                no_punggung: '',
                 detail_sponsor: '',
                 kerah: '',
                 bahan: '',
@@ -2142,12 +1943,10 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                 warna_utama: '#1a237e',
                 warna_sekunder: '#ffffff',
                 catatan: '',
-                ukuran: { XS: 0, S: 0, M: 0, L: 0, XL: 0, '2XL / XXL': 0, '3XL': 0, '4XL': 0, '5XL': 0, '6XL': 0, 'Anak 100': 0, 'Anak 110': 0, 'Anak 120': 0, 'Anak 130': 0, 'Anak 140': 0, 'Anak 150': 0 }
+                total_qty: '',
             };
             this.uploads = [];
             this.refUploads = [];
-            this.tmpSize = '';
-            this.tmpQty = 1;
             this.prioritas = 'normal';
             this.selectedAddressId = null;
         },

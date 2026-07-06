@@ -131,19 +131,49 @@ function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
                 <div><span class="text-gray-500 text-xs">Olahraga</span><div class="font-medium text-gray-900">{{ $order['product']['sport'] }}</div></div>
                 <div><span class="text-gray-500 text-xs">Nama Tim</span><div class="font-medium text-gray-900">Jersey Custom</div></div>
             </div>
-            {{-- Ukuran --}}
-            <div class="grid grid-cols-6 gap-2 text-center mb-4">
-                @foreach($order['sizes'] as $size => $qty)
-                <div class="bg-gray-50 rounded-lg py-2">
-                    <div class="text-xs text-gray-500">{{ $size }}</div>
-                    <div class="text-base font-bold text-gray-900">{{ $qty }}</div>
+            {{-- Item Details Table --}}
+            @if(!empty($order['item_details']))
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-medium text-gray-600">Detail Item Pesanan</span>
+                    <a href="{{ route('staf.pesanan.export-csv', $order['order_id']) }}"
+                       class="inline-flex items-center gap-1 text-xs font-medium text-[#1a237e] hover:underline">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Export CSV
+                    </a>
                 </div>
-                @endforeach
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                            <tr>
+                                <th class="px-3 py-2 text-left font-semibold">No Punggung</th>
+                                <th class="px-3 py-2 text-left font-semibold">Nama Punggung</th>
+                                <th class="px-3 py-2 text-left font-semibold">Model Lengan</th>
+                                <th class="px-3 py-2 text-left font-semibold">Size</th>
+                                <th class="px-3 py-2 text-left font-semibold">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            @foreach($order['item_details'] as $detail)
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-3 py-2 text-gray-800 font-medium">{{ $detail['no_punggung'] ?? '-' }}</td>
+                                <td class="px-3 py-2 text-gray-700">{{ $detail['nama_punggung'] ?? '-' }}</td>
+                                <td class="px-3 py-2 text-gray-700">{{ $detail['model_lengan'] ?? '-' }}</td>
+                                <td class="px-3 py-2 text-gray-700">{{ $detail['size'] ?? '-' }}</td>
+                                <td class="px-3 py-2 text-gray-700 max-w-[200px] truncate">{{ $detail['keterangan'] ?? '-' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
+            @endif
             {{-- Catatan --}}
             <div class="text-xs text-gray-500 mt-2">
                 <span class="font-medium text-gray-600">Catatan / Spesifikasi:</span>
-                <p class="mt-1 text-gray-500">{{ $order['product']['notes'] }}</p>
+                <p class="mt-1 text-gray-500 whitespace-pre-line">{{ $order['product']['notes'] }}</p>
             </div>
         </div>
 

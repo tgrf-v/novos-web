@@ -7,6 +7,7 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\StoreCartOrderRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\OrderItemDetail;
 use App\Models\DesignRequest;
 use App\Models\OrderStatusHistory;
 use App\Models\Chat;
@@ -50,7 +51,7 @@ class OrderController extends Controller
                 default         => 'Normal',
             };
 
-            $catatanText = "Jenis Potongan: " . $data['jenis_potongan'] . "\nModel Lengan & Jahitan: " . $data['lengan_jahitan'] . ($data['catatan'] ? "\nCatatan: " . $data['catatan'] : "");
+            $catatanText = "Jenis Potongan: " . $data['jenis_potongan'] . "\nModel Lengan & Jahitan: " . $data['lengan_jahitan'] . ($data['catatan'] ? "\n=== Detail Pesanan ===\n" . $data['catatan'] : "");
 
             $order = Order::create([
                 'user_id'     => auth()->id(),
@@ -61,15 +62,29 @@ class OrderController extends Controller
                 'admin_notes' => 'Prioritas: ' . $prioritasLabel . ' (' . $biayaPrioritas . ')',
             ]);
 
-            $sizes = $data['ukuran'] ?? [];
-            foreach ($sizes as $size => $qty) {
-                if (($qty = (int) $qty) > 0) {
-                    OrderItem::create([
-                        'order_id'       => $order->id,
-                        'size'           => $size,
-                        'qty'            => $qty,
-                        'price_per_item' => $pricePerItem,
-                        'subtotal'       => $qty * $pricePerItem,
+            // Create single order item with total qty
+            OrderItem::create([
+                'order_id'       => $order->id,
+                'size'           => '-',
+                'qty'            => $totalQty,
+                'price_per_item' => $pricePerItem,
+                'subtotal'       => $totalQty * $pricePerItem,
+            ]);
+
+            // Parse Detail Pesanan (catatan) ke order_item_details
+            if (!empty($data['catatan'])) {
+                $lines = explode("\n", trim($data['catatan']));
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (empty($line)) continue;
+                    $parts = array_map('trim', explode(',', $line));
+                    OrderItemDetail::create([
+                        'order_id'     => $order->id,
+                        'no_punggung'  => $parts[0] ?? null,
+                        'nama_punggung' => $parts[1] ?? null,
+                        'model_lengan' => $parts[2] ?? null,
+                        'size'         => $parts[3] ?? null,
+                        'keterangan'   => $parts[4] ?? null,
                     ]);
                 }
             }
@@ -97,7 +112,6 @@ class OrderController extends Controller
             DesignRequest::create([
                 'order_id'         => $order->id,
                 'team_name'        => $data['team_name'],
-                'no_punggung'      => $data['no_punggung'] ?? null,
                 'detail_sponsor'   => $data['detail_sponsor'] ?? null,
                 'jenis_potongan'   => $data['jenis_potongan'],
                 'lengan_jahitan'   => $data['lengan_jahitan'],
@@ -175,7 +189,7 @@ class OrderController extends Controller
 
             foreach ($cartItems as $index => $item) {
                 if ($item->design_data) {
-                    $itemTotalQty = collect($item->design_data['ukuran'] ?? [])->sum(fn($v) => (int) $v);
+                    $itemTotalQty = $item->design_data['total_qty'] ?? collect($item->design_data['ukuran'] ?? [])->sum(fn($v) => (int) $v);
                     $pricePerPcs = $item->design_data['base_price_per_pcs'] ?? \App\Models\Setting::get('base_price_per_pcs', 85000);
                     $itemTotal = $itemTotalQty * $pricePerPcs;
                     
@@ -211,18 +225,29 @@ class OrderController extends Controller
 
             foreach ($cartItems as $item) {
                 if ($item->design_data) {
-                    $sizes = $item->design_data['ukuran'] ?? [];
                     $pricePerItem = $item->design_data['base_price_per_pcs'] ?? 85000;
-                    foreach ($sizes as $size => $qty) {
-                        if (($qty = (int) $qty) > 0) {
-                            OrderItem::create([
-                                'order_id'       => $order->id,
-                                'size'           => $size . ' (' . $item->design_data['team_name'] . ')',
-                                'qty'            => $qty,
-                                'price_per_item' => $pricePerItem,
-                                'subtotal'       => $qty * $pricePerItem,
-                            ]);
+                    $sizes = $item->design_data['ukuran'] ?? [];
+                    if (!empty($sizes)) {
+                        foreach ($sizes as $size => $qty) {
+                            if (($qty = (int) $qty) > 0) {
+                                OrderItem::create([
+                                    'order_id'       => $order->id,
+                                    'size'           => $size . ' (' . $item->design_data['team_name'] . ')',
+                                    'qty'            => $qty,
+                                    'price_per_item' => $pricePerItem,
+                                    'subtotal'       => $qty * $pricePerItem,
+                                ]);
+                            }
                         }
+                    } else {
+                        $totalQty = $item->design_data['total_qty'] ?? 0;
+                        OrderItem::create([
+                            'order_id'       => $order->id,
+                            'size'           => '-',
+                            'qty'            => $totalQty,
+                            'price_per_item' => $pricePerItem,
+                            'subtotal'       => $totalQty * $pricePerItem,
+                        ]);
                     }
                 } else {
                     OrderItem::create([
@@ -239,7 +264,6 @@ class OrderController extends Controller
                 DesignRequest::create([
                     'order_id'         => $order->id,
                     'team_name'        => "Multiple Orders (Lihat Catatan)",
-                    'no_punggung'      => $designDataMerged['no_punggung'] ?? null,
                     'detail_sponsor'   => $designDataMerged['detail_sponsor'] ?? null,
                     'jenis_potongan'   => $designDataMerged['jenis_potongan'] ?? '-',
                     'lengan_jahitan'   => $designDataMerged['lengan_jahitan'] ?? '-',

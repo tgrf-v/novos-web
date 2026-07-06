@@ -22,7 +22,7 @@ class CartController extends Controller
 
         $totalSelected = $cartItems->where('is_selected', true)->sum(function ($item) {
             if ($item->design_data) {
-                $qty = collect($item->design_data['ukuran'] ?? [])->sum(fn($v) => (int) $v);
+                $qty = $item->design_data['total_qty'] ?? collect($item->design_data['ukuran'] ?? [])->sum(fn($v) => (int) $v);
                 $basePrice = ($item->design_data['base_price_per_pcs'] ?? 85000);
                 $prioritasBiaya = $item->design_data['biaya_prioritas'] ?? 0;
                 return ($qty * $basePrice) + $prioritasBiaya;
@@ -73,7 +73,7 @@ class CartController extends Controller
     {
 
         $designData = $request->design_data;
-        $totalQty = collect($designData['ukuran'] ?? [])->sum(fn($v) => (int) $v);
+        $totalQty = $designData['total_qty'] ?? collect($designData['ukuran'] ?? [])->sum(fn($v) => (int) $v);
 
         $cart = Cart::create([
             'user_id' => auth()->id(),
@@ -110,7 +110,7 @@ class CartController extends Controller
             ->get()
             ->sum(function ($item) {
                 if ($item->design_data) {
-                    $qty = collect($item->design_data['ukuran'] ?? [])->sum(fn($v) => (int) $v);
+                    $qty = $item->design_data['total_qty'] ?? collect($item->design_data['ukuran'] ?? [])->sum(fn($v) => (int) $v);
                     $basePrice = ($item->design_data['base_price_per_pcs'] ?? 85000);
                     $prioritasBiaya = $item->design_data['biaya_prioritas'] ?? 0;
                     return ($qty * $basePrice) + $prioritasBiaya;
@@ -155,7 +155,7 @@ class CartController extends Controller
         $totalQty = collect($sizes)->sum(fn($v) => (int) $v);
 
         $designData = $cart->design_data;
-        $designData['ukuran'] = $sizes;
+        $designData['total_qty'] = $totalQty;
         $cart->update([
             'design_data' => $designData,
             'qty' => $totalQty,
@@ -163,7 +163,6 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'ukuran' => $sizes,
             'qty' => $totalQty,
         ]);
     }
@@ -182,7 +181,7 @@ class CartController extends Controller
             ->get()
             ->sum(function ($item) {
                 if ($item->design_data) {
-                    $qty = collect($item->design_data['ukuran'] ?? [])->sum(fn($v) => (int) $v);
+                    $qty = $item->design_data['total_qty'] ?? collect($item->design_data['ukuran'] ?? [])->sum(fn($v) => (int) $v);
                     $basePrice = ($item->design_data['base_price_per_pcs'] ?? 85000);
                     $prioritasBiaya = $item->design_data['biaya_prioritas'] ?? 0;
                     return ($qty * $basePrice) + $prioritasBiaya;
