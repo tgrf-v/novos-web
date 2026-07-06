@@ -394,6 +394,8 @@
                         <option value="OVERSIZE">OVERSIZE</option>
                         <option value="TUNIK">TUNIK</option>
                         <option value="SLIM FIT UNISEX">SLIM FIT UNISEX</option>
+                        <option value="BOXY CUT">BOXY CUT</option>
+                        <option value="KIDS">KIDS</option>
                     </select>
 
                     {{-- Modal Detail Potongan --}}
@@ -602,6 +604,7 @@
                         x-transition:leave-end="opacity-0 scale-95 translate-y-4"
                         class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden"
                         @click.stop
+                        x-data="{ ukuranTab: 'potongan' }"
                     >
                         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                             <div class="flex items-center gap-2">
@@ -623,17 +626,76 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                             </button>
                         </div>
-                        <div class="px-6 py-4 overflow-y-auto max-h-[80vh]">
-                            <p class="text-xs text-gray-500 mb-4">Referensi ukuran untuk potongan <strong class="text-[#1a237e]" x-text="form.jenis_potongan || 'REGULER'"></strong>.</p>
-                            <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50" style="min-height: 400px;">
-                                <embed
-                                    :src="activeSizePdf"
-                                    type="application/pdf"
-                                    class="w-full"
-                                    style="min-height: 80vh;"
-                                >
-                            </div>
+
+                        {{-- Tabs --}}
+                        <div class="flex border-b border-gray-100 px-6">
+                            <button
+                                type="button"
+                                @click="ukuranTab = 'potongan'"
+                                class="px-4 py-3 text-sm font-semibold border-b-2 transition-colors"
+                                :class="ukuranTab === 'potongan' ? 'border-[#1a237e] text-[#1a237e]' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                            >
+                                Ukuran Potongan
+                            </button>
+                            <button
+                                type="button"
+                                @click="ukuranTab = 'training'"
+                                class="px-4 py-3 text-sm font-semibold border-b-2 transition-colors"
+                                :class="ukuranTab === 'training' ? 'border-[#1a237e] text-[#1a237e]' : 'border-transparent text-gray-500 hover:text-gray-700'"
+                            >
+                                Training
+                            </button>
                         </div>
+
+                        {{-- Tab Content --}}
+                        <div class="px-6 py-4 overflow-y-auto max-h-[80vh]">
+                            {{-- Tab: Ukuran Potongan --}}
+                            <template x-if="ukuranTab === 'potongan'">
+                                <div>
+                                    <p class="text-xs text-gray-500 mb-4">Referensi ukuran untuk potongan <strong class="text-[#1a237e]" x-text="form.jenis_potongan || 'REGULER'"></strong>.</p>
+                                    <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50" style="min-height: 400px;">
+                                        <embed
+                                            :src="activeSizePdf"
+                                            type="application/pdf"
+                                            class="w-full"
+                                            style="min-height: 80vh;"
+                                        >
+                                    </div>
+                                </div>
+                            </template>
+
+                            {{-- Tab: Training --}}
+                            <template x-if="ukuranTab === 'training'">
+                                <div>
+                                    <p class="text-xs text-gray-500 mb-4">Referensi ukuran untuk tipe <strong class="text-[#1a237e]">Training</strong>.</p>
+                                    <div class="space-y-6">
+                                        <div>
+                                            <h4 class="text-sm font-semibold text-gray-700 mb-2">Training Long Sleeve</h4>
+                                            <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
+                                                <embed
+                                                    src="/images/referensi-ukuran/TRAININGLONG.pdf"
+                                                    type="application/pdf"
+                                                    class="w-full"
+                                                    style="min-height: 70vh;"
+                                                >
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-semibold text-gray-700 mb-2">Training Short Sleeve</h4>
+                                            <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
+                                                <embed
+                                                    src="/images/referensi-ukuran/TRAININGSHORT.pdf"
+                                                    type="application/pdf"
+                                                    class="w-full"
+                                                    style="min-height: 70vh;"
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
                         <div class="px-6 py-4 border-t border-gray-100 flex justify-end">
                             <button
                                 @click="showUkuranRef = false"
@@ -1624,6 +1686,8 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                 'OVERSIZE': '/images/referensi-ukuran/OVRCUT-NVS-2026.pdf',
                 'TUNIK': '/images/referensi-ukuran/TUNIKCUT-NVS-2026.pdf',
                 'SLIM FIT UNISEX': '/images/referensi-ukuran/UNISEXSLMCUT-NVS-2026.pdf',
+                'BOXY CUT': '/images/referensi-ukuran/BOXYCUT-NVS-2026.pdf',
+                'KIDS': '/images/referensi-ukuran/KIDSCUT-NVS-2026.pdf',
             };
             return map[this.form.jenis_potongan] || '/images/referensi-ukuran/REGCUT-NVS-2026.pdf';
         },

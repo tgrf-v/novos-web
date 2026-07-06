@@ -203,6 +203,8 @@
                                 <option value="OVERSIZE">OVERSIZE</option>
                                 <option value="TUNIK">TUNIK</option>
                                 <option value="SLIM FIT UNISEX">SLIM FIT UNISEX</option>
+                                <option value="BOXY CUT">BOXY CUT</option>
+                                <option value="KIDS">KIDS</option>
                             </select>
                         </div>
                         <div class="space-y-1.5">

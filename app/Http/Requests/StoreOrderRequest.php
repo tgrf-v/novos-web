@@ -18,7 +18,7 @@ class StoreOrderRequest extends FormRequest
             'detail_sponsor' => 'nullable|string|max:255',
             'kerah'          => 'required|string|max:100',
             'bahan'          => 'required|string|max:100',
-            'jenis_potongan' => 'required|string|in:REGULER,SLIMFIT CEWE,OVERSIZE,TUNIK,SLIM FIT UNISEX',
+            'jenis_potongan' => 'required|string|in:REGULER,SLIMFIT CEWE,OVERSIZE,TUNIK,SLIM FIT UNISEX,BOXY CUT,KIDS',
             'lengan_jahitan' => 'required|string|in:REGULER OVERDECK,REGULER PAKAI MANSET,RAGLAN A OVERDECK,RAGLAN A PAKAI MANSET,RAGLAN B OVERDECK,RAGLAN B PAKAI MANSET',
             'catatan'        => 'nullable|string|max:5000',
             'total_qty'      => 'nullable|integer|min:1',
