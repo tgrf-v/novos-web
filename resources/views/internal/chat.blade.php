@@ -92,13 +92,13 @@
                     <div x-ref="messages" class="messages-scroll flex-1 overflow-y-auto min-h-0 px-6 py-4 space-y-3">
                         <template x-for="(msg, i) in currentChat.messages" :key="i">
                             <div class="flex" :class="msg.from === 'admin' ? 'justify-end' : 'justify-start'">
-                                <div class="relative max-w-[70%] min-w-[160px] group">
+                                <div @click.away="openDropdownMsgId = null" class="relative max-w-[70%] min-w-[160px] group">
                                     {{-- Bubble --}}
                                     <div
                                         :class="msg.from === 'admin' ? 'bg-[#1a237e] text-white rounded-br-none' : 'bg-white text-gray-900 border border-gray-200 rounded-bl-none'"
                                         class="px-4 py-2.5 rounded-2xl shadow-sm"
                                     >
-                                        <div class="flex items-start gap-1.5" :class="msg.from === 'admin' ? '' : 'flex-row-reverse'">
+                                        <div class="flex items-start gap-1.5">
                                             <div class="flex-1 min-w-0 space-y-1.5">
                                                 {{-- Reply indicator --}}
                                                 <template x-if="msg.reply_to_id">
@@ -153,9 +153,17 @@
                                                 <template x-if="msg.text">
                                                     <p class="text-sm leading-relaxed" x-text="msg.text"></p>
                                                 </template>
-                                                <p class="text-xs" :class="msg.from === 'admin' ? 'text-blue-200' : 'text-gray-400'" x-text="msg.time"></p>
+                                                <div class="flex items-center gap-1">
+                                                    <p class="text-xs" :class="msg.from === 'admin' ? 'text-blue-200' : 'text-gray-400'" x-text="msg.time"></p>
+                                                    {{-- Read receipt --}}
+                                                    <template x-if="msg.from === 'admin'">
+                                                        <svg class="w-3.5 h-3.5" :class="msg.is_read ? 'text-blue-300' : 'text-blue-200/60'" viewBox="0 0 24 24" fill="currentColor">
+                                                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                                        </svg>
+                                                    </template>
+                                                </div>
                                             </div>
-                                            {{-- Dropdown trigger (inside bubble, at corner) --}}
+                                            {{-- Dropdown trigger (top-right inside bubble) --}}
                                             <button @click.stop="toggleDropdown(msg)"
                                                     class="shrink-0 mt-0.5 p-0.5 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:opacity-80"
                                                     :class="msg.from === 'admin' ? 'text-blue-200' : 'text-gray-400'">
@@ -165,10 +173,8 @@
                                     </div>
                                     {{-- Dropdown menu --}}
                                     <div x-show="openDropdownMsgId === msg.id"
-                                         @click.away="openDropdownMsgId = null"
                                          @click.stop
-                                         :class="msg.from === 'admin' ? 'right-0' : 'left-0'"
-                                         class="absolute z-20 bg-white border border-gray-200 rounded-xl shadow-lg py-1 min-w-[140px]"
+                                         class="absolute z-20 bottom-full mb-1 right-0 bg-white border border-gray-200 rounded-xl shadow-lg py-1 min-w-[140px]"
                                          x-transition:enter="transition ease-out duration-100"
                                          x-transition:enter-start="opacity-0 scale-95"
                                          x-transition:enter-end="opacity-100 scale-100"
@@ -516,6 +522,7 @@ function internalChatApp() {
                     file_size_formatted: msg.file_size_formatted,
                     is_image: msg.is_image,
                     is_video: msg.is_video,
+                    is_read: msg.is_read ?? false,
                     reply_to_id: msg.reply_to_id,
                     reply_to_text: msg.reply_to_text,
                     reply_to_from: msg.reply_to_from,
