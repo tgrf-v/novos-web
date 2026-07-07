@@ -383,55 +383,57 @@ function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
     <div class="w-80 shrink-0 space-y-5">
 
         {{-- Pembayaran --}}
+        @php
+        $role = auth()->user()->role->name;
+        $canValidate = in_array($role, ['Admin', 'Manager', 'Super Admin']);
+        @endphp
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5" x-data="paymentSection()">
-            <h3 class="font-semibold text-gray-900 mb-4 text-sm">Pembayaran</h3>
-            <div class="space-y-2 text-sm">
-                <div class="flex justify-between"><span class="text-gray-500">Subtotal</span><span class="font-medium text-gray-900">{{ rh($order['payment']['subtotal']) }}</span></div>
-                <div class="flex justify-between"><span class="text-gray-500">Biaya Prioritas</span><span class="font-medium text-gray-900">{{ rh($order['payment']['biaya_prioritas']) }}</span></div>
-                <div class="border-t border-gray-100 pt-2 flex justify-between"><span class="font-semibold text-gray-700">Total</span><span class="font-bold text-gray-900">{{ rh($order['payment']['total']) }}</span></div>
-                <div class="flex justify-between"><span class="text-gray-500">Metode</span><span class="font-medium text-gray-900">{{ $order['payment']['method'] }}</span></div>
-                <div class="flex justify-between items-center">
-                    <span class="text-gray-500">Status</span>
-                    @if($order['payment']['status'] === 'lunas')
-                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
-                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Lunas
-                    </span>
-                    @else
-                    <span class="text-xs font-semibold text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full">Pending</span>
-                    @endif
-                </div>
-
-                {{-- Bukti Pembayaran --}}
-                @if($order['payment']['payment_proof'])
-                <div class="pt-2 border-t border-gray-100">
-                    <span class="text-xs text-gray-500 block mb-2">Bukti Pembayaran</span>
-                    <a href="{{ $order['payment']['payment_proof'] }}" target="_blank" class="block relative group rounded-lg overflow-hidden border border-gray-200 hover:border-[#1a237e]/40 transition-colors">
-                        <img src="{{ $order['payment']['payment_proof'] }}" alt="Bukti Pembayaran" class="w-full h-32 object-cover">
-                        <div class="absolute inset-0 bg-[#1a237e]/80 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <span class="text-white text-xs font-semibold">Lihat Detail</span>
-                        </div>
-                    </a>
-                    <p class="text-xs text-gray-400 mt-1 truncate">{{ $order['payment']['payment_proof_name'] ?? 'bukti-pembayaran' }}</p>
-                </div>
-                @endif
-
-                {{-- Tombol Validasi Pembayaran (hanya untuk Admin/Manager/Super Admin) --}}
-                @if($order['payment']['status'] !== 'lunas' && $order['payment']['payment_proof'])
-                <div class="pt-3 border-t border-gray-100 space-y-2">
-                    <button @click="validatePayment('success')" :disabled="loading"
-                        class="w-full py-2 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
-                        :class="loading ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white cursor-pointer'">
-                        <svg x-show="loading" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                        Validasi Pembayaran (Lunas)
-                    </button>
-                    <button @click="validatePayment('rejected')" :disabled="loading"
-                        class="w-full py-2 rounded-lg text-xs font-semibold transition-colors"
-                        :class="loading ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-red-100 hover:bg-red-200 text-red-700 cursor-pointer'">
-                        Tolak Pembayaran
-                    </button>
-                </div>
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="font-semibold text-gray-900 text-sm">Pembayaran</h3>
+                @if($order['payment']['status'] === 'lunas')
+                <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
+                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Lunas
+                </span>
+                @else
+                <span class="text-xs font-semibold text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full">Pending</span>
                 @endif
             </div>
+
+            <div class="flex justify-between text-sm mb-1">
+                <span class="text-gray-500">Metode</span>
+                <span class="font-medium text-gray-900">{{ $order['payment']['method'] ?: '-' }}</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-gray-500">Total</span>
+                <span class="font-bold text-gray-900">{{ rh($order['payment']['total']) }}</span>
+            </div>
+
+            {{-- Tombol Validasi Pembayaran --}}
+            @if($canValidate && $order['payment']['status'] !== 'lunas' && $order['payment']['payment_proof'])
+            <div class="mt-3 pt-3 border-t border-gray-100 space-y-2">
+                <button @click="validatePayment('success')" :disabled="loading"
+                    class="w-full py-2 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
+                    :class="loading ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white cursor-pointer'">
+                    <svg x-show="loading" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                    Validasi Pembayaran (Lunas)
+                </button>
+                <button @click="validatePayment('rejected')" :disabled="loading"
+                    class="w-full py-2 rounded-lg text-xs font-semibold transition-colors"
+                    :class="loading ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-red-100 hover:bg-red-200 text-red-700 cursor-pointer'">
+                    Tolak Pembayaran
+                </button>
+            </div>
+            @endif
+
+            {{-- Link ke chat --}}
+            @if($order['payment']['payment_proof'])
+            <div class="mt-3 pt-3 border-t border-gray-100">
+                <a href="{{ route('staf.chat') }}" class="text-xs text-[#1a237e] hover:underline font-medium inline-flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    Lihat bukti pembayaran di Chat
+                </a>
+            </div>
+            @endif
         </div>
 
         {{-- Update Status --}}

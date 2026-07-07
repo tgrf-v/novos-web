@@ -89,11 +89,7 @@
                     </div>
 
                     {{-- Messages --}}
-                    <div class="relative flex-1 min-h-0">
-                        {{-- Backdrop untuk nutup dropdown --}}
-                        <div x-show="openDropdownMsgId" @click="openDropdownMsgId = null"
-                             class="fixed inset-0 z-10" style="display: none;"></div>
-                        <div x-ref="messages" class="messages-scroll absolute inset-0 overflow-y-auto px-6 py-4 space-y-3">
+                    <div x-ref="messages" @click="openDropdownMsgId = null" class="messages-scroll flex-1 overflow-y-auto min-h-0 px-6 py-4 space-y-3">
                         <template x-for="(msg, i) in currentChat.messages" :key="i">
                             <div class="flex" :class="msg.from === 'admin' ? 'justify-end' : 'justify-start'">
                                 <div class="relative max-w-[70%] min-w-[160px] group">
@@ -212,8 +208,8 @@
                                     <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay:300ms"></span>
                                 </div>
                             </div>
-                        </div>{{-- end x-ref="messages" --}}
-                    </div>{{-- end wrapper --}}
+                        </div>
+                    </div>
 
                     {{-- Input --}}
                     <div class="bg-white border-t border-gray-200 px-6 py-4">

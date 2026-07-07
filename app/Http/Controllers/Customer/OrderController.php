@@ -418,10 +418,26 @@ class OrderController extends Controller
             'order_id'    => $order->id,
             'customer_id' => $order->user_id,
         ]);
+
+        $extension = strtolower($file->getClientOriginalExtension());
+        $isImage = in_array($extension, ['jpg', 'jpeg', 'png']);
+        if ($isImage) {
+            $compressedPath = app(ImageService::class)->compressAndStore($file, 'chat-files');
+            $chatFilePath = $compressedPath;
+            $chatFileSize = Storage::disk('public')->size($compressedPath);
+        } else {
+            $chatFilePath = $file->store('chat-files', 'public');
+            $chatFileSize = $file->getSize();
+        }
+
         ChatMessage::create([
-            'chat_id'   => $chat->id,
-            'sender_id' => auth()->id(),
-            'message'   => 'Saya telah mengupload bukti pembayaran untuk ' . $order->order_number,
+            'chat_id'     => $chat->id,
+            'sender_id'   => auth()->id(),
+            'message'     => 'Saya telah mengupload bukti pembayaran untuk ' . $order->order_number,
+            'file_path'   => $chatFilePath,
+            'file_name'   => $file->getClientOriginalName(),
+            'file_size'   => $chatFileSize,
+            'file_type'   => $file->getMimeType(),
         ]);
 
         Notification::sendToAllStaff(
