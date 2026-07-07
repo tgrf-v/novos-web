@@ -256,7 +256,15 @@ function statusBadgeType($status) {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- Line Chart -->
         <div class="bg-white shadow-sm rounded-xl p-6">
-            <h3 class="font-bold text-gray-900 mb-6 text-lg">Pesanan Per Minggu</h3>
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-bold text-gray-900 text-lg">Pesanan</h3>
+                <div class="flex gap-1 bg-gray-100 rounded-lg p-1" id="chartFilters">
+                    <button data-filter="day" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all text-gray-500 hover:text-gray-700">Harian</button>
+                    <button data-filter="week" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all bg-white shadow-sm text-[#1a237e]">Mingguan</button>
+                    <button data-filter="month" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all text-gray-500 hover:text-gray-700">Bulanan</button>
+                    <button data-filter="year" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all text-gray-500 hover:text-gray-700">Tahunan</button>
+                </div>
+            </div>
             <div class="h-64">
                 <canvas id="lineChart"></canvas>
             </div>
@@ -325,54 +333,89 @@ function statusBadgeType($status) {
             });
 
             // ==================== LINE CHART ====================
-            var ctxLine = document.getElementById('lineChart');
-            if (ctxLine) {
-                new Chart(ctxLine.getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels: @json($weeklyLabels),
-                        datasets: [{
-                            label: 'Pesanan',
-                            data: @json($weeklyData),
-                            borderColor: '#1a237e',
-                            backgroundColor: 'rgba(26, 35, 126, 0.05)',
-                            borderWidth: 2,
-                            tension: 0.4,
-                            fill: true,
-                            pointBackgroundColor: '#1a237e',
-                            pointBorderColor: '#fff',
-                            pointBorderWidth: 2,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: '#1a237e',
-                                padding: 12,
-                                titleFont: { size: 13, family: "'Poppins', sans-serif" },
-                                bodyFont: { size: 13, family: "'Poppins', sans-serif" },
-                                displayColors: false,
-                            }
+            var lineChart = null;
+
+            function loadChart(filter) {
+                fetch('{{ route("staf.dashboard.chart-data") }}?filter=' + filter, {
+                    headers: { 'Accept': 'application/json' }
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(result) {
+                    var ctxLine = document.getElementById('lineChart');
+                    if (!ctxLine) return;
+
+                    if (lineChart) {
+                        lineChart.destroy();
+                    }
+
+                    lineChart = new Chart(ctxLine.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: result.labels,
+                            datasets: [{
+                                label: 'Pesanan',
+                                data: result.data,
+                                borderColor: '#1a237e',
+                                backgroundColor: 'rgba(26, 35, 126, 0.05)',
+                                borderWidth: 2,
+                                tension: 0.4,
+                                fill: true,
+                                pointBackgroundColor: '#1a237e',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            }]
                         },
-                        scales: {
-                            y: { 
-                                beginAtZero: true, 
-                                grid: { color: '#f3f4f6', borderDash: [4, 4] },
-                                border: { display: false }
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: '#1a237e',
+                                    padding: 12,
+                                    titleFont: { size: 13, family: "'Poppins', sans-serif" },
+                                    bodyFont: { size: 13, family: "'Poppins', sans-serif" },
+                                    displayColors: false,
+                                }
                             },
-                            x: { 
-                                grid: { display: false },
-                                border: { display: false }
+                            scales: {
+                                y: { 
+                                    beginAtZero: true, 
+                                    grid: { color: '#f3f4f6', borderDash: [4, 4] },
+                                    border: { display: false }
+                                },
+                                x: { 
+                                    grid: { display: false },
+                                    border: { display: false }
+                                }
                             }
                         }
-                    }
+                    });
+                })
+                .catch(function() {});
+            }
+
+            // Filter button handler
+            var filterContainer = document.getElementById('chartFilters');
+            if (filterContainer) {
+                filterContainer.addEventListener('click', function(e) {
+                    var btn = e.target.closest('button[data-filter]');
+                    if (!btn) return;
+
+                    filterContainer.querySelectorAll('button[data-filter]').forEach(function(b) {
+                        b.classList.remove('bg-white', 'shadow-sm', 'text-[#1a237e]');
+                        b.classList.add('text-gray-500', 'hover:text-gray-700');
+                    });
+                    btn.classList.remove('text-gray-500', 'hover:text-gray-700');
+                    btn.classList.add('bg-white', 'shadow-sm', 'text-[#1a237e]');
+
+                    loadChart(btn.getAttribute('data-filter'));
                 });
             }
+
+            loadChart('week');
 
             // ==================== DOUGHNUT CHART ====================
             var ctxDonut = document.getElementById('donutChart');

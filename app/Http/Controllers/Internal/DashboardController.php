@@ -8,6 +8,7 @@ use App\Models\OrderStatusHistory;
 use App\Models\Payment;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -286,5 +287,57 @@ class DashboardController extends Controller
             'distLabels', 'distData',
             'assignees', 'filterAssignee', 'filterPeriod', 'filterPriority', 'filterStatus',
         ));
+    }
+
+    public function chartData(Request $request): JsonResponse
+    {
+        $filter = $request->query('filter', 'week');
+
+        $labels = [];
+        $data = [];
+
+        switch ($filter) {
+            case 'day':
+                for ($i = 13; $i >= 0; $i--) {
+                    $date = now()->subDays($i);
+                    $labels[] = $date->format('D j/n');
+                    $data[] = Order::whereDate('created_at', $date)->count();
+                }
+                break;
+
+            case 'week':
+                for ($i = 7; $i >= 0; $i--) {
+                    $weekStart = now()->subWeeks($i)->startOfWeek();
+                    $weekEnd = now()->subWeeks($i)->endOfWeek();
+                    $labels[] = 'W' . (8 - $i);
+                    $data[] = Order::whereBetween('created_at', [$weekStart, $weekEnd])->count();
+                }
+                break;
+
+            case 'month':
+                for ($i = 11; $i >= 0; $i--) {
+                    $date = now()->subMonths($i);
+                    $labels[] = $date->format('M Y');
+                    $data[] = Order::whereYear('created_at', $date->year)
+                        ->whereMonth('created_at', $date->month)
+                        ->count();
+                }
+                break;
+
+            case 'year':
+                $currentYear = now()->year;
+                for ($i = 4; $i >= 0; $i--) {
+                    $year = $currentYear - $i;
+                    $labels[] = (string) $year;
+                    $data[] = Order::whereYear('created_at', $year)->count();
+                }
+                break;
+        }
+
+        return response()->json([
+            'labels' => $labels,
+            'data'   => $data,
+            'filter' => $filter,
+        ]);
     }
 }
