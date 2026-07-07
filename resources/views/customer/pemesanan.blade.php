@@ -1305,8 +1305,11 @@
                                 <p class="text-sm font-semibold text-gray-900">BCA</p>
                                 <p class="text-xs text-gray-500">a.n. Novos Jersey</p>
                             </div>
-                            <div class="text-right">
+                            <div class="flex items-center gap-2">
                                 <p class="text-sm font-mono font-bold text-[#1a237e]">123 456 7890</p>
+                                <button @click="copyRekening('123 456 7890')" class="p-1.5 hover:bg-gray-200 rounded-lg transition-colors" title="Salin nomor rekening">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                </button>
                             </div>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -1314,8 +1317,11 @@
                                 <p class="text-sm font-semibold text-gray-900">Mandiri</p>
                                 <p class="text-xs text-gray-500">a.n. Novos Jersey</p>
                             </div>
-                            <div class="text-right">
+                            <div class="flex items-center gap-2">
                                 <p class="text-sm font-mono font-bold text-[#1a237e]">987 654 3210</p>
+                                <button @click="copyRekening('987 654 3210')" class="p-1.5 hover:bg-gray-200 rounded-lg transition-colors" title="Salin nomor rekening">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                </button>
                             </div>
                         </div>
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -1323,8 +1329,11 @@
                                 <p class="text-sm font-semibold text-gray-900">BNI</p>
                                 <p class="text-xs text-gray-500">a.n. Novos Jersey</p>
                             </div>
-                            <div class="text-right">
+                            <div class="flex items-center gap-2">
                                 <p class="text-sm font-mono font-bold text-[#1a237e]">555 666 7777</p>
+                                <button @click="copyRekening('555 666 7777')" class="p-1.5 hover:bg-gray-200 rounded-lg transition-colors" title="Salin nomor rekening">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1544,15 +1553,30 @@
                 <div class="space-y-2 mb-3">
                     <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
                         <span class="text-xs font-semibold text-gray-700">BCA</span>
-                        <span class="text-xs font-mono font-bold text-[#1a237e]">123 456 7890</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs font-mono font-bold text-[#1a237e]">123 456 7890</span>
+                            <button @click="copyRekening('123 456 7890')" class="p-1 hover:bg-gray-200 rounded-lg transition-colors" title="Salin nomor rekening">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
                         <span class="text-xs font-semibold text-gray-700">Mandiri</span>
-                        <span class="text-xs font-mono font-bold text-[#1a237e]">987 654 3210</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs font-mono font-bold text-[#1a237e]">987 654 3210</span>
+                            <button @click="copyRekening('987 654 3210')" class="p-1 hover:bg-gray-200 rounded-lg transition-colors" title="Salin nomor rekening">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
                         <span class="text-xs font-semibold text-gray-700">BNI</span>
-                        <span class="text-xs font-mono font-bold text-[#1a237e]">555 666 7777</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs font-mono font-bold text-[#1a237e]">555 666 7777</span>
+                            <button @click="copyRekening('555 666 7777')" class="p-1 hover:bg-gray-200 rounded-lg transition-colors" title="Salin nomor rekening">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <p class="text-xs text-gray-400">a.n. <strong>Novos Jersey</strong></p>
@@ -2293,6 +2317,16 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                 } else {
                     this.step = 2;
                 }
+            });
+        }
+
+        copyRekening(norek) {
+            navigator.clipboard.writeText(norek).then(() => {
+                const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+                Toast.fire({ icon: 'success', title: 'Tersalin!' });
+            }).catch(() => {
+                const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
+                Toast.fire({ icon: 'error', title: 'Gagal menyalin' });
             });
         }
     }
