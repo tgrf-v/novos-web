@@ -30,7 +30,7 @@ function statusBadgeType($status) {
 }
 @endphp
     <!-- Stats Row -->
-    <div class="grid grid-cols-1 md:grid-cols-2 {{ $isSAOManager ? 'lg:grid-cols-5' : 'lg:grid-cols-4' }} gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 
         @if($isDesign)
 
@@ -248,31 +248,6 @@ function statusBadgeType($status) {
             <p class="text-gray-500 text-sm mt-2 font-medium">Selesai Hari Ini</p>
         </a>
 
-        @endif
-
-        @if($isSAOManager)
-        <!-- Card 5: Revenue -->
-        <a href="{{ route('staf.laporan', ['filter' => 'month']) }}" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div class="flex items-center gap-1 text-xs font-semibold {{ $revenueTrend >= 0 ? 'text-emerald-500 bg-emerald-50' : 'text-red-500 bg-red-50' }} px-2 py-1 rounded-full">
-                    @if($revenueTrend >= 0)
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                    @else
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" /></svg>
-                    @endif
-                    <span>{{ $revenueTrend >= 0 ? '+'.$revenueTrend.'%' : $revenueTrend.'%' }}</span>
-                </div>
-            </div>
-            <h3 class="text-4xl font-bold text-gray-900 tracking-tight">
-                {{ $totalRevenue > 0 ? 'Rp '.number_format($totalRevenue / 1000000, 1).'jt' : 'Rp 0' }}
-            </h3>
-            <p class="text-gray-500 text-sm mt-2 font-medium">Revenue</p>
-        </a>
         @endif
 
     </div>
