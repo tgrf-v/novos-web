@@ -757,7 +757,7 @@
                             </div>
                         </div>
                     </div>
-                <div x-data="{ open: false }" class="relative ml-5">
+                <div x-data="{ open: false, profileOpen: false }" class="relative ml-5">
                     <button @click="open = !open" @click.away="open = false" class="flex items-center gap-2 focus:outline-none">
                         @if(auth()->user()->avatar)
                             <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="Avatar" class="w-8 h-8 rounded-full object-cover shrink-0">
@@ -771,7 +771,7 @@
                     </button>
                     <div x-show="open" x-cloak x-transition class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
                         <div class="py-1">
-                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profil Saya</a>
+                            <button @click="profileOpen = true; open = false" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profil Saya</button>
                             <a href="{{ route('beranda') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Beranda</a>
                             <div class="border-t border-gray-100 my-1"></div>
                             <form method="POST" action="{{ route('logout') }}">
@@ -780,6 +780,49 @@
                             </form>
                         </div>
                     </div>
+
+                    {{-- Modal Profil Saya (read-only) --}}
+                    <template x-teleport="body">
+                        <div x-show="profileOpen" x-cloak
+                            class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4"
+                            @click="profileOpen = false">
+                            <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6" @click.stop>
+                                <div class="flex items-center justify-between mb-5">
+                                    <h3 class="text-lg font-bold text-gray-900">Profil Saya</h3>
+                                    <button @click="profileOpen = false" class="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                    </button>
+                                </div>
+
+                                <div class="flex flex-col items-center gap-3 mb-6">
+                                    @if(auth()->user()->avatar)
+                                        <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="Avatar" class="w-20 h-20 rounded-full object-cover border-2 border-gray-100">
+                                    @else
+                                        <div class="w-20 h-20 bg-[#1a237e] rounded-full flex items-center justify-center border-2 border-gray-100">
+                                            <span class="text-white font-bold text-xl">{{ collect(explode(' ', auth()->user()->name))->map(fn($w) => substr($w, 0, 1))->take(2)->implode('') }}</span>
+                                        </div>
+                                    @endif
+                                    <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#1a237e]/10 text-[#1a237e]">{{ auth()->user()->role->name ?? '-' }}</span>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <p class="text-xs text-gray-500 mb-0.5">Nama</p>
+                                        <p class="text-sm font-medium text-gray-900 bg-gray-50 rounded-lg px-3 py-2">{{ auth()->user()->name }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 mb-0.5">Email</p>
+                                        <p class="text-sm font-medium text-gray-900 bg-gray-50 rounded-lg px-3 py-2">{{ auth()->user()->email }}</p>
+                                    </div>
+                                </div>
+
+                                <button @click="profileOpen = false"
+                                    class="w-full mt-6 py-2.5 bg-[#1a237e] text-white text-sm font-semibold rounded-xl hover:bg-[#283593] transition-colors">
+                                    Tutup
+                                </button>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
         </header>
