@@ -711,9 +711,8 @@
                             <div class="max-h-80 overflow-y-auto divide-y divide-gray-50">
                                 <template x-if="loading">
                                     <div class="px-4 py-8 text-center">
-                                        <svg class="w-6 h-6 mx-auto text-[#1a237e] animate-spin mb-2" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                                        <svg class="w-6 h-6 mx-auto text-gray-300 mb-2 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
                                         </svg>
                                         <p class="text-xs text-gray-400">Memuat notifikasi...</p>
                                     </div>
