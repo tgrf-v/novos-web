@@ -8,6 +8,7 @@ use App\Models\OrderStatusHistory;
 use App\Models\Payment;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -91,8 +92,13 @@ class DashboardController extends Controller
         ));
     }
 
-    public function summary()
+    public function summary(Request $request)
     {
+        $filterAssignee = $request->query('assignee');
+        $filterPeriod = $request->query('period', 'month');
+        $filterPriority = $request->query('priority');
+        $filterStatus = $request->query('status');
+
         $today = now()->startOfDay();
         $thisMonthStart = now()->startOfMonth();
         $lastMonthStart = now()->subMonth()->startOfMonth();
@@ -266,11 +272,19 @@ class DashboardController extends Controller
         $distLabels = ['Custom', 'Produk Katalog'];
         $distData = [round($customCount / $totalBoth * 100), round($catalogCount / $totalBoth * 100)];
 
+        $assignees = User::with('role')
+            ->whereHas('role', fn($q) => $q->whereNot('name', 'Customer'))
+            ->orderBy('name')
+            ->get()
+            ->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'role' => $u->role->name])
+            ->toArray();
+
         return view('internal.summary', compact(
             'kpi1', 'kpi2', 'employees', 'activities',
             'chartWeeks', 'chartRevenue', 'chartOrdersIn', 'chartOrdersOut',
             'topMaterialLabels', 'topMaterialData',
             'distLabels', 'distData',
+            'assignees', 'filterAssignee', 'filterPeriod', 'filterPriority', 'filterStatus',
         ));
     }
 }

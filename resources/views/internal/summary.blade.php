@@ -46,7 +46,7 @@
 </div>
 
 {{-- ─── FILTER PANEL ──────────────────────────────────────────────────── --}}
-<div x-data="{ open: false }" class="bg-white rounded-xl border border-gray-200 shadow-sm mb-5">
+<div x-data="summaryFilter()" class="bg-white rounded-xl border border-gray-200 shadow-sm mb-5">
     <button @click="open=!open" class="w-full flex items-center justify-between px-6 py-4 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-xl transition-colors">
         <span class="flex items-center gap-2">
             <svg class="w-4 h-4 text-[#1a237e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/></svg>
@@ -58,39 +58,53 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-4">
             <div>
                 <label class="block text-xs text-gray-500 mb-1 font-medium">Assignee</label>
-                <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
-                    <option>Semua</option>
-
+                <select x-model="form.assignee" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
+                    <option value="">Semua</option>
+                    @foreach($assignees as $a)
+                    <option value="{{ $a['id'] }}">{{ $a['name'] }} ({{ $a['role'] }})</option>
+                    @endforeach
                 </select>
             </div>
             <div>
                 <label class="block text-xs text-gray-500 mb-1 font-medium">Periode</label>
-                <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
-                    <option>Bulan Ini</option><option>Hari Ini</option><option>7 Hari Terakhir</option><option>30 Hari Terakhir</option><option>Custom</option>
+                <select x-model="form.period" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
+                    <option value="month">Bulan Ini</option>
+                    <option value="today">Hari Ini</option>
+                    <option value="7days">7 Hari Terakhir</option>
+                    <option value="30days">30 Hari Terakhir</option>
                 </select>
             </div>
             <div>
                 <label class="block text-xs text-gray-500 mb-1 font-medium">Prioritas</label>
-                <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
-                    <option>Semua</option><option>Normal</option><option>Express</option><option>Super Express</option>
+                <select x-model="form.priority" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
+                    <option value="">Semua</option>
+                    <option value="normal">Normal</option>
+                    <option value="High">High</option>
                 </select>
             </div>
             <div>
                 <label class="block text-xs text-gray-500 mb-1 font-medium">Status</label>
-                <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
-                    <option>Semua</option><option>Menunggu Pembayaran</option><option>Tahap Desain</option><option>Menunggu ACC</option><option>Produksi</option><option>Selesai</option>
+                <select x-model="form.status" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
+                    <option value="">Semua</option>
+                    <option value="menunggu_pembayaran">Menunggu Pembayaran</option>
+                    <option value="tahap_desain">Tahap Desain</option>
+                    <option value="tahap_produksi">Produksi</option>
+                    <option value="selesai">Selesai</option>
+                    <option value="dibatalkan">Dibatalkan</option>
                 </select>
             </div>
             <div>
                 <label class="block text-xs text-gray-500 mb-1 font-medium">Tipe</label>
-                <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
-                    <option>Semua</option><option>Custom</option><option>Produk Katalog</option>
+                <select x-model="form.type" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
+                    <option value="">Semua</option>
+                    <option value="custom">Custom</option>
+                    <option value="katalog">Produk Katalog</option>
                 </select>
             </div>
         </div>
         <div class="flex gap-3 mt-4">
-            <button class="px-4 py-2 text-sm border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors">Reset</button>
-            <button class="px-5 py-2 text-sm bg-[#1a237e] text-white rounded-lg hover:bg-[#1a237e]/90 font-medium transition-colors">Terapkan Filter</button>
+            <button @click="reset()" class="px-4 py-2 text-sm border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors">Reset</button>
+            <button @click="apply()" class="px-5 py-2 text-sm bg-[#1a237e] text-white rounded-lg hover:bg-[#1a237e]/90 font-medium transition-colors">Terapkan Filter</button>
         </div>
     </div>
 </div>
@@ -271,5 +285,31 @@ new Chart(document.getElementById('chartDist'), {
     data:{ labels:@json($distLabels), datasets:[{ data:@json($distData), backgroundColor:['#1a237e','#38bdf8'], borderWidth:3, borderColor:'#fff', hoverOffset:4 }]},
     options:{ responsive:true, maintainAspectRatio:false, cutout:'72%', plugins:{ legend:{ position:'bottom', labels:{ padding:20, usePointStyle:true, pointStyle:'circle', font:{ family:"'Poppins',sans-serif", size:12 }}}}}
 });
+
+function summaryFilter() {
+    return {
+        open: {{ (request()->has('assignee') || request()->has('period') || request()->has('priority') || request()->has('status') || request()->has('type')) ? 'true' : 'false' }},
+        form: {
+            assignee: '{{ $filterAssignee ?? '' }}',
+            period: '{{ $filterPeriod ?? 'month' }}',
+            priority: '{{ $filterPriority ?? '' }}',
+            status: '{{ $filterStatus ?? '' }}',
+            type: '{{ request()->query('type', '') }}',
+        },
+        apply() {
+            const params = new URLSearchParams();
+            if (this.form.assignee) params.set('assignee', this.form.assignee);
+            if (this.form.period && this.form.period !== 'month') params.set('period', this.form.period);
+            if (this.form.priority) params.set('priority', this.form.priority);
+            if (this.form.status) params.set('status', this.form.status);
+            if (this.form.type) params.set('type', this.form.type);
+            const qs = params.toString();
+            window.location.href = qs ? '{{ route('staf.summary') }}?' + qs : '{{ route('staf.summary') }}';
+        },
+        reset() {
+            window.location.href = '{{ route('staf.summary') }}';
+        }
+    }
+}
 </script>
 @endsection
