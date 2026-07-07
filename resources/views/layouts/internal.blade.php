@@ -783,10 +783,9 @@
 
                     {{-- Modal Profil Saya (read-only) --}}
                     <template x-teleport="body">
-                        <div x-show="profileOpen" x-cloak
-                            class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4"
-                            @click="profileOpen = false">
-                            <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6" @click.stop>
+                        <div x-show="profileOpen" class="fixed inset-0 z-[100] flex items-center justify-center" x-cloak>
+                            <div x-show="profileOpen" x-transition.opacity class="fixed inset-0 bg-black/40" @click="profileOpen = false"></div>
+                            <div x-show="profileOpen" x-transition.scale.origin.bottom class="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 mx-4">
                                 <div class="flex items-center justify-between mb-5">
                                     <h3 class="text-lg font-bold text-gray-900">Profil Saya</h3>
                                     <button @click="profileOpen = false" class="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
