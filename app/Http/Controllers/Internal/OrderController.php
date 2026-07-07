@@ -850,17 +850,15 @@ class OrderController extends Controller
         ]);
 
         $spreadsheet = new Spreadsheet();
-
-        // ── Sheet 1: Detail Produk ──
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Detail Produk');
 
         $sheet->setCellValue('A1', 'Detail Produk');
-        $sheet->mergeCells('A1:E1');
+        $sheet->mergeCells('A1:B1');
         $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
 
         $sheet->setCellValue('A2', 'No. Pesanan: ' . $order->order_number);
-        $sheet->mergeCells('A2:E2');
+        $sheet->mergeCells('A2:B2');
 
         $row = 4;
         $fields = [
@@ -892,11 +890,11 @@ class OrderController extends Controller
         $sheet->setCellValue('A' . $row, 'Ukuran');
         $sheet->getStyle('A' . $row)->getFont()->setBold(true);
         $row++;
+        $sheet->setCellValue('A' . $row, 'Size');
+        $sheet->setCellValue('B' . $row, 'Qty');
+        $sheet->getStyle('A' . $row . ':B' . $row)->getFont()->setBold(true);
+        $row++;
         if ($order->orderItems->isNotEmpty()) {
-            $sheet->setCellValue('A' . $row, 'Size');
-            $sheet->setCellValue('B' . $row, 'Qty');
-            $sheet->getStyle('A' . $row . ':B' . $row)->getFont()->setBold(true);
-            $row++;
             foreach ($order->orderItems as $item) {
                 $sheet->setCellValue('A' . $row, $item->size);
                 $sheet->setCellValue('B' . $row, $item->qty);
@@ -912,13 +910,12 @@ class OrderController extends Controller
             $logoPath = $order->designRequest->logo;
             $designFiles = $order->designRequest->design_files ?? [];
 
-            // Collect unique image paths (logo + design files)
             $imagePaths = [];
             if ($logoPath) {
                 $imagePaths[] = ['path' => $logoPath, 'type' => 'logo'];
             }
             if ($designFiles) {
-                foreach ($designFiles as $i => $f) {
+                foreach ($designFiles as $f) {
                     $path = $f['path'] ?? null;
                     if ($path && $path !== $logoPath) {
                         $imagePaths[] = ['path' => $path, 'type' => 'design'];
@@ -962,39 +959,38 @@ class OrderController extends Controller
             }
         }
 
-        // ── Sheet 2: Detail Item ──
+        // ── Item Details table (same sheet) ──
         if ($order->itemDetails && $order->itemDetails->isNotEmpty()) {
-            $sheet2 = $spreadsheet->createSheet();
-            $sheet2->setTitle('Detail Item');
+            $row++;
+            $row++;
 
-            $sheet2->setCellValue('A1', 'Detail Item Pesanan');
-            $sheet2->mergeCells('A1:E1');
-            $sheet2->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+            $sheet->setCellValue('A' . $row, 'Detail Item Pesanan');
+            $sheet->getStyle('A' . $row)->getFont()->setBold(true)->setSize(12);
+            $row++;
 
-            $sheet2->setCellValue('A3', 'No Punggung');
-            $sheet2->setCellValue('B3', 'Nama Punggung');
-            $sheet2->setCellValue('C3', 'Model Lengan');
-            $sheet2->setCellValue('D3', 'Size');
-            $sheet2->setCellValue('E3', 'Keterangan');
-            $sheet2->getStyle('A3:E3')->getFont()->setBold(true);
+            $sheet->setCellValue('A' . $row, 'No Punggung');
+            $sheet->setCellValue('B' . $row, 'Nama Punggung');
+            $sheet->setCellValue('C' . $row, 'Model Lengan');
+            $sheet->setCellValue('D' . $row, 'Size');
+            $sheet->setCellValue('E' . $row, 'Keterangan');
+            $sheet->getStyle('A' . $row . ':E' . $row)->getFont()->setBold(true);
+            $row++;
 
-            $r = 4;
             foreach ($order->itemDetails as $detail) {
-                $sheet2->setCellValue('A' . $r, $detail->no_punggung ?? '');
-                $sheet2->setCellValue('B' . $r, $detail->nama_punggung ?? '');
-                $sheet2->setCellValue('C' . $r, $detail->model_lengan ?? '');
-                $sheet2->setCellValue('D' . $r, $detail->size ?? '');
-                $sheet2->setCellValue('E' . $r, $detail->keterangan ?? '');
-                $r++;
+                $sheet->setCellValue('A' . $row, $detail->no_punggung ?? '');
+                $sheet->setCellValue('B' . $row, $detail->nama_punggung ?? '');
+                $sheet->setCellValue('C' . $row, $detail->model_lengan ?? '');
+                $sheet->setCellValue('D' . $row, $detail->size ?? '');
+                $sheet->setCellValue('E' . $row, $detail->keterangan ?? '');
+                $row++;
             }
 
-            foreach (range('A', 'E') as $col) {
-                $sheet2->getColumnDimension($col)->setAutoSize(true);
+            foreach (range('C', 'E') as $col) {
+                $sheet->getColumnDimension($col)->setAutoSize(true);
             }
         }
 
-        // Auto-size columns for Sheet 1
-        foreach (range('A', 'E') as $col) {
+        foreach (range('A', 'B') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 

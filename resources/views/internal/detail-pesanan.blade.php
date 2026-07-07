@@ -125,10 +125,19 @@ function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
             <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2 text-sm">
                 <svg class="w-4 h-4 text-[#1a237e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                 Detail Produk
-                <button @click="openModal()" class="ml-auto inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#1a237e] bg-[#1a237e]/5 hover:bg-[#1a237e]/10 rounded-lg transition-colors">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                    Edit
-                </button>
+                <div class="ml-auto flex items-center gap-2">
+                    <a href="{{ route('staf.pesanan.export-excel', $order['order_id']) }}"
+                       class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Export Excel
+                    </a>
+                    <button @click="openModal()" class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#1a237e] bg-[#1a237e]/5 hover:bg-[#1a237e]/10 rounded-lg transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        Edit
+                    </button>
+                </div>
             </h3>
             <div class="grid grid-cols-3 gap-x-8 gap-y-2.5 text-sm mb-4">
                 <div><span class="text-gray-500 text-xs">Jenis</span><div class="font-medium text-gray-900">{{ $order['product']['type'] }}</div></div>
@@ -145,16 +154,7 @@ function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
             {{-- Item Details Table --}}
             @if(!empty($order['item_details']))
             <div class="mb-4">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-medium text-gray-600">Detail Item Pesanan</span>
-                    <a href="{{ route('staf.pesanan.export-excel', $order['order_id']) }}"
-                       class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 hover:underline">
-                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        Export Excel
-                    </a>
-                </div>
+                <span class="text-xs font-medium text-gray-600 mb-2 block">Detail Item Pesanan</span>
                 <div class="overflow-x-auto rounded-lg border border-gray-200">
                     <table class="w-full text-sm">
                         <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
