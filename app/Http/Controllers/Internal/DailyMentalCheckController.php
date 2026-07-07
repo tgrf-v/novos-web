@@ -251,6 +251,151 @@ class DailyMentalCheckController extends Controller
 
     public function getReport(Request $request)
     {
+        return response()->json($this->buildReportData());
+    }
+
+    public function exportReportCsv(Request $request)
+    {
+        $data = $this->buildReportData();
+
+        $filename = 'mental-check-report-' . now()->format('Ymd-His') . '.csv';
+        $headers = [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function () use ($data) {
+            $file = fopen('php://output', 'w');
+            fputs($file, "\xEF\xBB\xBF");
+
+            fputcsv($file, ['LAPORAN DAILY MENTAL CHECK', '', '']);
+            fputcsv($file, ['Periode', now()->subDays(6)->format('d/m/Y') . ' s/d ' . now()->format('d/m/Y'), '']);
+            fputcsv($file, ['', '', '']);
+
+            fputcsv($file, ['A. Ringkasan Hari Ini', '', '']);
+            fputcsv($file, ['Metrik', 'Nilai', '']);
+            fputcsv($file, ['Total Staff', $data['today_summary']['total_staff'], '']);
+            fputcsv($file, ['Sudah Check-in', $data['today_summary']['checked'], '']);
+            fputcsv($file, ['Belum Check-in', $data['today_summary']['unchecked'], '']);
+            fputcsv($file, ['Perlu Perhatian', $data['today_summary']['need_attention'], '']);
+            fputcsv($file, ['', '', '']);
+
+            fputcsv($file, ['B. Kondisi Staff Hari Ini', '', '', '', '', '']);
+            fputcsv($file, ['Staff', 'Role', 'Daily Check', 'Skor', 'Butuh Bantuan', 'Micro-Break']);
+            foreach ($data['staff_today'] as $s) {
+                fputcsv($file, [
+                    $s['name'],
+                    $s['role'],
+                    $s['daily_check'] ? ($s['daily_check']['category'] === 'baik' ? 'Baik' : ($s['daily_check']['category'] === 'perlu_perhatian' ? 'Perhatian' : 'Pendampingan')) : '-',
+                    $s['daily_check'] ? $s['daily_check']['score'] : '-',
+                    $s['daily_check'] && $s['daily_check']['need_help'] ? 'Ya' : '-',
+                    $s['micro_break'] ? $s['micro_break']['level'] : '-',
+                ]);
+            }
+            fputcsv($file, ['', '', '', '', '', '']);
+
+            fputcsv($file, ['C. Ringkasan 7 Hari', '', '', '', '', '']);
+            fputcsv($file, ['Hari', 'Diisi', 'Rata-rata', 'Baik', 'Perhatian', 'Pendampingan']);
+            foreach ($data['week_summary'] as $day) {
+                fputcsv($file, [
+                    $day['label'],
+                    $day['total_filled'] . '/' . $data['today_summary']['total_staff'],
+                    $day['avg_score'] ?? '-',
+                    $day['baik'],
+                    $day['perlu_perhatian'],
+                    $day['perlu_pendampingan'],
+                ]);
+            }
+            fputcsv($file, ['', '', '', '', '', '']);
+
+            fputcsv($file, ['D. Statistik Staff (7 Hari)', '', '', '', '', '']);
+            fputcsv($file, ['Staff', 'Role', 'Hari', 'Rata-rata', 'Kategori Terburuk', 'Micro']);
+            foreach ($data['staff_stats'] as $s) {
+                $worst = $s['worst_category']
+                    ? ($s['worst_category'] === 'baik' ? 'Baik' : ($s['worst_category'] === 'perlu_perhatian' ? 'Perhatian' : 'Pendampingan'))
+                    : '-';
+                fputcsv($file, [
+                    $s['name'],
+                    $s['role'],
+                    $s['total_days'] . '/7',
+                    $s['avg_score'] ?? '-',
+                    $worst,
+                    $s['micro_days'] . '/7',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function exportReportExcel(Request $request)
+    {
+        $data = $this->buildReportData();
+
+        $filename = 'mental-check-report-' . now()->format('Ymd-His') . '.xls';
+        $headers = [
+            'Content-Type'        => 'application/vnd.ms-excel',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function () use ($data) {
+            echo '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+            echo '<head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>MentalCheck</x:Name></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head>';
+            echo '<body>';
+            echo '<table border="1">';
+
+            echo '<tr><th colspan="6" style="font-size:14px;text-align:center;background:#1a237e;color:white;">LAPORAN DAILY MENTAL CHECK</th></tr>';
+            echo '<tr><td colspan="6" style="text-align:center;font-weight:bold;">Periode: ' . now()->subDays(6)->format('d/m/Y') . ' s/d ' . now()->format('d/m/Y') . '</td></tr>';
+            echo '<tr><td colspan="6"></td></tr>';
+
+            echo '<tr><th colspan="6" style="text-align:left;background:#e5e7eb;font-weight:bold;">A. Ringkasan Hari Ini</th></tr>';
+            echo '<tr><th style="font-weight:bold;">Metrik</th><th style="font-weight:bold;">Nilai</th><th colspan="4"></th></tr>';
+            echo '<tr><td>Total Staff</td><td style="font-weight:bold;">' . $data['today_summary']['total_staff'] . '</td><td colspan="4"></td></tr>';
+            echo '<tr><td>Sudah Check-in</td><td style="font-weight:bold;color:#16a34a;">' . $data['today_summary']['checked'] . '</td><td colspan="4"></td></tr>';
+            echo '<tr><td>Belum Check-in</td><td style="font-weight:bold;color:#9ca3af;">' . $data['today_summary']['unchecked'] . '</td><td colspan="4"></td></tr>';
+            echo '<tr><td>Perlu Perhatian</td><td style="font-weight:bold;color:#dc2626;">' . $data['today_summary']['need_attention'] . '</td><td colspan="4"></td></tr>';
+            echo '<tr><td colspan="6"></td></tr>';
+
+            echo '<tr><th colspan="6" style="text-align:left;background:#e5e7eb;font-weight:bold;">B. Kondisi Staff Hari Ini</th></tr>';
+            echo '<tr><th>Staff</th><th>Role</th><th>Daily Check</th><th>Skor</th><th>Butuh Bantuan</th><th>Micro-Break</th></tr>';
+            foreach ($data['staff_today'] as $s) {
+                $daily = $s['daily_check']
+                    ? ($s['daily_check']['category'] === 'baik' ? 'Baik' : ($s['daily_check']['category'] === 'perlu_perhatian' ? 'Perhatian' : 'Pendampingan'))
+                    : '-';
+                $skor = $s['daily_check'] ? $s['daily_check']['score'] : '-';
+                $bantuan = ($s['daily_check'] && $s['daily_check']['need_help']) ? 'Ya' : '-';
+                $micro = $s['micro_break'] ? $s['micro_break']['level'] : '-';
+                echo '<tr><td>' . e($s['name']) . '</td><td>' . e($s['role']) . '</td><td>' . $daily . '</td><td>' . $skor . '</td><td>' . $bantuan . '</td><td>' . $micro . '</td></tr>';
+            }
+            echo '<tr><td colspan="6"></td></tr>';
+
+            echo '<tr><th colspan="6" style="text-align:left;background:#e5e7eb;font-weight:bold;">C. Ringkasan 7 Hari</th></tr>';
+            echo '<tr><th>Hari</th><th>Diisi</th><th>Rata-rata</th><th>Baik</th><th>Perhatian</th><th>Pendampingan</th></tr>';
+            foreach ($data['week_summary'] as $day) {
+                echo '<tr><td>' . e($day['label']) . '</td><td>' . $day['total_filled'] . '/' . $data['today_summary']['total_staff'] . '</td><td>' . ($day['avg_score'] ?? '-') . '</td><td>' . $day['baik'] . '</td><td>' . $day['perlu_perhatian'] . '</td><td>' . $day['perlu_pendampingan'] . '</td></tr>';
+            }
+            echo '<tr><td colspan="6"></td></tr>';
+
+            echo '<tr><th colspan="6" style="text-align:left;background:#e5e7eb;font-weight:bold;">D. Statistik Staff (7 Hari)</th></tr>';
+            echo '<tr><th>Staff</th><th>Role</th><th>Hari</th><th>Rata-rata</th><th>Kategori Terburuk</th><th>Micro</th></tr>';
+            foreach ($data['staff_stats'] as $s) {
+                $worst = $s['worst_category']
+                    ? ($s['worst_category'] === 'baik' ? 'Baik' : ($s['worst_category'] === 'perlu_perhatian' ? 'Perhatian' : 'Pendampingan'))
+                    : '-';
+                echo '<tr><td>' . e($s['name']) . '</td><td>' . e($s['role']) . '</td><td>' . $s['total_days'] . '/7</td><td>' . ($s['avg_score'] ?? '-') . '</td><td>' . $worst . '</td><td>' . $s['micro_days'] . '/7</td></tr>';
+            }
+
+            echo '</table>';
+            echo '</body></html>';
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    private function buildReportData(): array
+    {
         $today = Carbon::today();
         $weekAgo = $today->copy()->subDays(6);
 
@@ -349,7 +494,7 @@ class DailyMentalCheckController extends Controller
             ];
         });
 
-        return response()->json([
+        return [
             'today_summary' => [
                 'total_staff'    => $staff->count(),
                 'checked'        => $checkedToday,
@@ -359,6 +504,6 @@ class DailyMentalCheckController extends Controller
             'staff_today'  => $todayStaff,
             'week_summary' => $weekSummary,
             'staff_stats'  => $staffStats,
-        ]);
+        ];
     }
 }

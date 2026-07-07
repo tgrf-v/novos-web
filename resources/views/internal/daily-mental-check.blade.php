@@ -650,6 +650,20 @@
 
     {{-- ========== TAB 4: LAPORAN (Super Admin & Manager only) ========== --}}
     <div x-show="activeTab === 3" x-cloak x-transition:enter.duration.300 class="space-y-6">
+        {{-- Export Buttons --}}
+        <div class="flex justify-end gap-2" x-show="reportLoaded">
+            <a href="{{ route('staf.daily-mental-check.export-csv') }}"
+               class="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 rounded-lg text-xs font-semibold text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Export CSV
+            </a>
+            <a href="{{ route('staf.daily-mental-check.export-excel') }}"
+               class="inline-flex items-center gap-1.5 px-3 py-2 bg-green-600 border border-green-600 rounded-lg text-xs font-semibold text-white hover:bg-green-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Export Excel
+            </a>
+        </div>
+
         {{-- Summary Cards --}}
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" x-show="reportLoaded">
             <div class="bg-white rounded-2xl shadow-sm p-5 text-center">

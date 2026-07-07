@@ -360,7 +360,13 @@ function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
         {{-- Update Status --}}
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5" x-data="updateStatusSection()" x-init="init()">
             <h3 class="font-semibold text-gray-900 mb-4 text-sm">Update Status</h3>
-            <template x-if="allowedStatuses.length > 0">
+            <template x-if="loading">
+                <div class="flex flex-col items-center justify-center py-6 gap-2">
+                    <svg class="w-5 h-5 animate-spin text-[#1a237e]" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                    <p class="text-xs text-gray-400">Memuat status...</p>
+                </div>
+            </template>
+            <template x-if="!loading && allowedStatuses.length > 0">
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs text-gray-500 mb-1.5 font-medium">Status Baru</label>
@@ -383,7 +389,7 @@ function rh($n){ return 'Rp '.number_format($n,0,',','.'); }
                     </button>
                 </div>
             </template>
-            <template x-if="allowedStatuses.length === 0">
+            <template x-if="!loading && allowedStatuses.length === 0">
                 <p class="text-sm text-gray-400 text-center py-4">Tidak ada perubahan status yang tersedia untuk saat ini.</p>
             </template>
         </div>
@@ -469,6 +475,7 @@ function updateStatusSection() {
         selectedStatus: '',
         statusNote: '',
         updating: false,
+        loading: true,
         async init() {
             try {
                 const res = await fetch('{{ route("staf.pesanan.allowed-statuses", $order["order_id"]) }}', {
@@ -478,6 +485,8 @@ function updateStatusSection() {
                 this.allowedStatuses = data.statuses || [];
             } catch (e) {
                 this.allowedStatuses = [];
+            } finally {
+                this.loading = false;
             }
         },
         async submitStatus() {
