@@ -130,53 +130,50 @@
         </template>
 
         <div class="space-y-5 mt-6">
-            {{-- Row: Nama Tim + Detail Sponsor --}}
+            {{-- Row: Nama Pemesan + Nama Tim --}}
             <div class="grid lg:grid-cols-2 gap-6">
-                {{-- Nama Tim / Event --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Tim / Event</label>
-                    <input
-                        type="text"
-                        x-model="form.team_name"
-                        placeholder="Contoh: FC Harapan Jaya"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
-                    >
+                {{-- Kiri: Nama Pemesan --}}
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Pemesan</label>
+                        <input
+                            type="text"
+                            x-model="form.nama_pemesan"
+                            placeholder="Contoh: John Doe"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Artikel</label>
+                        <input
+                            type="text"
+                            x-model="form.nama_artikel"
+                            placeholder="Contoh: Jersey Tim Futsal"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
+                        >
+                    </div>
                 </div>
 
-                {{-- Detail Sponsor --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Detail Sponsor</label>
-                    <input
-                        type="text"
-                        x-model="form.detail_sponsor"
-                        placeholder="Contoh: Logo sponsor di dada"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
-                    >
-                </div>
-            </div>
-
-            {{-- Row: Nama Artikel + Nama Pemesan --}}
-            <div class="grid lg:grid-cols-2 gap-6">
-                {{-- Nama Artikel --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Artikel</label>
-                    <input
-                        type="text"
-                        x-model="form.nama_artikel"
-                        placeholder="Contoh: Jersey Tim Futsal"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
-                    >
-                </div>
-
-                {{-- Nama Pemesan --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Pemesan</label>
-                    <input
-                        type="text"
-                        x-model="form.nama_pemesan"
-                        placeholder="Contoh: John Doe"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
-                    >
+                {{-- Kanan: Nama Tim --}}
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Tim / Event</label>
+                        <input
+                            type="text"
+                            x-model="form.team_name"
+                            placeholder="Contoh: FC Harapan Jaya"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Detail Sponsor</label>
+                        <input
+                            type="text"
+                            x-model="form.detail_sponsor"
+                            placeholder="Contoh: Logo sponsor di dada"
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
+                        >
+                    </div>
                 </div>
             </div>
 
@@ -574,16 +571,16 @@
                     <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-white w-fit">
                         <button
                             @click="form.total_qty = Math.max(1, (parseInt(form.total_qty) || 1) - 1)"
-                            :class="(parseInt(form.total_qty) || 0) <= 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 cursor-pointer'"
+                            :class="(parseInt(form.total_qty) || 1) <= 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100 cursor-pointer'"
                             class="w-9 h-[42px] flex items-center justify-center transition-colors text-lg font-semibold shrink-0"
                             type="button"
                         >−</button>
                         <span
                             class="w-14 text-center text-sm font-semibold text-gray-900 select-none"
-                            x-text="parseInt(form.total_qty) || 0"
+                            x-text="parseInt(form.total_qty) || 1"
                         ></span>
                         <button
-                            @click="form.total_qty = (parseInt(form.total_qty) || 0) + 1"
+                            @click="form.total_qty = (parseInt(form.total_qty) || 1) + 1"
                             class="w-9 h-[42px] flex items-center justify-center text-gray-600 hover:bg-gray-100 cursor-pointer transition-colors text-lg font-semibold shrink-0"
                             type="button"
                         >+</button>
@@ -1708,7 +1705,7 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             warna_utama: '#1a237e',
             warna_sekunder: '#ffffff',
             catatan: '',
-            total_qty: '',
+            total_qty: 1,
         },
         prioritas: 'normal',
         showUkuranRef: false,
@@ -1793,7 +1790,7 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
 
 
         get totalQty() {
-            return parseInt(this.form.total_qty) || 0;
+            return parseInt(this.form.total_qty) || 1;
         },
 
         get selectedAddress() {
@@ -2111,7 +2108,7 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             formData.append('jenis_potongan', this.form.jenis_potongan);
             formData.append('lengan_jahitan', this.form.lengan_jahitan);
             formData.append('catatan', this.form.catatan);
-            formData.append('total_qty', this.form.total_qty || 0);
+            formData.append('total_qty', this.form.total_qty || 1);
             formData.append('prioritas', this.prioritas);
             formData.append('warna_utama', this.form.warna_utama);
             formData.append('warna_sekunder', this.form.warna_sekunder);
@@ -2298,7 +2295,7 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                 warna_utama: '#1a237e',
                 warna_sekunder: '#ffffff',
                 catatan: '',
-                total_qty: '',
+                total_qty: 1,
             };
             this.uploads = [];
             this.refUploads = [];
