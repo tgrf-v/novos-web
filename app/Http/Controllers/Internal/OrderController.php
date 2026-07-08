@@ -959,13 +959,13 @@ class OrderController extends Controller
 
         // ── SEKTOR KIRI: TITLE SPK ──
         $sheet->setCellValue('A1', 'SURAT PERINTAH KERJA (SPK)');
-        $sheet->mergeCells('A1:E1');
-        $sheet->getStyle('A1:E1')->applyFromArray($styleHeader);
+        $sheet->mergeCells('A1:J1');
+        $sheet->getStyle('A1:J1')->applyFromArray($styleHeader);
         $sheet->getRowDimension(1)->setRowHeight(30);
 
         $sheet->setCellValue('A2', 'No. Pesanan: ' . $order->order_number);
-        $sheet->mergeCells('A2:E2');
-        $sheet->getStyle('A2:E2')->applyFromArray([
+        $sheet->mergeCells('A2:J2');
+        $sheet->getStyle('A2:J2')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -991,48 +991,42 @@ class OrderController extends Controller
         };
 
         $leftFields = [
-            'Jenis'            => $order->designRequest ? 'Jersey Custom' : 'Produk Katalog',
-            'Nama Tim'         => $order->designRequest?->team_name ?? '-',
-            'Nama Artikel'     => $order->designRequest?->nama_artikel ?? '-',
-            'Nama Pemesan'     => $order->designRequest?->nama_pemesan ?? '-',
-            'Detail Sponsor'   => $order->designRequest?->detail_sponsor ?? '-',
-            'Bahan'            => $order->designRequest?->material ?? '-',
-            'Kerah'            => $order->designRequest?->collar_style ?? '-',
-            'Jenis Potongan'   => $order->designRequest?->jenis_potongan ?? '-',
-            'Lengan & Jahitan' => $order->designRequest?->lengan_jahitan ?? '-',
-            'Prioritas'        => match ($order->designRequest?->priority) {
-                'express'      => 'Express',
-                'super_express' => 'Super Express',
-                default        => 'Normal',
-            },
-            'Tanggal Masuk'    => $order->created_at->format('j M Y'),
-            'Deadline'         => $order->created_at->copy()->addDays($deadlineDays)->format('j M Y'),
-            'Total Qty'        => $order->orderItems->sum('qty') . ' pcs',
+            ['label1' => 'Jenis',            'val1' => $order->designRequest ? 'Jersey Custom' : 'Produk Katalog', 'label2' => 'Bahan',            'val2' => $order->designRequest?->material ?? '-'],
+            ['label1' => 'Nama Tim',         'val1' => $order->designRequest?->team_name ?? '-',                   'label2' => 'Kerah',            'val2' => $order->designRequest?->collar_style ?? '-'],
+            ['label1' => 'Nama Artikel',     'val1' => $order->designRequest?->nama_artikel ?? '-',                'label2' => 'Jenis Potongan',   'val2' => $order->designRequest?->jenis_potongan ?? '-'],
+            ['label1' => 'Nama Pemesan',     'val1' => $order->designRequest?->nama_pemesan ?? '-',                'label2' => 'Lengan & Jahitan', 'val2' => $order->designRequest?->lengan_jahitan ?? '-'],
+            ['label1' => 'Detail Sponsor',   'val1' => $order->designRequest?->detail_sponsor ?? '-',              'label2' => 'Prioritas',        'val2' => $order->designRequest?->priority === 'express' ? 'Express' : ($order->designRequest?->priority === 'super_express' ? 'Super Express' : 'Normal')],
+            ['label1' => 'Tanggal Masuk',    'val1' => $order->created_at->format('j M Y'),                        'label2' => 'Deadline',         'val2' => $order->created_at->copy()->addDays($deadlineDays)->format('j M Y')],
+            ['label1' => 'Total Qty',        'val1' => $order->orderItems->sum('qty') . ' pcs',                    'label2' => '',                 'val2' => ''],
         ];
 
         // Render left fields
         // Layout:
-        // Col A (Label), Col B (Value), Col C (Label), Col D (Value), Col E (Separator / Padding)
+        // Col A (Label 1), Col B:E (Value 1), Col F:G (Label 2), Col H:J (Value 2)
         $currentRow = 4;
-        $keys = array_keys($leftFields);
-        $vals = array_values($leftFields);
-        for ($i = 0; $i < count($leftFields); $i += 2) {
+        foreach ($leftFields as $rowPair) {
             // Field 1
-            $sheet->setCellValue('A' . $currentRow, $keys[$i]);
+            $sheet->setCellValue('A' . $currentRow, $rowPair['label1']);
             $sheet->getStyle('A' . $currentRow)->applyFromArray($styleLabel);
-            $sheet->setCellValue('B' . $currentRow, $vals[$i] ?? '-');
+
+            $sheet->setCellValue('B' . $currentRow, $rowPair['val1']);
             $sheet->getStyle('B' . $currentRow)->applyFromArray($styleValue);
 
             // Field 2
-            if ($i + 1 < count($leftFields)) {
-                $sheet->setCellValue('C' . $currentRow, $keys[$i + 1]);
-                $sheet->getStyle('C' . $currentRow)->applyFromArray($styleLabel);
-                $sheet->setCellValue('D' . $currentRow, $vals[$i + 1] ?? '-');
-                $sheet->getStyle('D' . $currentRow)->applyFromArray($styleValue);
+            if ($rowPair['label2']) {
+                $sheet->mergeCells('B' . $currentRow . ':E' . $currentRow);
+
+                $sheet->setCellValue('F' . $currentRow, $rowPair['label2']);
+                $sheet->mergeCells('F' . $currentRow . ':G' . $currentRow);
+                $sheet->getStyle('F' . $currentRow . ':G' . $currentRow)->applyFromArray($styleLabel);
+
+                $sheet->setCellValue('H' . $currentRow, $rowPair['val2']);
+                $sheet->mergeCells('H' . $currentRow . ':J' . $currentRow);
+                $sheet->getStyle('H' . $currentRow . ':J' . $currentRow)->applyFromArray($styleValue);
             } else {
-                $sheet->mergeCells('B' . $currentRow . ':D' . $currentRow);
+                $sheet->mergeCells('B' . $currentRow . ':J' . $currentRow);
             }
-            $sheet->getStyle('A' . $currentRow . ':D' . $currentRow)->applyFromArray($borderThin);
+            $sheet->getStyle('A' . $currentRow . ':J' . $currentRow)->applyFromArray($borderThin);
             $sheet->getRowDimension($currentRow)->setRowHeight(20);
             $currentRow++;
         }
@@ -1350,9 +1344,9 @@ class OrderController extends Controller
 
 
         // ── Column Widths Configuration ──
-        $sheet->getColumnDimension('A')->setWidth(14); // fits "Lengan Panjang/Pendek"
+        $sheet->getColumnDimension('A')->setWidth(18); // fits "Lengan Panjang/Pendek"
         foreach (range('B', 'J') as $col) {
-            $sheet->getColumnDimension($col)->setWidth(6); // compact sizing grid columns
+            $sheet->getColumnDimension($col)->setWidth(8); // compact sizing grid columns
         }
         $sheet->getColumnDimension('K')->setWidth(4); // separator column
 
