@@ -948,7 +948,7 @@
         class="fixed inset-0 z-50 overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
             <div x-show="settingsOpen" x-transition.opacity class="fixed inset-0 transition-opacity bg-black/40" aria-hidden="true"></div>
-            <div x-show="settingsOpen" x-transition.scale.origin.bottom class="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white rounded-2xl shadow-2xl border border-gray-200">
+            <div x-show="settingsOpen" x-transition.scale.origin.bottom class="inline-block w-full max-w-lg p-6 my-8 text-left align-middle transition-all transform bg-white rounded-2xl shadow-2xl border border-gray-200">
                 <div class="flex justify-between items-center mb-6 bg-white -mx-6 -mt-6 p-6 border-b border-gray-200">
                     <h3 class="text-xl font-bold text-gray-900">Atur Jadwal Reminder</h3>
                     <button @click="settingsOpen = false" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
@@ -956,17 +956,59 @@
                     </button>
                 </div>
 
-                <p class="text-sm text-gray-500 mb-4">Atur waktu pengingat micro-break untuk staff.</p>
+                <p class="text-sm text-gray-500 mb-4">Atur waktu dan pesan pengingat micro-break untuk staff.</p>
 
-                <div class="space-y-3 mb-6">
-                    <template x-for="(t, i) in editTimes" :key="i">
-                        <div class="flex items-center gap-3">
-                            <input type="time" x-model="editTimes[i]"
-                                class="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30">
-                            <button @click="removeTime(i)" x-show="editTimes.length > 1"
-                                class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </button>
+                <div class="space-y-4 mb-6">
+                    <template x-for="(item, i) in editTimes" :key="i">
+                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider" x-text="'Reminder ' + (i + 1)"></span>
+                                <button @click="removeTime(i)" x-show="editTimes.length > 1"
+                                    class="p-1.5 text-red-500 hover:bg-red-100 rounded-lg transition-colors">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            {{-- Time picker --}}
+                            <div class="relative mb-2">
+                                <button @click="toggleTimePicker(i)"
+                                    class="w-full flex items-center justify-between bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm hover:border-[#1a237e]/30 transition-colors text-left">
+                                    <span class="text-gray-900 font-medium" x-text="item.time"></span>
+                                    <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                </button>
+                                <div x-show="timePickerIndex === i" x-cloak @click.away="timePickerIndex = null"
+                                    class="absolute top-full left-0 right-0 z-10 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg p-3">
+                                    <div class="flex gap-4">
+                                        <div class="flex-1">
+                                            <p class="text-[10px] font-semibold text-gray-400 uppercase mb-1">Jam</p>
+                                            <div class="grid grid-cols-6 gap-1 max-h-36 overflow-y-auto">
+                                                <template x-for="h in 24" :key="h">
+                                                    <button @click="setTimeHour(i, h - 1)"
+                                                        class="px-1.5 py-1 text-xs rounded-md transition-colors"
+                                                        :class="Number(item.time.split(':')[0]) === h - 1 ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-100'"
+                                                        x-text="String(h - 1).padStart(2, '0')">
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-[10px] font-semibold text-gray-400 uppercase mb-1">Menit</p>
+                                            <div class="grid grid-cols-4 gap-1">
+                                                <template x-for="m in [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]" :key="m">
+                                                    <button @click="setTimeMinute(i, m)"
+                                                        class="px-1.5 py-1 text-xs rounded-md transition-colors"
+                                                        :class="Number(item.time.split(':')[1]) === m ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-100'"
+                                                        x-text="String(m).padStart(2, '0')">
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- Pesan --}}
+                            <textarea x-model="item.message" rows="2"
+                                placeholder="Tulis pesan reminder..."
+                                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/30 resize-none"></textarea>
                         </div>
                     </template>
                 </div>
@@ -998,9 +1040,14 @@ function dailyMentalCheck(config = {}) {
     return {
         userRole: config.role || '',
         posterUrl: config.posterUrl || '',
-        reminderTimes: config.reminderTimes || ['10:00', '13:00', '15:00'],
+        reminderTimes: config.reminderTimes || [
+            { time: '10:00', message: 'Saatnya Micro-Break! \u2014 Minum air putih, peregangan ringan, dan tarik napas 3 kali.' },
+            { time: '13:00', message: 'Istirahat Sejenak \u2014 Lakukan teknik STOP: Stop, Take a breath, Observe, Proceed.' },
+            { time: '15:00', message: 'Sudahkah Anda Beristirahat? \u2014 Berdiri, tarik napas, dan kembali bekerja dengan lebih segar.' },
+        ],
         settingsOpen: false,
         editTimes: [],
+        timePickerIndex: null,
         activeTab: 0,
         todayFilled: false,
         submitted: false,
@@ -1371,18 +1418,35 @@ function dailyMentalCheck(config = {}) {
 
         // Reminder Settings
         openSettings() {
-            this.editTimes = [...this.reminderTimes];
+            this.editTimes = this.reminderTimes.map(r => ({
+                time: typeof r === 'string' ? r : r.time,
+                message: r.message || 'Waktunya Micro-Break!',
+            }));
             this.settingsOpen = true;
         },
 
         addTime() {
-            this.editTimes.push('16:00');
+            this.editTimes.push({ time: '16:00', message: '' });
         },
 
         removeTime(index) {
             if (this.editTimes.length > 1) {
                 this.editTimes.splice(index, 1);
             }
+        },
+
+        toggleTimePicker(i) {
+            this.timePickerIndex = this.timePickerIndex === i ? null : i;
+        },
+
+        setTimeHour(i, h) {
+            const [_, m] = this.editTimes[i].time.split(':').map(Number);
+            this.editTimes[i].time = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+        },
+
+        setTimeMinute(i, m) {
+            const [h, _] = this.editTimes[i].time.split(':').map(Number);
+            this.editTimes[i].time = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
         },
 
         async saveSettings() {
@@ -1396,7 +1460,7 @@ function dailyMentalCheck(config = {}) {
                 });
                 const data = await res.json();
                 if (data.success) {
-                    this.reminderTimes = [...this.editTimes];
+                    this.reminderTimes = this.editTimes.map(r => ({ ...r }));
                     this.settingsOpen = false;
                     Notify.success(data.message);
                 } else {
@@ -1439,13 +1503,14 @@ function dailyMentalCheck(config = {}) {
             const menit = now.getMinutes();
 
             const times = this.reminderTimes.map(t => {
-                const [h, m] = t.split(':').map(Number);
+                const timeStr = typeof t === 'string' ? t : t.time;
+                const [h, m] = timeStr.split(':').map(Number);
                 let label;
                 const hourNum = h + m / 60;
                 if (hourNum < 12) label = 'Micro-Break Pagi ☕';
                 else if (hourNum < 16) label = 'Micro-Break Siang 🌤️';
                 else label = 'Micro-Break Sore ☕';
-                return { time: t, label, hour: h, min: m };
+                return { time: timeStr, label, hour: h, min: m };
             }).sort((a, b) => a.hour * 60 + a.min - (b.hour * 60 + b.min));
 
             const currentMinutes = jam * 60 + menit;

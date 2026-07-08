@@ -14,10 +14,14 @@ class UpdateSettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'company_name'    => 'required|string|max:255',
-            'company_phone'   => 'nullable|string|max:50',
-            'company_email'   => 'nullable|email|max:255',
-            'company_address' => 'nullable|string|max:1000',
+            'company_name'      => 'required|string|max:255',
+            'company_phone'     => 'nullable|string|max:50',
+            'company_email'     => 'nullable|email|max:255',
+            'company_address'   => 'nullable|string|max:1000',
+            'company_instagram' => 'nullable|string|max:255',
+            'hours_weekday'     => 'nullable|string|max:100',
+            'hours_saturday'    => 'nullable|string|max:100',
+            'hours_sunday'      => 'nullable|string|max:100',
         ];
     }
 }

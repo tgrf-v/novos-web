@@ -24,7 +24,18 @@ class DailyMentalCheckController extends Controller
     public function index()
     {
         $posterUrl = $this->resolvePoster();
-        $reminderTimes = json_decode(Setting::get('reminder_times', '["10:00","13:00","15:00"]'));
+        $raw = json_decode(Setting::get('reminder_times', '[
+            {"time":"10:00","message":"Saatnya Micro-Break! — Minum air putih, peregangan ringan, dan tarik napas 3 kali."},
+            {"time":"13:00","message":"Istirahat Sejenak — Lakukan teknik STOP: Stop, Take a breath, Observe, Proceed."},
+            {"time":"15:00","message":"Sudahkah Anda Beristirahat? — Berdiri, tarik napas, dan kembali bekerja dengan lebih segar."}
+        ]'), true);
+
+        // Migrasi format lama (array string) ke format baru (array object)
+        if ($raw && is_array($raw) && isset($raw[0]) && is_string($raw[0])) {
+            $raw = array_map(fn($t) => ['time' => $t, 'message' => 'Waktunya Micro-Break!'], $raw);
+        }
+
+        $reminderTimes = $raw ?: [];
 
         return view('internal.daily-mental-check', compact('posterUrl', 'reminderTimes'));
     }
@@ -124,14 +135,15 @@ class DailyMentalCheckController extends Controller
     {
         $request->validate([
             'times' => 'required|array|min:1',
-            'times.*' => 'required|string|date_format:H:i',
+            'times.*.time' => 'required|string|date_format:H:i',
+            'times.*.message' => 'required|string|max:255',
         ]);
 
         Setting::set('reminder_times', json_encode($request->times));
 
         return response()->json([
             'success' => true,
-            'message' => 'Waktu reminder berhasil diperbarui.',
+            'message' => 'Jadwal reminder berhasil diperbarui.',
         ]);
     }
 
