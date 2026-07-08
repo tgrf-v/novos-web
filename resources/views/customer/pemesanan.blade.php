@@ -576,10 +576,13 @@
                             class="w-9 h-[42px] flex items-center justify-center transition-colors text-lg font-semibold shrink-0"
                             type="button"
                         >−</button>
-                        <span
-                            class="w-14 text-center text-sm font-semibold text-gray-900 select-none"
-                            x-text="parseInt(form.total_qty) || 1"
-                        ></span>
+                        <input
+                            type="number"
+                            x-model.number="form.total_qty"
+                            @input="if (parseInt(form.total_qty) < 1 || isNaN(parseInt(form.total_qty))) form.total_qty = 1"
+                            class="w-16 text-center text-sm font-semibold text-gray-900 border-0 outline-none focus:ring-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            min="1"
+                        >
                         <button
                             @click="form.total_qty = (parseInt(form.total_qty) || 1) + 1"
                             class="w-9 h-[42px] flex items-center justify-center text-gray-600 hover:bg-gray-100 cursor-pointer transition-colors text-lg font-semibold shrink-0"
@@ -2127,10 +2130,10 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                 formData.append('address_id', this.selectedAddressId);
             }
 
-            // Logo tim + Referensi Desain → semua masuk design_files[]
+            // Logo tim (logo_files) & Referensi Desain (design_files) terpisah
             if (this.uploads.length > 0) {
                 this.uploads.forEach(u => {
-                    formData.append('design_files[]', u.file);
+                    formData.append('logo_files[]', u.file);
                 });
                 formData.append('logo', this.uploads[0].file);
             }

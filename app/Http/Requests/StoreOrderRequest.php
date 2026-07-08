@@ -28,6 +28,8 @@ class StoreOrderRequest extends FormRequest
             'warna_utama'    => 'nullable|string|max:7',
             'warna_sekunder' => 'nullable|string|max:7',
             'logo'           => 'nullable|file|mimes:jpg,jpeg,png,ai,eps,psd|max:5120',
+            'logo_files'     => 'nullable|array',
+            'logo_files.*'   => 'file|mimes:jpg,jpeg,png,ai,eps,psd|max:5120',
             'design_files'   => 'nullable|array',
             'design_files.*' => 'file|mimes:jpg,jpeg,png,pdf,ai,eps,psd,zip,rar|max:20480',
             'address_id'     => 'nullable|exists:customer_addresses,id,user_id,' . $this->user()?->id,

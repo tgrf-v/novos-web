@@ -183,7 +183,13 @@ class OrderController extends Controller
 
             if ($order->designRequest->design_files) {
                 foreach ($order->designRequest->design_files as $i => $file) {
-                    $isFirstAndMatchesLogo = ($i === 0 && $logoPath && isset($file['path']) && $file['path'] === $logoPath);
+                    $role = $file['role'] ?? null;
+                    if ($role) {
+                        $isLogo = ($role === 'logo');
+                    } else {
+                        // Fallback logic for old orders
+                        $isLogo = ($i === 0 && $logoPath && isset($file['path']) && $file['path'] === $logoPath);
+                    }
 
                     $mime = $file['type'] ?? null;
                     if (!$mime && isset($file['path'])) {
@@ -195,7 +201,7 @@ class OrderController extends Controller
                     $designFiles[] = [
                         'name' => $file['name'],
                         'url' => asset('storage/' . $file['path']),
-                        'type' => $isFirstAndMatchesLogo ? 'logo' : 'design',
+                        'type' => $isLogo ? 'logo' : 'design',
                         'size' => $file['size'] ?? null,
                         'mime' => $mime,
                     ];
@@ -1158,17 +1164,38 @@ class OrderController extends Controller
         $logoPath = $order->designRequest?->logo;
         $designFiles = $order->designRequest?->design_files ?? [];
  
+        $logoPaths = [];
         $refPaths = [];
+ 
         if ($designFiles) {
             foreach ($designFiles as $f) {
                 $path = $f['path'] ?? null;
-                if ($path && $path !== $logoPath) {
-                    $refPaths[] = $path;
+                if (!$path) continue;
+ 
+                $role = $f['role'] ?? null;
+                if ($role) {
+                    if ($role === 'logo') {
+                        $logoPaths[] = $path;
+                    } else {
+                        $refPaths[] = $path;
+                    }
+                } else {
+                    // Fallback logic for old orders
+                    if ($path === $logoPath) {
+                        $logoPaths[] = $path;
+                    } else {
+                        $refPaths[] = $path;
+                    }
                 }
             }
         }
  
-        if ($logoPath || !empty($refPaths)) {
+        // Fallback: If logoPaths is empty but logoPath is set, add it
+        if (empty($logoPaths) && $logoPath) {
+            $logoPaths[] = $logoPath;
+        }
+ 
+        if (!empty($logoPaths) || !empty($refPaths)) {
             $currentRow += 2;
             $sheet->setCellValue('A' . $currentRow, 'REFERENSI DESAIN & LOGO');
             $sheet->mergeCells('A' . $currentRow . ':J' . $currentRow);
@@ -1200,18 +1227,48 @@ class OrderController extends Controller
                 $sheet->getRowDimension($r)->setRowHeight(18);
             }
  
-            // Draw Logo Tim
-            if ($logoPath) {
-                $fullLogoPath = storage_path('app/public/' . $logoPath);
-                if (file_exists($fullLogoPath)) {
+            // Draw Logo Tim inside A:D box
+            $numLogos = count($logoPaths);
+            if ($numLogos === 1) {
+                $fullPath = storage_path('app/public/' . $logoPaths[0]);
+                if (file_exists($fullPath)) {
                     try {
-                        $drawingLogo = new Drawing();
-                        $drawingLogo->setPath($fullLogoPath);
-                        $drawingLogo->setHeight(160);
-                        $drawingLogo->setCoordinates('B' . ($imageStartRow + 1));
-                        $drawingLogo->setWorksheet($sheet);
-                    } catch (\Exception $e) {
-                        // ignore drawing fail
+                        $drawing = new Drawing();
+                        $drawing->setPath($fullPath);
+                        $drawing->setHeight(160);
+                        $drawing->setCoordinates('B' . ($imageStartRow + 1)); // center in A:D
+                        $drawing->setWorksheet($sheet);
+                    } catch (\Exception $e) {}
+                }
+            } elseif ($numLogos === 2) {
+                $coords = ['A', 'C'];
+                foreach ($logoPaths as $idx => $path) {
+                    if ($idx >= 2) break;
+                    $fullPath = storage_path('app/public/' . $path);
+                    if (file_exists($fullPath)) {
+                        try {
+                            $drawing = new Drawing();
+                            $drawing->setPath($fullPath);
+                            $drawing->setHeight(150);
+                            $drawing->setCoordinates($coords[$idx] . ($imageStartRow + 1));
+                            $drawing->setWorksheet($sheet);
+                        } catch (\Exception $e) {}
+                    }
+                }
+            } elseif ($numLogos >= 3) {
+                $coords = ['A', 'B', 'C'];
+                $maxHeight = ($numLogos === 3) ? 120 : 100;
+                foreach ($logoPaths as $idx => $path) {
+                    if ($idx >= 3) break;
+                    $fullPath = storage_path('app/public/' . $path);
+                    if (file_exists($fullPath)) {
+                        try {
+                            $drawing = new Drawing();
+                            $drawing->setPath($fullPath);
+                            $drawing->setHeight($maxHeight);
+                            $drawing->setCoordinates($coords[$idx] . ($imageStartRow + 2));
+                            $drawing->setWorksheet($sheet);
+                        } catch (\Exception $e) {}
                     }
                 }
             }

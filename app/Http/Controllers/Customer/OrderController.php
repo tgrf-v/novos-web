@@ -94,8 +94,28 @@ class OrderController extends Controller
             }
 
             $designFiles = [];
+            $imageService = app(\App\Services\ImageService::class);
+
+            // 1. Process Logo Files
+            if ($request->hasFile('logo_files')) {
+                foreach ($request->file('logo_files') as $file) {
+                    $extension = strtolower($file->getClientOriginalExtension());
+                    $isImage = in_array($extension, ['jpg', 'jpeg', 'png']);
+                    $path = $isImage
+                        ? $imageService->compressAndStore($file, 'design-files/' . $orderNumber)
+                        : $file->store('design-files/' . $orderNumber, 'public');
+                    $designFiles[] = [
+                        'name' => $file->getClientOriginalName(),
+                        'path' => $path,
+                        'size' => $file->getSize(),
+                        'type' => $file->getMimeType(),
+                        'role' => 'logo',
+                    ];
+                }
+            }
+
+            // 2. Process Design Files (References)
             if ($request->hasFile('design_files')) {
-                $imageService = app(ImageService::class);
                 foreach ($request->file('design_files') as $file) {
                     $extension = strtolower($file->getClientOriginalExtension());
                     $isImage = in_array($extension, ['jpg', 'jpeg', 'png']);
@@ -107,11 +127,29 @@ class OrderController extends Controller
                         'path' => $path,
                         'size' => $file->getSize(),
                         'type' => $file->getMimeType(),
+                        'role' => 'design',
                     ];
                 }
             }
 
-            $logoPath = !empty($designFiles) ? $designFiles[0]['path'] : null;
+            // 3. Fallback / Process single logo if uploaded directly
+            $logoPath = null;
+            if ($request->hasFile('logo')) {
+                $file = $request->file('logo');
+                $extension = strtolower($file->getClientOriginalExtension());
+                $isImage = in_array($extension, ['jpg', 'jpeg', 'png']);
+                $logoPath = $isImage
+                    ? $imageService->compressAndStore($file, 'design-files/' . $orderNumber)
+                    : $file->store('design-files/' . $orderNumber, 'public');
+            }
+
+            // If logo wasn't uploaded directly but logo_files exists, use the first logo_file
+            if (!$logoPath) {
+                $firstLogoFile = collect($designFiles)->firstWhere('role', 'logo');
+                if ($firstLogoFile) {
+                    $logoPath = $firstLogoFile['path'];
+                }
+            }
 
             DesignRequest::create([
                 'order_id'         => $order->id,

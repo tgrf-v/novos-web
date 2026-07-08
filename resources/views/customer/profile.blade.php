@@ -79,6 +79,7 @@
                         <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                         Alamat Pengiriman
                     </button>
+                    @if($user->role->name === 'Customer')
                     {{-- Tab: Keamanan --}}
                     <button @click="setActiveTab('keamanan')"
                         :class="activeTab === 'keamanan' ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-50'"
@@ -86,6 +87,7 @@
                         <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                         Keamanan Akun
                     </button>
+                    @endif
                     {{-- Tab: Bantuan --}}
                     <button @click="setActiveTab('bantuan')"
                         :class="activeTab === 'bantuan' ? 'bg-[#1a237e] text-white' : 'text-gray-700 hover:bg-gray-50'"
@@ -882,6 +884,7 @@
                 </div>
             </div>
 
+            @if($user->role->name === 'Customer')
             {{-- 4. TAB: KEAMANAN --}}
             <div x-show="activeTab === 'keamanan'" x-cloak class="space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm p-6 shadow-sm border border-gray-100">
@@ -923,6 +926,7 @@
                     </form>
                 </div>
             </div>
+            @endif
 
             {{-- 5. TAB: PUSAT BANTUAN --}}
             <div x-show="activeTab === 'bantuan'" x-cloak class="space-y-6">
