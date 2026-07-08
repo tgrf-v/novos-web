@@ -478,33 +478,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-1.5">
                             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Foto Tampak Depan</label>
-                            <div class="flex items-start gap-2">
-                                <div class="flex-1 h-36 rounded-xl bg-gray-100 border border-gray-200 overflow-hidden relative">
-                                    <img :src="formData.imageDepanPreview" x-show="formData.imageDepanPreview" class="absolute inset-0 w-full h-full object-cover" alt="Preview Depan">
-                                    <div x-show="!formData.imageDepanPreview" class="absolute inset-0 flex items-center justify-center">
-                                        <i data-lucide="image" class="w-10 h-10 text-gray-300"></i>
-                                    </div>
-                                </div>
-                                <label class="shrink-0 w-10 h-10 flex items-center justify-center bg-[#1a237e] text-white rounded-xl hover:bg-[#283593] transition-colors cursor-pointer">
-                                    <i data-lucide="upload" class="w-5 h-5"></i>
-                                    <input type="file" x-ref="inputDepan" class="hidden" accept="image/*" @change="handleUploadDepan">
-                                </label>
-                            </div>
+                            <input type="file" class="filepond" id="pondDepan" name="image" accept="image/*" data-max-file-size="5MB" data-allow-multiple="false">
                         </div>
                         <div class="space-y-1.5">
                             <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Foto Tampak Belakang</label>
-                            <div class="flex items-start gap-2">
-                                <div class="flex-1 h-36 rounded-xl bg-gray-100 border border-gray-200 overflow-hidden relative">
-                                    <img :src="formData.imageBelakangPreview" x-show="formData.imageBelakangPreview" class="absolute inset-0 w-full h-full object-cover" alt="Preview Belakang">
-                                    <div x-show="!formData.imageBelakangPreview" class="absolute inset-0 flex items-center justify-center">
-                                        <i data-lucide="image" class="w-10 h-10 text-gray-300"></i>
-                                    </div>
-                                </div>
-                                <label class="shrink-0 w-10 h-10 flex items-center justify-center bg-[#1a237e] text-white rounded-xl hover:bg-[#283593] transition-colors cursor-pointer">
-                                    <i data-lucide="upload" class="w-5 h-5"></i>
-                                    <input type="file" x-ref="inputBelakang" class="hidden" accept="image/*" @change="handleUploadBelakang">
-                                </label>
-                            </div>
+                            <input type="file" class="filepond" id="pondBelakang" name="image_belakang" accept="image/*" data-max-file-size="5MB" data-allow-multiple="false">
                         </div>
                     </div>
 
@@ -558,8 +536,6 @@ function kelolaProdukApp() {
             category_id: '',
             price: '',
             description: '',
-            imageDepanPreview: null,
-            imageBelakangPreview: null,
             kerah: '',
             bahan: '',
             jenis_potongan: '',
@@ -598,13 +574,12 @@ function kelolaProdukApp() {
                 category_id: '',
                 price: '',
                 description: '',
-                imageDepanPreview: null,
-                imageBelakangPreview: null,
                 kerah: '',
                 bahan: '',
                 jenis_potongan: '',
                 lengan_jahitan: ''
             };
+            this.clearFilePonds();
             this.showModal = true;
             this.$nextTick(() => this.renderIcons());
         },
@@ -617,40 +592,34 @@ function kelolaProdukApp() {
                 category_id: product.category_id,
                 price: product.price,
                 description: product.description,
-                imageDepanPreview: product.image_depan,
-                imageBelakangPreview: product.image_belakang,
                 kerah: product.kerah || '',
                 bahan: product.bahan || '',
                 jenis_potongan: product.jenis_potongan || '',
                 lengan_jahitan: product.lengan_jahitan || ''
             };
+            this.clearFilePonds();
+            if (product.image_depan) {
+                const p1 = FilePond.find(document.querySelector('#pondDepan'));
+                if (p1) p1.addFile(product.image_depan);
+            }
+            if (product.image_belakang) {
+                const p2 = FilePond.find(document.querySelector('#pondBelakang'));
+                if (p2) p2.addFile(product.image_belakang);
+            }
             this.showModal = true;
             this.$nextTick(() => this.renderIcons());
         },
 
         closeForm() {
             this.showModal = false;
+            this.clearFilePonds();
         },
 
-        handleUploadDepan(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    this.formData.imageDepanPreview = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        },
-        handleUploadBelakang(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    this.formData.imageBelakangPreview = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
+        clearFilePonds() {
+            ['pondDepan', 'pondBelakang'].forEach(id => {
+                const pond = FilePond.find(document.querySelector('#' + id));
+                if (pond) pond.removeFiles();
+            });
         },
 
         async saveProduct() {
@@ -666,14 +635,16 @@ function kelolaProdukApp() {
             fd.append('jenis_potongan', this.formData.jenis_potongan || '');
             fd.append('lengan_jahitan', this.formData.lengan_jahitan || '');
 
-            const fileInput = this.$refs.inputDepan;
-            if (fileInput && fileInput.files[0]) {
-                fd.append('image', fileInput.files[0]);
+            const pondDepan = FilePond.find(document.querySelector('#pondDepan'));
+            if (pondDepan && pondDepan.getFiles().length > 0) {
+                const f = pondDepan.getFiles()[0];
+                if (f.file instanceof File) fd.append('image', f.file, f.file.name);
             }
 
-            const fileInputBelakang = this.$refs.inputBelakang;
-            if (fileInputBelakang && fileInputBelakang.files[0]) {
-                fd.append('image_belakang', fileInputBelakang.files[0]);
+            const pondBelakang = FilePond.find(document.querySelector('#pondBelakang'));
+            if (pondBelakang && pondBelakang.getFiles().length > 0) {
+                const f = pondBelakang.getFiles()[0];
+                if (f.file instanceof File) fd.append('image_belakang', f.file, f.file.name);
             }
 
             const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
