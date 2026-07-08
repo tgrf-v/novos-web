@@ -147,8 +147,9 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
-                        <select class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all" disabled>
+                        <select name="status" id="tambahStatus" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all">
                             <option value="Aktif" selected>Aktif</option>
+                            <option value="Nonaktif">Nonaktif</option>
                         </select>
                     </div>
                 </div>
@@ -221,8 +222,9 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
-                        <select class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all" disabled>
-                            <option value="Aktif" selected>Aktif</option>
+                        <select name="status" id="editStatus" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Nonaktif">Nonaktif</option>
                         </select>
                     </div>
                 </div>
@@ -336,7 +338,7 @@
                     <td class="px-6 py-4 text-gray-500">${u.username}</td>
                     <td class="px-6 py-4 text-gray-600">${u.email}</td>
                     <td class="px-6 py-4"><x-badge type="${roleBadge}">${u.role}</x-badge></td>
-                    <td class="px-6 py-4"><x-badge type="green">${u.status}</x-badge></td>
+                    <td class="px-6 py-4"><x-badge type="${u.status === 'Nonaktif' ? 'red' : 'green'}">${u.status}</x-badge></td>
                     <td class="px-6 py-4 text-gray-500">${u.created_at}</td>
                     <td class="px-6 py-4 text-center">
                         <div class="flex items-center justify-center gap-2">
@@ -444,7 +446,7 @@
             document.getElementById('detailEmail').textContent = user.email;
             document.getElementById('detailUsername').textContent = '@' + user.username;
             document.getElementById('detailRole').innerHTML = `<x-badge type="${roleBadgeColor(user.role)}">${user.role}</x-badge>`;
-            document.getElementById('detailStatus').innerHTML = `<x-badge type="green">${user.status}</x-badge>`;
+            document.getElementById('detailStatus').innerHTML = `<x-badge type="${user.status === 'Nonaktif' ? 'red' : 'green'}">${user.status}</x-badge>`;
             document.getElementById('detailTanggal').textContent = user.created_at;
             openModal('modalDetail');
         }
@@ -473,6 +475,10 @@
             const roleSelect = document.getElementById('editRole');
             for (let opt of roleSelect.options) {
                 if (opt.value === user.role) { opt.selected = true; break; }
+            }
+            const statusSelect = document.getElementById('editStatus');
+            for (let opt of statusSelect.options) {
+                if (opt.value === user.status) { opt.selected = true; break; }
             }
             const avatarPreview = document.getElementById('editAvatarPreview');
             if (user.avatar) {

@@ -860,23 +860,137 @@ class OrderController extends Controller
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Detail Produk');
+        $sheet->setTitle('SPK - Detail Produk');
 
-        $sheet->setCellValue('A1', 'Detail Produk');
-        $sheet->mergeCells('A1:B1');
-        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        // Enable default grid lines
+        $sheet->setShowGridLines(true);
+
+        // Styling helpers using fully qualified class names
+        $styleHeader = [
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => 'FFFFFF'],
+                'size' => 12,
+                'name' => 'Segoe UI',
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '1A237E'], // Navy
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+        ];
+
+        $styleSubHeader = [
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => '1A237E'],
+                'size' => 10,
+                'name' => 'Segoe UI',
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => 'E8EAF6'], // Soft Blue
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+        ];
+
+        $styleLabel = [
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => '1A237E'],
+                'size' => 9,
+                'name' => 'Segoe UI',
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => 'F5F5F7'], // Soft Gray
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+        ];
+
+        $styleValue = [
+            'font' => [
+                'size' => 9,
+                'name' => 'Segoe UI',
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+        ];
+
+        $styleCenter = [
+            'font' => [
+                'size' => 9,
+                'name' => 'Segoe UI',
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+        ];
+
+        $borderThin = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['rgb' => 'CBD5E1'], // Light Gray
+                ],
+            ],
+        ];
+
+        $borderBox = [
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM,
+                    'color' => ['rgb' => '1A237E'],
+                ],
+            ],
+        ];
+
+        // ── SEKTOR KIRI: TITLE SPK ──
+        $sheet->setCellValue('A1', 'SURAT PERINTAH KERJA (SPK)');
+        $sheet->mergeCells('A1:E1');
+        $sheet->getStyle('A1:E1')->applyFromArray($styleHeader);
+        $sheet->getRowDimension(1)->setRowHeight(30);
 
         $sheet->setCellValue('A2', 'No. Pesanan: ' . $order->order_number);
-        $sheet->mergeCells('A2:B2');
+        $sheet->mergeCells('A2:E2');
+        $sheet->getStyle('A2:E2')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => 'FFFFFF'],
+                'size' => 10,
+                'name' => 'Segoe UI',
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '283593'], // Darker Blue
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+        ]);
+        $sheet->getRowDimension(2)->setRowHeight(20);
 
-        $row = 4;
+        // Specs Fields mapping
         $deadlineDays = match ($order->designRequest?->priority) {
             'super_express' => 2,
             'express'       => 6,
             default         => 14,
         };
 
-        $fields = [
+        $leftFields = [
             'Jenis'            => $order->designRequest ? 'Jersey Custom' : 'Produk Katalog',
             'Nama Tim'         => $order->designRequest?->team_name ?? '-',
             'Nama Artikel'     => $order->designRequest?->nama_artikel ?? '-',
@@ -896,119 +1010,354 @@ class OrderController extends Controller
             'Total Qty'        => $order->orderItems->sum('qty') . ' pcs',
         ];
 
-        foreach ($fields as $label => $value) {
-            $sheet->setCellValue('A' . $row, $label);
-            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
-            $sheet->setCellValue('B' . $row, $value);
-            $row++;
-        }
+        // Render left fields
+        // Layout:
+        // Col A (Label), Col B (Value), Col C (Label), Col D (Value), Col E (Separator / Padding)
+        $currentRow = 4;
+        $keys = array_keys($leftFields);
+        $vals = array_values($leftFields);
+        for ($i = 0; $i < count($leftFields); $i += 2) {
+            // Field 1
+            $sheet->setCellValue('A' . $currentRow, $keys[$i]);
+            $sheet->getStyle('A' . $currentRow)->applyFromArray($styleLabel);
+            $sheet->setCellValue('B' . $currentRow, $vals[$i] ?? '-');
+            $sheet->getStyle('B' . $currentRow)->applyFromArray($styleValue);
 
-        // Sizes
-        $row++;
-        $sheet->setCellValue('A' . $row, 'Ukuran');
-        $sheet->getStyle('A' . $row)->getFont()->setBold(true);
-        $row++;
-        $sheet->setCellValue('A' . $row, 'Size');
-        $sheet->setCellValue('B' . $row, 'Qty');
-        $sheet->getStyle('A' . $row . ':B' . $row)->getFont()->setBold(true);
-        $row++;
-        if ($order->orderItems->isNotEmpty()) {
-            foreach ($order->orderItems as $item) {
-                $sheet->setCellValue('A' . $row, $item->size);
-                $sheet->setCellValue('B' . $row, $item->qty);
-                $row++;
+            // Field 2
+            if ($i + 1 < count($leftFields)) {
+                $sheet->setCellValue('C' . $currentRow, $keys[$i + 1]);
+                $sheet->getStyle('C' . $currentRow)->applyFromArray($styleLabel);
+                $sheet->setCellValue('D' . $currentRow, $vals[$i + 1] ?? '-');
+                $sheet->getStyle('D' . $currentRow)->applyFromArray($styleValue);
+            } else {
+                $sheet->mergeCells('B' . $currentRow . ':D' . $currentRow);
             }
-        } else {
-            $sheet->setCellValue('A' . $row, '-');
-            $row++;
+            $sheet->getStyle('A' . $currentRow . ':D' . $currentRow)->applyFromArray($borderThin);
+            $sheet->getRowDimension($currentRow)->setRowHeight(20);
+            $currentRow++;
         }
 
-        // ── Images: Logo & Referensi ──
+        // ── SIZING GRID SECTION ──
+        $currentRow += 2;
+        $sheet->setCellValue('A' . $currentRow, 'RINCIAN TOTAL UKURAN');
+        $sheet->mergeCells('A' . $currentRow . ':J' . $currentRow);
+        $sheet->getStyle('A' . $currentRow . ':J' . $currentRow)->applyFromArray($styleHeader);
+        $sheet->getRowDimension($currentRow)->setRowHeight(22);
+        $currentRow++;
+
+        // Parse Sizes from itemDetails
+        $dewasaSizes = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '6XL'];
+        $anakSizes   = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
+
+        $sizingGrid = [
+            'dewasa' => [
+                'short' => array_fill_keys($dewasaSizes, 0),
+                'long'  => array_fill_keys($dewasaSizes, 0),
+            ],
+            'anak' => [
+                'short' => array_fill_keys($anakSizes, 0),
+                'long'  => array_fill_keys($anakSizes, 0),
+            ]
+        ];
+
+        foreach ($order->itemDetails as $detail) {
+            $sizeStr = strtoupper(trim($detail->size ?? ''));
+            $modelLengan = strtolower(trim($detail->model_lengan ?? ''));
+            $sleeveType = (str_contains($modelLengan, 'long')) ? 'long' : 'short';
+
+            if (str_contains(strtolower($sizeStr), 'anak')) {
+                $cleanSize = trim(str_replace('ANAK', '', $sizeStr));
+                if ($cleanSize === 'XXL') $cleanSize = '2XL';
+                if ($cleanSize === 'XXXL') $cleanSize = '3XL';
+
+                if (array_key_exists($cleanSize, $sizingGrid['anak'][$sleeveType])) {
+                    $sizingGrid['anak'][$sleeveType][$cleanSize]++;
+                }
+            } else {
+                $cleanSize = $sizeStr;
+                if ($cleanSize === 'XXL') $cleanSize = '2XL';
+                if ($cleanSize === 'XXXL') $cleanSize = '3XL';
+
+                if (array_key_exists($cleanSize, $sizingGrid['dewasa'][$sleeveType])) {
+                    $sizingGrid['dewasa'][$sleeveType][$cleanSize]++;
+                }
+            }
+        }
+
+        // DEWASA
+        $sheet->setCellValue('A' . $currentRow, 'DEWASA');
+        $sheet->getStyle('A' . $currentRow)->applyFromArray($styleSubHeader);
+        $colIdx = 'B';
+        foreach ($dewasaSizes as $sz) {
+            $sheet->setCellValue($colIdx . $currentRow, $sz);
+            $sheet->getStyle($colIdx . $currentRow)->applyFromArray($styleSubHeader);
+            $colIdx++;
+        }
+        $sheet->getRowDimension($currentRow)->setRowHeight(20);
+        $currentRow++;
+
+        $sheet->setCellValue('A' . $currentRow, 'Lengan Pendek');
+        $sheet->getStyle('A' . $currentRow)->applyFromArray($styleLabel);
+        $colIdx = 'B';
+        foreach ($dewasaSizes as $sz) {
+            $sheet->setCellValue($colIdx . $currentRow, $sizingGrid['dewasa']['short'][$sz]);
+            $sheet->getStyle($colIdx . $currentRow)->applyFromArray($styleCenter);
+            $colIdx++;
+        }
+        $sheet->getStyle('A' . $currentRow . ':J' . $currentRow)->applyFromArray($borderThin);
+        $sheet->getRowDimension($currentRow)->setRowHeight(20);
+        $currentRow++;
+
+        $sheet->setCellValue('A' . $currentRow, 'Lengan Panjang');
+        $sheet->getStyle('A' . $currentRow)->applyFromArray($styleLabel);
+        $colIdx = 'B';
+        foreach ($dewasaSizes as $sz) {
+            $sheet->setCellValue($colIdx . $currentRow, $sizingGrid['dewasa']['long'][$sz]);
+            $sheet->getStyle($colIdx . $currentRow)->applyFromArray($styleCenter);
+            $colIdx++;
+        }
+        $sheet->getStyle('A' . $currentRow . ':J' . $currentRow)->applyFromArray($borderThin);
+        $sheet->getRowDimension($currentRow)->setRowHeight(20);
+        $currentRow++;
+
+        // ANAK
+        $currentRow++;
+        $sheet->setCellValue('A' . $currentRow, 'ANAK');
+        $sheet->getStyle('A' . $currentRow)->applyFromArray($styleSubHeader);
+        $colIdx = 'B';
+        foreach ($anakSizes as $sz) {
+            $sheet->setCellValue($colIdx . $currentRow, $sz);
+            $sheet->getStyle($colIdx . $currentRow)->applyFromArray($styleSubHeader);
+            $colIdx++;
+        }
+        // Blank cells at the end of Anak sizes header (Columns I & J)
+        $sheet->getStyle('I' . $currentRow . ':J' . $currentRow)->applyFromArray($styleSubHeader);
+        $sheet->getRowDimension($currentRow)->setRowHeight(20);
+        $currentRow++;
+
+        $sheet->setCellValue('A' . $currentRow, 'Lengan Pendek');
+        $sheet->getStyle('A' . $currentRow)->applyFromArray($styleLabel);
+        $colIdx = 'B';
+        foreach ($anakSizes as $sz) {
+            $sheet->setCellValue($colIdx . $currentRow, $sizingGrid['anak']['short'][$sz]);
+            $sheet->getStyle($colIdx . $currentRow)->applyFromArray($styleCenter);
+            $colIdx++;
+        }
+        $sheet->getStyle('A' . $currentRow . ':J' . $currentRow)->applyFromArray($borderThin);
+        $sheet->getRowDimension($currentRow)->setRowHeight(20);
+        $currentRow++;
+
+        $sheet->setCellValue('A' . $currentRow, 'Lengan Panjang');
+        $sheet->getStyle('A' . $currentRow)->applyFromArray($styleLabel);
+        $colIdx = 'B';
+        foreach ($anakSizes as $sz) {
+            $sheet->setCellValue($colIdx . $currentRow, $sizingGrid['anak']['long'][$sz]);
+            $sheet->getStyle($colIdx . $currentRow)->applyFromArray($styleCenter);
+            $colIdx++;
+        }
+        $sheet->getStyle('A' . $currentRow . ':J' . $currentRow)->applyFromArray($borderThin);
+        $sheet->getRowDimension($currentRow)->setRowHeight(20);
+        $currentRow++;
+
+
+        // ── IMAGES BOX SECTION ──
+        $currentRow += 2;
+        $sheet->setCellValue('A' . $currentRow, 'REFERENSI DESAIN & LOGO');
+        $sheet->mergeCells('A' . $currentRow . ':J' . $currentRow);
+        $sheet->getStyle('A' . $currentRow . ':J' . $currentRow)->applyFromArray($styleHeader);
+        $sheet->getRowDimension($currentRow)->setRowHeight(22);
+        $currentRow++;
+
+        $logoLabelRow = $currentRow;
+        $sheet->setCellValue('A' . $logoLabelRow, 'Logo Tim');
+        $sheet->mergeCells('A' . $logoLabelRow . ':D' . $logoLabelRow);
+        $sheet->getStyle('A' . $logoLabelRow . ':D' . $logoLabelRow)->applyFromArray($styleSubHeader);
+
+        $sheet->setCellValue('F' . $logoLabelRow, 'Referensi Desain');
+        $sheet->mergeCells('F' . $logoLabelRow . ':J' . $logoLabelRow);
+        $sheet->getStyle('F' . $logoLabelRow . ':J' . $logoLabelRow)->applyFromArray($styleSubHeader);
+        $sheet->getRowDimension($logoLabelRow)->setRowHeight(20);
+        $currentRow++;
+
+        $imageStartRow = $currentRow;
+
+        // Merge image frame cells
+        $sheet->mergeCells('A' . $imageStartRow . ':D' . ($imageStartRow + 10));
+        $sheet->getStyle('A' . $imageStartRow . ':D' . ($imageStartRow + 10))->applyFromArray($borderBox);
+
+        $sheet->mergeCells('F' . $imageStartRow . ':J' . ($imageStartRow + 10));
+        $sheet->getStyle('F' . $imageStartRow . ':J' . ($imageStartRow + 10))->applyFromArray($borderBox);
+
+        for ($r = $imageStartRow; $r <= $imageStartRow + 10; $r++) {
+            $sheet->getRowDimension($r)->setRowHeight(18);
+        }
+
+        // Draw Images
         if ($order->designRequest) {
             $logoPath = $order->designRequest->logo;
             $designFiles = $order->designRequest->design_files ?? [];
 
-            $imagePaths = [];
+            // Draw Logo Tim
             if ($logoPath) {
-                $imagePaths[] = ['path' => $logoPath, 'type' => 'logo'];
+                $fullLogoPath = storage_path('app/public/' . $logoPath);
+                if (file_exists($fullLogoPath)) {
+                    try {
+                        $drawingLogo = new Drawing();
+                        $drawingLogo->setPath($fullLogoPath);
+                        $drawingLogo->setHeight(160);
+                        $drawingLogo->setCoordinates('B' . ($imageStartRow + 1));
+                        $drawingLogo->setWorksheet($sheet);
+                    } catch (\Exception $e) {
+                        // ignore drawing fail
+                    }
+                }
             }
+
+            // Draw Referensi Desain
+            $refPath = null;
             if ($designFiles) {
                 foreach ($designFiles as $f) {
                     $path = $f['path'] ?? null;
                     if ($path && $path !== $logoPath) {
-                        $imagePaths[] = ['path' => $path, 'type' => 'design'];
+                        $refPath = $path;
+                        break;
                     }
                 }
             }
 
-            if (!empty($imagePaths)) {
-                $row++;
-                $sheet->setCellValue('A' . $row, 'Gambar');
-                $sheet->getStyle('A' . $row)->getFont()->setBold(true);
-                $row++;
-
-                $col = 'A';
-                foreach ($imagePaths as $img) {
-                    $fullPath = storage_path('app/public/' . $img['path']);
-                    if (!file_exists($fullPath)) continue;
-
-                    $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
-                    if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'])) continue;
-
+            if ($refPath) {
+                $fullRefPath = storage_path('app/public/' . $refPath);
+                if (file_exists($fullRefPath)) {
                     try {
-                        $drawing = new Drawing();
-                        $drawing->setPath($fullPath);
-                        $drawing->setHeight(120);
-                        $drawing->setCoordinates($col . $row);
-                        $drawing->setWorksheet($sheet);
-
-                        $sheet->getColumnDimension($col)->setWidth(25);
-                        $sheet->getRowDimension($row)->setRowHeight(90);
-
-                        $label = $img['type'] === 'logo' ? 'Logo Tim' : ('Referensi ' . basename($img['path']));
-                        $sheet->setCellValue($col . ($row - 1), $label);
-                        $sheet->getStyle($col . ($row - 1))->getFont()->setSize(9)->setItalic(true);
-
-                        $col++;
+                        $drawingRef = new Drawing();
+                        $drawingRef->setPath($fullRefPath);
+                        $drawingRef->setHeight(160);
+                        $drawingRef->setCoordinates('G' . ($imageStartRow + 1));
+                        $drawingRef->setWorksheet($sheet);
                     } catch (\Exception $e) {
-                        continue;
+                        // ignore drawing fail
                     }
                 }
             }
         }
+        $leftMaxRow = $imageStartRow + 10;
 
-        // ── Item Details table (same sheet) ──
+
+        // ── SEKTOR KANAN: DETAIL DATA PESANAN (DAFTAR PEMAIN) ──
+        $sheet->setCellValue('L1', 'DETAIL DATA PESANAN');
+        $sheet->mergeCells('L1:P1');
+        $sheet->getStyle('L1:P1')->applyFromArray($styleHeader);
+        $sheet->getRowDimension(1)->setRowHeight(30);
+
+        $sheet->setCellValue('L2', 'Tabel Rincian Jersey & Nama Punggung');
+        $sheet->mergeCells('L2:P2');
+        $sheet->getStyle('L2:P2')->applyFromArray([
+            'font' => [
+                'italic' => true,
+                'color' => ['rgb' => 'FFFFFF'],
+                'size' => 9,
+                'name' => 'Segoe UI',
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => '283593'],
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ],
+        ]);
+        $sheet->getRowDimension(2)->setRowHeight(20);
+
+        // Player table headers
+        $sheet->setCellValue('L4', 'No');
+        $sheet->setCellValue('M4', 'Nama Punggung');
+        $sheet->setCellValue('N4', 'No Punggung');
+        $sheet->setCellValue('O4', 'Size');
+        $sheet->setCellValue('P4', 'Keterangan');
+        $sheet->getStyle('L4:P4')->applyFromArray($styleSubHeader);
+        $sheet->getStyle('L4:P4')->applyFromArray($borderThin);
+        $sheet->getRowDimension(4)->setRowHeight(20);
+
+        $rightRow = 5;
         if ($order->itemDetails && $order->itemDetails->isNotEmpty()) {
-            $row++;
-            $row++;
+            foreach ($order->itemDetails as $index => $detail) {
+                $sheet->setCellValue('L' . $rightRow, $index + 1);
+                $sheet->getStyle('L' . $rightRow)->applyFromArray($styleCenter);
 
-            $sheet->setCellValue('A' . $row, 'Detail Item Pesanan');
-            $sheet->getStyle('A' . $row)->getFont()->setBold(true)->setSize(12);
-            $row++;
+                $sheet->setCellValue('M' . $rightRow, $detail->nama_punggung ?? '-');
+                $sheet->getStyle('M' . $rightRow)->applyFromArray($styleValue);
 
-            $sheet->setCellValue('A' . $row, 'No Punggung');
-            $sheet->setCellValue('B' . $row, 'Nama Punggung');
-            $sheet->setCellValue('C' . $row, 'Model Lengan');
-            $sheet->setCellValue('D' . $row, 'Size');
-            $sheet->setCellValue('E' . $row, 'Keterangan');
-            $sheet->getStyle('A' . $row . ':E' . $row)->getFont()->setBold(true);
-            $row++;
+                $sheet->setCellValue('N' . $rightRow, $detail->no_punggung ?? '-');
+                $sheet->getStyle('N' . $rightRow)->applyFromArray($styleCenter);
 
-            foreach ($order->itemDetails as $detail) {
-                $sheet->setCellValue('A' . $row, $detail->no_punggung ?? '');
-                $sheet->setCellValue('B' . $row, $detail->nama_punggung ?? '');
-                $sheet->setCellValue('C' . $row, $detail->model_lengan ?? '');
-                $sheet->setCellValue('D' . $row, $detail->size ?? '');
-                $sheet->setCellValue('E' . $row, $detail->keterangan ?? '');
-                $row++;
+                $sheet->setCellValue('O' . $rightRow, $detail->size ?? '-');
+                $sheet->getStyle('O' . $rightRow)->applyFromArray($styleCenter);
+
+                $sheet->setCellValue('P' . $rightRow, $detail->keterangan ?? '-');
+                $sheet->getStyle('P' . $rightRow)->applyFromArray($styleValue);
+
+                $sheet->getStyle('L' . $rightRow . ':P' . $rightRow)->applyFromArray($borderThin);
+                $sheet->getRowDimension($rightRow)->setRowHeight(18);
+                $rightRow++;
             }
-
-            foreach (range('C', 'E') as $col) {
-                $sheet->getColumnDimension($col)->setAutoSize(true);
-            }
+        } else {
+            $sheet->setCellValue('L' . $rightRow, 'Tidak ada data item pesanan.');
+            $sheet->mergeCells('L' . $rightRow . ':P' . $rightRow);
+            $sheet->getStyle('L' . $rightRow)->applyFromArray($styleValue);
+            $sheet->getStyle('L' . $rightRow . ':P' . $rightRow)->applyFromArray($borderThin);
+            $sheet->getRowDimension($rightRow)->setRowHeight(20);
+            $rightRow++;
         }
 
-        foreach (range('A', 'B') as $col) {
+
+        // ── VALIDASI PRODUKSI SECTION ──
+        $maxRow = max($leftMaxRow, $rightRow) + 3;
+
+        $sheet->setCellValue('A' . $maxRow, 'DESAINER');
+        $sheet->mergeCells('A' . $maxRow . ':C' . $maxRow);
+        $sheet->getStyle('A' . $maxRow . ':C' . $maxRow)->applyFromArray([
+            'font' => ['bold' => true, 'size' => 10, 'name' => 'Segoe UI', 'color' => ['rgb' => '1A237E']],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+        ]);
+
+        $sheet->setCellValue('E' . $maxRow, 'DIVISI I (POTONG/PRINT)');
+        $sheet->mergeCells('E' . $maxRow . ':G' . $maxRow);
+        $sheet->getStyle('E' . $maxRow . ':G' . $maxRow)->applyFromArray([
+            'font' => ['bold' => true, 'size' => 10, 'name' => 'Segoe UI', 'color' => ['rgb' => '1A237E']],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+        ]);
+
+        $sheet->setCellValue('H' . $maxRow, 'DIVISI II (SEWING/QC)');
+        $sheet->mergeCells('H' . $maxRow . ':J' . $maxRow);
+        $sheet->getStyle('H' . $maxRow . ':J' . $maxRow)->applyFromArray([
+            'font' => ['bold' => true, 'size' => 10, 'name' => 'Segoe UI', 'color' => ['rgb' => '1A237E']],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+        ]);
+
+        $maxRow4 = $maxRow + 4;
+        $sheet->setCellValue('A' . $maxRow4, '(...................................)');
+        $sheet->mergeCells('A' . $maxRow4 . ':C' . $maxRow4);
+        $sheet->getStyle('A' . $maxRow4 . ':C' . $maxRow4)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        $sheet->setCellValue('E' . $maxRow4, '(...................................)');
+        $sheet->mergeCells('E' . $maxRow4 . ':G' . $maxRow4);
+        $sheet->getStyle('E' . $maxRow4 . ':G' . $maxRow4)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        $sheet->setCellValue('H' . $maxRow4, '(...................................)');
+        $sheet->mergeCells('H' . $maxRow4 . ':J' . $maxRow4);
+        $sheet->getStyle('H' . $maxRow4 . ':J' . $maxRow4)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+
+        // ── Column Widths Configuration ──
+        $sheet->getColumnDimension('A')->setWidth(14); // fits "Lengan Panjang/Pendek"
+        foreach (range('B', 'J') as $col) {
+            $sheet->getColumnDimension($col)->setWidth(6); // compact sizing grid columns
+        }
+        $sheet->getColumnDimension('K')->setWidth(4); // separator column
+
+        // Auto-fit player table columns on the right (L to P)
+        foreach (['L', 'M', 'N', 'O', 'P'] as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 

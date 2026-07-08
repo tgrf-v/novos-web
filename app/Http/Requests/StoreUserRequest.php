@@ -19,6 +19,7 @@ class StoreUserRequest extends FormRequest
             'password' => 'required|string|min:6|confirmed',
             'role'     => 'required|string|in:Super Admin,Manager,Admin,Design,Produksi',
             'avatar'   => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'status'   => 'nullable|string|in:Aktif,Nonaktif',
         ];
     }
 }

@@ -28,7 +28,7 @@ class UserController extends Controller
                     'username'   => explode('@', $user->email)[0],
                     'role'       => $user->role->name,
                     'avatar'     => $user->avatar,
-                    'status'     => 'Aktif',
+                    'status'     => $user->is_active ? 'Aktif' : 'Nonaktif',
                     'created_at' => $user->created_at->format('d M Y'),
                 ];
             })
@@ -66,13 +66,16 @@ class UserController extends Controller
             $avatarPath = 'avatars/' . $filename;
         }
 
-        $user = DB::transaction(function () use ($data, $role, $avatarPath) {
+        $isActive = ($data['status'] ?? 'Aktif') === 'Aktif';
+
+        $user = DB::transaction(function () use ($data, $role, $avatarPath, $isActive) {
             return User::create([
-                'name'     => $data['name'],
-                'email'    => $data['email'],
-                'password' => Hash::make($data['password']),
-                'role_id'  => $role->id,
-                'avatar'   => $avatarPath,
+                'name'      => $data['name'],
+                'email'     => $data['email'],
+                'password'  => Hash::make($data['password']),
+                'role_id'   => $role->id,
+                'avatar'    => $avatarPath,
+                'is_active' => $isActive,
             ]);
         });
 
@@ -87,7 +90,7 @@ class UserController extends Controller
                 'phone'      => $user->phone ?? '-',
                 'role'       => $role->name,
                 'avatar'     => $user->avatar,
-                'status'     => 'Aktif',
+                'status'     => $isActive ? 'Aktif' : 'Nonaktif',
                 'created_at' => $user->created_at->format('d M Y'),
             ],
         ]);
@@ -125,12 +128,15 @@ class UserController extends Controller
             $avatarPath = 'avatars/' . $filename;
         }
 
-        DB::transaction(function () use ($data, $role, $user, $avatarPath) {
+        $isActive = ($data['status'] ?? 'Aktif') === 'Aktif';
+
+        DB::transaction(function () use ($data, $role, $user, $avatarPath, $isActive) {
             $user->update([
-                'name'    => $data['name'],
-                'email'   => $data['email'],
-                'role_id' => $role->id,
-                'avatar'  => $avatarPath,
+                'name'      => $data['name'],
+                'email'     => $data['email'],
+                'role_id'   => $role->id,
+                'avatar'    => $avatarPath,
+                'is_active' => $isActive,
             ]);
 
             if ($data['password']) {
@@ -148,7 +154,7 @@ class UserController extends Controller
                 'username'   => explode('@', $user->email)[0],
                 'role'       => $role->name,
                 'avatar'     => $user->fresh()->avatar,
-                'status'     => 'Aktif',
+                'status'     => $isActive ? 'Aktif' : 'Nonaktif',
                 'created_at' => $user->created_at->format('d M Y'),
             ],
         ]);
