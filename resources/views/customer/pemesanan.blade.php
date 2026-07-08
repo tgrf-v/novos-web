@@ -1667,6 +1667,13 @@
     opacity: 0;
     animation: fadeSlideUp 0.5s ease-out forwards;
 }
+
+/* SweetAlert2 toast — di bawah navbar (h-16 = 64px) */
+.swal2-container.swal2-top-end,
+.swal2-container.swal2-top-start,
+.swal2-container.swal2-top {
+    top: 72px !important;
+}
 </style>
 
 <script>
@@ -2332,13 +2339,41 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
         },
 
         copyRekening(norek) {
-            navigator.clipboard.writeText(norek).then(() => {
-                const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
-                Toast.fire({ icon: 'success', title: 'Tersalin!' });
-            }).catch(() => {
-                const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 2000 });
-                Toast.fire({ icon: 'error', title: 'Gagal menyalin' });
+            const norekBersih = norek.replace(/\s+/g, '');
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true,
             });
+
+            const berhasil = () => Toast.fire({ icon: 'success', title: 'Nomor rekening tersalin!', text: norekBersih });
+            const gagal   = () => Toast.fire({ icon: 'error',   title: 'Gagal menyalin', text: 'Salin manual: ' + norekBersih });
+
+            // Gunakan Clipboard API jika tersedia (HTTPS / localhost)
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(norekBersih).then(berhasil).catch(() => {
+                    // Fallback jika ditolak permission
+                    fallbackCopy(norekBersih) ? berhasil() : gagal();
+                });
+            } else {
+                // Fallback execCommand untuk HTTP / Laragon local
+                fallbackCopy(norekBersih) ? berhasil() : gagal();
+            }
+
+            function fallbackCopy(text) {
+                const el = document.createElement('textarea');
+                el.value = text;
+                el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+                document.body.appendChild(el);
+                el.focus();
+                el.select();
+                let ok = false;
+                try { ok = document.execCommand('copy'); } catch(e) {}
+                document.body.removeChild(el);
+                return ok;
+            }
         }
     }
 }
