@@ -147,19 +147,24 @@
                                 </div>
                                 <div class="flex gap-2 items-center">
                                     <template x-if="order.status === 'selesai'">
-                                        <button @click="openReviewModal(order)" 
-                                                title="Berikan Ulasan" 
-                                                class="flex items-center gap-0.5 px-3 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors cursor-pointer mr-1">
+                                        <div class="flex items-center gap-0.5 mr-2" x-data="{ localHover: 0 }">
                                             <template x-for="i in 5">
-                                                <svg class="w-3.5 h-3.5" 
-                                                     :class="(order.review && order.review.rating >= i) ? 'text-[#00e5ff] fill-[#00e5ff]' : 'text-gray-300'"
-                                                     viewBox="0 0 24 24" 
-                                                     stroke="currentColor" 
-                                                     stroke-width="2">
-                                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                                                </svg>
+                                                <button type="button" 
+                                                        @click="openReviewModal(order, i)" 
+                                                        @mouseenter="localHover = i" 
+                                                        @mouseleave="localHover = 0"
+                                                        class="p-0.5 focus:outline-none transition-transform hover:scale-110 cursor-pointer"
+                                                        :title="'Beri rating ' + i + ' bintang'">
+                                                    <svg class="w-5 h-5 transition-colors" 
+                                                         :class="((localHover || (order.review ? order.review.rating : 0)) >= i) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'"
+                                                         viewBox="0 0 24 24" 
+                                                         stroke="currentColor" 
+                                                         stroke-width="1.5">
+                                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                                    </svg>
+                                                </button>
                                             </template>
-                                        </button>
+                                        </div>
                                     </template>
                                     <button @click="openDetail(order)" class="px-4 py-2 text-gray-600 rounded-lg text-xs font-bold hover:bg-gray-50 transition-colors">Lihat Detail Transaksi</button>
 
@@ -367,7 +372,7 @@
                                                 @mouseleave="hoverRating = 0"
                                                 class="p-1 focus:outline-none transition-transform hover:scale-110 cursor-pointer">
                                             <svg class="w-10 h-10 transition-colors" 
-                                                 :class="((hoverRating || reviewForm.rating) >= i) ? 'text-[#00e5ff] fill-[#00e5ff]' : 'text-gray-200'"
+                                                 :class="((hoverRating || reviewForm.rating) >= i) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200'"
                                                  viewBox="0 0 24 24" 
                                                  stroke="currentColor" 
                                                  stroke-width="1.5">
@@ -1342,9 +1347,9 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
             this.selectedOrder = null;
         },
  
-        openReviewModal(order) {
+        openReviewModal(order, initialRating = null) {
             this.reviewForm.order_id = order.id;
-            this.reviewForm.rating = order.review ? order.review.rating : 5;
+            this.reviewForm.rating = initialRating !== null ? initialRating : (order.review ? order.review.rating : 5);
             this.reviewForm.comment = order.review ? order.review.comment : '';
             this.hoverRating = 0;
             this.showReviewModal = true;
