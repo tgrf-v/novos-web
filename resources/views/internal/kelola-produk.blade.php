@@ -17,7 +17,7 @@
             class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200">
             <i data-lucide="layers" class="w-4 h-4"></i> Katalog Produk
         </button>
-        <button @click="tab='referensi'; $nextTick(() => renderIcons())"
+        <button @click="tab='referensi'; $nextTick(() => { renderIcons(); FilePond.parse(document.body); })"
             :class="tab==='referensi' ? 'bg-[#1a237e] text-white shadow-md' : 'text-gray-600 hover:bg-gray-100'"
             class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200">
             <i data-lucide="settings" class="w-4 h-4"></i> Referensi Jersey
@@ -162,15 +162,7 @@
                     {{-- Gambar Panduan --}}
                     <div class="space-y-2 mb-4">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Gambar Panduan / Referensi</label>
-                        <div class="w-full h-44 rounded-xl border border-gray-200 bg-gray-50 overflow-hidden flex items-center justify-center relative group">
-                            <img :src="refPreviews.collar || referensi.collar.image" class="w-full h-full object-contain" alt="Kerah Guide">
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <label class="px-3 py-1.5 bg-white text-xs font-bold text-gray-700 rounded-lg shadow cursor-pointer hover:bg-gray-50">
-                                    Ganti Gambar
-                                    <input type="file" @change="handleRefImageChange($event, 'collar')" accept="image/*" class="hidden">
-                                </label>
-                            </div>
-                        </div>
+                        <input type="file" class="filepond" id="pondRefCollar" name="image" accept="image/*" data-max-file-size="5MB" data-allow-multiple="false">
                     </div>
                 </div>
                 <button type="button" @click="saveReferensi('collar')" :disabled="refSaving.collar"
@@ -219,15 +211,7 @@
                     {{-- Gambar Panduan --}}
                     <div class="space-y-2 mb-4">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Gambar Panduan / Referensi</label>
-                        <div class="w-full h-44 rounded-xl border border-gray-200 bg-gray-50 overflow-hidden flex items-center justify-center relative group">
-                            <img :src="refPreviews.bahan || referensi.bahan.image" class="w-full h-full object-contain" alt="Bahan Guide">
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <label class="px-3 py-1.5 bg-white text-xs font-bold text-gray-700 rounded-lg shadow cursor-pointer hover:bg-gray-50">
-                                    Ganti Gambar
-                                    <input type="file" @change="handleRefImageChange($event, 'bahan')" accept="image/*" class="hidden">
-                                </label>
-                            </div>
-                        </div>
+                        <input type="file" class="filepond" id="pondRefBahan" name="image" accept="image/*" data-max-file-size="5MB" data-allow-multiple="false">
                     </div>
                 </div>
                 <button type="button" @click="saveReferensi('bahan')" :disabled="refSaving.bahan"
@@ -276,15 +260,7 @@
                     {{-- Gambar Panduan --}}
                     <div class="space-y-2 mb-4">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Gambar Panduan / Referensi</label>
-                        <div class="w-full h-44 rounded-xl border border-gray-200 bg-gray-50 overflow-hidden flex items-center justify-center relative group">
-                            <img :src="refPreviews.potongan || referensi.potongan.image" class="w-full h-full object-contain" alt="Potongan Guide">
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <label class="px-3 py-1.5 bg-white text-xs font-bold text-gray-700 rounded-lg shadow cursor-pointer hover:bg-gray-50">
-                                    Ganti Gambar
-                                    <input type="file" @change="handleRefImageChange($event, 'potongan')" accept="image/*" class="hidden">
-                                </label>
-                            </div>
-                        </div>
+                        <input type="file" class="filepond" id="pondRefPotongan" name="image" accept="image/*" data-max-file-size="5MB" data-allow-multiple="false">
                     </div>
                 </div>
                 <button type="button" @click="saveReferensi('potongan')" :disabled="refSaving.potongan"
@@ -333,15 +309,7 @@
                     {{-- Gambar Panduan --}}
                     <div class="space-y-2 mb-4">
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Gambar Panduan / Referensi</label>
-                        <div class="w-full h-44 rounded-xl border border-gray-200 bg-gray-50 overflow-hidden flex items-center justify-center relative group">
-                            <img :src="refPreviews.lengan || referensi.lengan.image" class="w-full h-full object-contain" alt="Lengan Guide">
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <label class="px-3 py-1.5 bg-white text-xs font-bold text-gray-700 rounded-lg shadow cursor-pointer hover:bg-gray-50">
-                                    Ganti Gambar
-                                    <input type="file" @change="handleRefImageChange($event, 'lengan')" accept="image/*" class="hidden">
-                                </label>
-                            </div>
-                        </div>
+                        <input type="file" class="filepond" id="pondRefLengan" name="image" accept="image/*" data-max-file-size="5MB" data-allow-multiple="false">
                     </div>
                 </div>
                 <button type="button" @click="saveReferensi('lengan')" :disabled="refSaving.lengan"
@@ -526,8 +494,7 @@ function kelolaProdukApp() {
             lengan: { options: [], image: '' }
         },
         refInputs: { collar: '', bahan: '', potongan: '', lengan: '' },
-        refFiles: { collar: null, bahan: null, potongan: null, lengan: null },
-        refPreviews: { collar: null, bahan: null, potongan: null, lengan: null },
+
         refSaving: { collar: false, bahan: false, potongan: false, lengan: false },
 
         formData: {
@@ -755,8 +722,20 @@ function kelolaProdukApp() {
                 .then(res => res.json())
                 .then(data => {
                     this.referensi = data;
+                    this.$nextTick(() => this.loadRefPonds());
                 })
                 .catch(e => console.error(e));
+        },
+
+        loadRefPonds() {
+            const map = { collar: 'pondRefCollar', bahan: 'pondRefBahan', potongan: 'pondRefPotongan', lengan: 'pondRefLengan' };
+            Object.entries(map).forEach(([type, id]) => {
+                const pond = FilePond.find(document.querySelector('#' + id));
+                if (pond && this.referensi[type].image) {
+                    pond.removeFiles();
+                    pond.addFile(this.referensi[type].image);
+                }
+            });
         },
  
         addRefOption(type) {
@@ -774,24 +753,21 @@ function kelolaProdukApp() {
             this.referensi[type].options.splice(index, 1);
         },
  
-        handleRefImageChange(e, type) {
-            const file = e.target.files[0];
-            if (!file) return;
-            this.refFiles[type] = file;
-            this.refPreviews[type] = URL.createObjectURL(file);
-        },
- 
         saveReferensi(type) {
             if (this.refSaving[type]) return;
             this.refSaving[type] = true;
- 
+
             const fd = new FormData();
             fd.append('type', type);
             fd.append('options', JSON.stringify(this.referensi[type].options));
-            if (this.refFiles[type]) {
-                fd.append('image', this.refFiles[type]);
+
+            const map = { collar: 'pondRefCollar', bahan: 'pondRefBahan', potongan: 'pondRefPotongan', lengan: 'pondRefLengan' };
+            const pond = FilePond.find(document.querySelector('#' + map[type]));
+            if (pond && pond.getFiles().length > 0) {
+                const f = pond.getFiles()[0];
+                if (f.file instanceof File) fd.append('image', f.file, f.file.name);
             }
- 
+
             fetch('{{ route('staf.kelola-produk.update-referensi') }}', {
                 method: 'POST',
                 headers: {
@@ -811,10 +787,6 @@ function kelolaProdukApp() {
                         timer: 1500,
                         showConfirmButton: false
                     });
-                    if (this.refFiles[type]) {
-                        this.refFiles[type] = null;
-                        this.refPreviews[type] = null;
-                    }
                     this.fetchReferensi();
                 } else {
                     Swal.fire({
