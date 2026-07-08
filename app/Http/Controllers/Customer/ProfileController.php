@@ -20,7 +20,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         $orders = Order::where('user_id', $user->id)
-            ->with(['designRequest', 'payment', 'orderItems'])
+            ->with(['designRequest', 'payment', 'orderItems', 'itemDetails'])
             ->latest()
             ->get()
             ->each(function ($order) {

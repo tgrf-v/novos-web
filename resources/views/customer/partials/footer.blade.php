@@ -24,8 +24,7 @@
                     {{-- WhatsApp --}}
                     <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $whatsApp) }}" target="_blank" class="w-9 h-9 rounded-full border border-[#00e5ff]/40 flex items-center justify-center text-[#00e5ff] hover:bg-[#00e5ff] hover:text-[#0d0d2b] transition-all">
                         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21.75 12a9.75 9.75 0 01-14.55 8.393l-3.45 1.157 1.157-3.45A9.75 9.75 0 1121.75 12z" />
-                            <path d="M15.75 13.5a.75.75 0 100-1.5.75.75 0 000 1.5zM12 13.5a.75.75 0 100-1.5.75.75 0 000 1.5zM8.25 13.5a.75.75 0 100-1.5.75.75 0 000 1.5z" />
+                            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
                         </svg>
                     </a>
                     {{-- Instagram --}}

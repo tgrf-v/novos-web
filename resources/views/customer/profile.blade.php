@@ -107,18 +107,14 @@
                     <button @click="orderFilter = 'menunggu_pembayaran'"
                         :class="orderFilter === 'menunggu_pembayaran' ? 'bg-blue-100 text-blue-800 shadow-sm' : 'text-gray-600 hover:bg-gray-200'"
                         class="px-4 py-2 rounded-lg text-xs font-semibold transition-all">
-                        Menunggu Pembayaran
+                        Menunggu Konfirmasi
                     </button>
                     <button @click="orderFilter = 'proses'"
                         :class="orderFilter === 'proses' ? 'bg-blue-100 text-blue-800 shadow-sm' : 'text-gray-600 hover:bg-gray-200'"
                         class="px-4 py-2 rounded-lg text-xs font-semibold transition-all">
                         Proses Produksi
                     </button>
-                    <button @click="orderFilter = 'kirim'"
-                        :class="orderFilter === 'kirim' ? 'bg-blue-100 text-blue-800 shadow-sm' : 'text-gray-600 hover:bg-gray-200'"
-                        class="px-4 py-2 rounded-lg text-xs font-semibold transition-all">
-                        Sedang Dikirim
-                    </button>
+
                     <button @click="orderFilter = 'selesai'"
                         :class="orderFilter === 'selesai' ? 'bg-blue-100 text-blue-800 shadow-sm' : 'text-gray-600 hover:bg-gray-200'"
                         class="px-4 py-2 rounded-lg text-xs font-semibold transition-all">
@@ -144,18 +140,14 @@
                                 </template>
                             </div>
                             <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-gray-100 pt-4">
-                                <div class="text-sm">
-                                    <span class="text-gray-500">Total: </span>
-                                    <span class="font-bold text-[#1a237e]" x-text="formatRupiah(order.total_price)"></span>
+                                <div class="text-sm text-gray-500">
                                     <template x-if="order.order_items && order.order_items.length">
-                                        <span class="text-gray-400 text-xs ml-1">(<span x-text="totalQty(order.order_items) + ' pcs'"></span>)</span>
+                                        <span><span x-text="totalQty(order.order_items)"></span> pcs</span>
                                     </template>
                                 </div>
                                 <div class="flex gap-2 items-center">
                                     <button @click="openDetail(order)" class="px-4 py-2 text-gray-600 rounded-lg text-xs font-bold hover:bg-gray-50 transition-colors">Lihat Detail Transaksi</button>
-                                    <template x-if="order.status === 'menunggu_pembayaran'">
-                                        <button @click="payOrder(order.order_number)" class="px-4 py-2 bg-[#1a237e] text-white rounded-lg text-xs font-bold hover:bg-[#283593] transition-colors">Setujui Detail & Bayar Sekarang</button>
-                                    </template>
+
                                     <div class="relative">
                                         <button @click="showMenu = !showMenu" class="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                                             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
@@ -212,7 +204,7 @@
             <template x-teleport="body">
                 <div x-show="selectedOrder" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4" @keydown.escape.window="closeDetail()">
                     <div class="absolute inset-0 bg-black/40"></div>
-                    <div x-show="selectedOrder" x-transition.scale.origin.bottom class="relative bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                    <div x-show="selectedOrder" x-transition.scale.origin.bottom class="relative bg-white rounded-2xl shadow-xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
                         <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
                             <div>
                                 <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Detail Transaksi</p>
@@ -232,33 +224,71 @@
                                 <span class="text-sm font-medium text-gray-900" x-text="formatDate(selectedOrder?.created_at)"></span>
                             </div>
                             <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-500">Nama Pemesan</span>
+                                <span class="text-sm font-medium text-gray-900" x-text="selectedOrder?.design_request?.nama_pemesan || '-'"></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-500">Nama Artikel</span>
+                                <span class="text-sm font-medium text-gray-900" x-text="selectedOrder?.design_request?.nama_artikel || '-'"></span>
+                            </div>
+                            <div class="flex items-center justify-between">
                                 <span class="text-xs text-gray-500">Nama Tim</span>
                                 <span class="text-sm font-medium text-gray-900" x-text="selectedOrder?.design_request?.team_name || 'Katalog'"></span>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs text-gray-500">Bahan Jersey</span>
-                                <span class="text-sm font-medium text-gray-900" x-text="selectedOrder?.design_request?.material || '-'"></span>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 border-t border-b border-gray-100 py-4">
+                                <div>
+                                    <span class="text-xs text-gray-500 block mb-0.5">Bahan Jersey</span>
+                                    <span class="text-sm font-medium text-gray-900" x-text="selectedOrder?.design_request?.material || '-'"></span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-500 block mb-0.5">Kerah</span>
+                                    <span class="text-sm font-medium text-gray-900" x-text="selectedOrder?.design_request?.collar_style || '-'"></span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-500 block mb-0.5">Jenis Potongan</span>
+                                    <span class="text-sm font-medium text-gray-900" x-text="getJenisPotongan()"></span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-500 block mb-0.5">Pola Jahitan</span>
+                                    <span class="text-sm font-medium text-gray-900" x-text="selectedOrder?.design_request?.pattern || '-'"></span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-500 block mb-0.5">Model Lengan & Jahitan</span>
+                                    <span class="text-sm font-medium text-gray-900" x-text="getLenganJahitan()"></span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-gray-500 block mb-0.5">Jumlah</span>
+                                    <span class="text-sm font-medium text-gray-900" x-text="(selectedOrder?.order_items ? totalQty(selectedOrder.order_items) : '-') + ' pcs'"></span>
+                                </div>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs text-gray-500">Kerah</span>
-                                <span class="text-sm font-medium text-gray-900" x-text="selectedOrder?.design_request?.collar_style || '-'"></span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs text-gray-500">Pola Jahitan</span>
-                                <span class="text-sm font-medium text-gray-900" x-text="selectedOrder?.design_request?.pattern || '-'"></span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs text-gray-500">Jumlah</span>
-                                <span class="text-sm font-medium text-gray-900" x-text="(selectedOrder?.order_items ? totalQty(selectedOrder.order_items) : '-') + ' pcs'"></span>
-                            </div>
-                            <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-                                <span class="text-sm font-semibold text-gray-700">Total Bayar</span>
-                                <span class="text-base font-bold text-[#1a237e]" x-text="formatRupiah(selectedOrder?.total_price)"></span>
-                            </div>
-                            <template x-if="selectedOrder?.notes">
-                                <div class="bg-amber-50/50 rounded-xl p-4 border border-amber-200/60">
-                                    <p class="text-xs text-gray-500 font-medium mb-1">Catatan Pesanan</p>
-                                    <p class="text-sm text-gray-700" x-text="selectedOrder.notes"></p>
+
+                            <template x-if="selectedOrder?.item_details?.length">
+                                <div class="pt-3 border-t border-gray-100">
+                                    <p class="text-xs text-gray-500 font-medium mb-3">Detail Pesanan</p>
+                                    <div class="overflow-x-auto rounded-lg border border-gray-200">
+                                        <table class="w-full text-sm">
+                                            <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                                                <tr>
+                                                    <th class="px-3 py-2 text-left font-semibold">No Punggung</th>
+                                                    <th class="px-3 py-2 text-left font-semibold">Nama Punggung</th>
+                                                    <th class="px-3 py-2 text-left font-semibold">Model Lengan</th>
+                                                    <th class="px-3 py-2 text-left font-semibold">Size</th>
+                                                    <th class="px-3 py-2 text-left font-semibold">Keterangan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-100">
+                                                <template x-for="(detail, idx) in selectedOrder.item_details" :key="idx">
+                                                    <tr class="hover:bg-gray-50 transition-colors">
+                                                        <td class="px-3 py-2 text-gray-800 font-medium" x-text="detail.no_punggung || '-'"></td>
+                                                        <td class="px-3 py-2 text-gray-700" x-text="detail.nama_punggung || '-'"></td>
+                                                        <td class="px-3 py-2 text-gray-700" x-text="detail.model_lengan || '-'"></td>
+                                                        <td class="px-3 py-2 text-gray-700" x-text="detail.size || '-'"></td>
+                                                        <td class="px-3 py-2 text-gray-700 max-w-[200px] truncate" x-text="detail.keterangan || '-'"></td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </template>
                             <template x-if="selectedOrder?.design_request?.all_design_files?.length">
@@ -819,7 +849,7 @@
                             <h4 class="font-bold text-gray-900 text-base mb-1">Butuh Respon Cepat?</h4>
                             <p class="text-sm text-gray-600">Hubungi CS Novos via WhatsApp untuk perubahan data pesanan mendesak.</p>
                         </div>
-                        <a href="https://wa.me/6281234567890?text=Halo%20Admin%20Novos,%20saya%20butuh%20bantuan%20terkait%20pesanan%20saya"
+                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', app(\App\Models\Setting::class)->get('company_phone', '6281234567890')) }}?text=Halo%20Admin%20Novos,%20saya%20butuh%20bantuan%20terkait%20pesanan%20saya"
                            target="_blank"
                            class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold flex items-center gap-2 transition-colors shrink-0 shadow-sm">
                             {{-- WhatsApp Phone Icon --}}
@@ -1226,6 +1256,24 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
             this.selectedOrder = null;
         },
 
+        getJenisPotongan() {
+            if (this.selectedOrder?.design_request?.jenis_potongan) {
+                return this.selectedOrder.design_request.jenis_potongan;
+            }
+            const notes = this.selectedOrder?.notes || '';
+            const match = notes.match(/Jenis Potongan:\s*([^\n]+)/i);
+            return match ? match[1].trim() : '-';
+        },
+
+        getLenganJahitan() {
+            if (this.selectedOrder?.design_request?.lengan_jahitan) {
+                return this.selectedOrder.design_request.lengan_jahitan;
+            }
+            const notes = this.selectedOrder?.notes || '';
+            const match = notes.match(/Model Lengan & Jahitan:\s*([^\n]+)/i);
+            return match ? match[1].trim() : '-';
+        },
+
         totalQty(items) {
             if (!items || !items.length) return 0;
             return items.reduce((sum, item) => sum + parseInt(item.qty), 0);
@@ -1253,10 +1301,7 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
                     return order.status === 'menunggu_pembayaran';
                 }
                 if (filter === 'proses') {
-                    return ['dikonfirmasi', 'disetujui', 'di_design', 'siap_cetak'].includes(order.status);
-                }
-                if (filter === 'kirim') {
-                    return order.status === 'diproduksi';
+                    return ['dikonfirmasi', 'disetujui', 'di_design', 'siap_cetak', 'diproduksi'].includes(order.status);
                 }
                 if (filter === 'selesai') {
                     return order.status === 'selesai';
@@ -1267,7 +1312,7 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
 
         getStatusLabel(status) {
             const labels = {
-                'menunggu_pembayaran': 'Menunggu Pembayaran',
+                'menunggu_pembayaran': 'Menunggu Konfirmasi',
                 'dikonfirmasi': 'Dikonfirmasi',
                 'disetujui': 'Desain Dikerjakan',
                 'di_design': 'Tahap Desain',
@@ -1484,70 +1529,7 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
             window.location.href = '{{ route('pemesanan') }}';
         },
 
-        async payOrder(orderId) {
-            const confirm = await Swal.fire({
-                title: 'Setujui Detail Pesanan?',
-                text: 'Dengan melanjutkan, Anda menyetujui detail pesanan dan akan diarahkan ke informasi pembayaran.',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#1a237e',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Setujui!',
-                cancelButtonText: 'Batal'
-            });
 
-            if (!confirm.isConfirmed) return;
-
-            Swal.fire({
-                title: 'Memproses...',
-                text: 'Harap tunggu sebentar',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            try {
-                const res = await fetch('/pesan/' + orderId + '/approve', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const data = await res.json();
-                Swal.close();
-
-                if (!data.success) {
-                    throw new Error(data.message || 'Gagal menyetujui pesanan');
-                }
-
-                await Swal.fire({
-                    icon: 'success',
-                    title: 'Pesanan Disetujui!',
-                    html: '<div class="text-sm text-gray-500">Pesanan telah disetujui. Silakan lakukan transfer DP minimal 10% ke rekening berikut:</div>' +
-                        '<div class="mt-4 space-y-2 text-left mx-auto max-w-xs">' +
-                        '<div class="flex justify-between p-2 bg-gray-50 rounded-lg text-xs"><span class="font-semibold">BCA</span><span class="font-mono font-bold text-[#1a237e]">123 456 7890</span></div>' +
-                        '<div class="flex justify-between p-2 bg-gray-50 rounded-lg text-xs"><span class="font-semibold">Mandiri</span><span class="font-mono font-bold text-[#1a237e]">987 654 3210</span></div>' +
-                        '<div class="flex justify-between p-2 bg-gray-50 rounded-lg text-xs"><span class="font-semibold">BNI</span><span class="font-mono font-bold text-[#1a237e]">555 666 7777</span></div>' +
-                        '</div>' +
-                        '<p class="text-xs text-gray-400 mt-2">a.n. Novos Jersey</p>' +
-                        '<p class="text-xs text-gray-500 mt-3">Upload bukti transfer di halaman tracking atau kirim via chat.</p>',
-                    confirmButtonColor: '#1a237e',
-                    confirmButtonText: 'Tracking Pesanan',
-                }).then(() => {
-                    window.location.href = '/tracking?q=' + orderId;
-                });
-            } catch (err) {
-                Swal.close();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Kesalahan Sistem',
-                    text: err.message || 'Terjadi kesalahan sistem'
-                });
-            }
-        }
     }
 }
 </script>
