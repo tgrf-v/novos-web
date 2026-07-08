@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PosterSettingSeeder::class,
             DailyMentalCheckSeeder::class,
             WilayahSeeder::class,
+            ReviewSeeder::class,
         ]);
     }
 }

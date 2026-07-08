@@ -28,7 +28,6 @@ class HomeController extends Controller
         $totalProducts = Product::where('is_active', true)->count();
 
         $dbReviews = \App\Models\Review::with('user')
-            ->where('rating', 5)
             ->latest()
             ->get()
             ->map(function ($rev) {
