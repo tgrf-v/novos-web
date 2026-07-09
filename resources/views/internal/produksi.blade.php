@@ -137,36 +137,34 @@
                                 <i data-lucide="shirt" class="w-4 h-4 text-[#1a237e]"></i>
                                 Spesifikasi Produk
                             </h4>
-                            <div class="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
-                                <div>
-                                    <span class="text-gray-500 block mb-1 text-xs font-medium uppercase tracking-wider">Nama Tim / Instansi</span>
-                                    <span class="font-semibold text-gray-900 text-base" x-text="selectedOrder?.team_name"></span>
+                            <div class="grid grid-cols-3 gap-x-8 gap-y-4 text-sm">
+                                <div class="col-span-2">
+                                    <span class="text-gray-500 text-xs block mb-0.5">Nama Tim / Instansi</span>
+                                    <div class="font-medium text-gray-900 text-base" x-text="selectedOrder?.team_name"></div>
                                 </div>
                                 <div>
-                                    <span class="text-gray-500 block mb-1 text-xs font-medium uppercase tracking-wider">Deadline</span>
-                                    <span class="font-semibold text-red-600" x-text="selectedOrder?.deadline"></span>
+                                    <span class="text-gray-500 text-xs block mb-0.5">Deadline</span>
+                                    <div class="font-medium text-red-600 text-base" x-text="selectedOrder?.deadline"></div>
                                 </div>
-                                <div class="col-span-2 grid grid-cols-2 sm:grid-cols-5 gap-4 pt-2">
-                                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                        <span class="text-gray-400 block mb-0.5 text-xs">Bahan</span>
-                                        <span class="font-medium text-gray-900" x-text="selectedOrder?.material"></span>
-                                    </div>
-                                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                        <span class="text-gray-400 block mb-0.5 text-xs">Kerah</span>
-                                        <span class="font-medium text-gray-900" x-text="selectedOrder?.collar"></span>
-                                    </div>
-                                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                        <span class="text-gray-400 block mb-0.5 text-xs">Pola Jahitan</span>
-                                        <span class="font-medium text-gray-900" x-text="selectedOrder?.pattern"></span>
-                                    </div>
-                                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                        <span class="text-gray-400 block mb-0.5 text-xs">Jenis Potongan</span>
-                                        <span class="font-medium text-gray-900" x-text="selectedOrder?.jenis_potongan"></span>
-                                    </div>
-                                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                        <span class="text-gray-400 block mb-0.5 text-xs">Model Lengan &amp; Jahitan</span>
-                                        <span class="font-medium text-gray-900" x-text="selectedOrder?.model_lengan_jahitan"></span>
-                                    </div>
+                                <div>
+                                    <span class="text-gray-500 text-xs block mb-0.5">Bahan</span>
+                                    <div class="font-medium text-gray-900" x-text="selectedOrder?.material || '-'"></div>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500 text-xs block mb-0.5">Kerah</span>
+                                    <div class="font-medium text-gray-900" x-text="selectedOrder?.collar || '-'"></div>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500 text-xs block mb-0.5">Pola Jahitan</span>
+                                    <div class="font-medium text-gray-900" x-text="selectedOrder?.pattern || '-'"></div>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500 text-xs block mb-0.5">Jenis Potongan</span>
+                                    <div class="font-medium text-gray-900" x-text="selectedOrder?.jenis_potongan || '-'"></div>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500 text-xs block mb-0.5">Model Lengan &amp; Jahitan</span>
+                                    <div class="font-medium text-gray-900" x-text="selectedOrder?.model_lengan_jahitan || '-'"></div>
                                 </div>
                             </div>
                             <div class="mt-5 pt-4 border-t border-gray-100">
