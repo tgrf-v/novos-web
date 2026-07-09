@@ -194,13 +194,22 @@
                 {{-- Kiri: Nama Pemesan --}}
                 <div class="space-y-5">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Pemesan <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            Nama Pemesan
+                            <span class="text-red-500">*</span>
+                            <span class="text-[10px] text-red-500 font-normal ml-1">(wajib)</span>
+                        </label>
                         <input
                             type="text"
                             x-model="form.nama_pemesan"
+                            @blur="touched.nama_pemesan = true"
                             placeholder="Contoh: John Doe"
-                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
+                            :class="touched.nama_pemesan && !form.nama_pemesan.trim() ? 'border-red-400 focus:ring-red-400 focus:border-red-400' : 'border-gray-300 focus:ring-[#1a237e] focus:border-[#1a237e]'"
+                            class="w-full px-4 py-2.5 border rounded-lg outline-none transition-shadow"
                         >
+                        <template x-if="touched.nama_pemesan && !form.nama_pemesan.trim()">
+                            <p class="text-xs text-red-500 mt-1">Nama pemesan wajib diisi</p>
+                        </template>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Artikel</label>
@@ -216,13 +225,22 @@
                 {{-- Kanan: Nama Tim --}}
                 <div class="space-y-5">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Nama Tim / Event <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                            Nama Tim / Event
+                            <span class="text-red-500">*</span>
+                            <span class="text-[10px] text-red-500 font-normal ml-1">(wajib)</span>
+                        </label>
                         <input
                             type="text"
                             x-model="form.team_name"
+                            @blur="touched.team_name = true"
                             placeholder="Contoh: FC Harapan Jaya"
-                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none transition-shadow"
+                            :class="touched.team_name && !form.team_name.trim() ? 'border-red-400 focus:ring-red-400 focus:border-red-400' : 'border-gray-300 focus:ring-[#1a237e] focus:border-[#1a237e]'"
+                            class="w-full px-4 py-2.5 border rounded-lg outline-none transition-shadow"
                         >
+                        <template x-if="touched.team_name && !form.team_name.trim()">
+                            <p class="text-xs text-red-500 mt-1">Nama tim / event wajib diisi</p>
+                        </template>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Detail Sponsor</label>
@@ -1672,6 +1690,10 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             postal_code: '',
             address_type: 'rumah'
         },
+        touched: {
+            nama_pemesan: false,
+            team_name: false,
+        },
         form: {
             team_name: '',
             nama_artikel: '',
@@ -1826,7 +1848,7 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
         },
 
         get validateStep2() {
-            return this.form.team_name.trim() !== '' && this.form.kerah !== '' && this.form.bahan !== '' && this.form.jenis_potongan !== '' && this.form.lengan_jahitan !== '' && this.totalQty >= 1;
+            return this.form.nama_pemesan.trim() !== '' && this.form.team_name.trim() !== '' && this.form.kerah !== '' && this.form.bahan !== '' && this.form.jenis_potongan !== '' && this.form.lengan_jahitan !== '' && this.totalQty >= 1;
         },
 
         get validateStep3() {
