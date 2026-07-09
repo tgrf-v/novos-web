@@ -132,11 +132,19 @@
                                         <span class="text-gray-400 block mb-0.5 text-xs">Kerah</span>
                                         <span class="font-medium text-gray-900" x-text="selectedOrder?.collar"></span>
                                     </div>
-                                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                        <span class="text-gray-400 block mb-0.5 text-xs">Pola</span>
-                                        <span class="font-medium text-gray-900" x-text="selectedOrder?.pattern"></span>
-                                    </div>
-                                </div>
+                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                        <span class="text-gray-400 block mb-0.5 text-xs">Pola</span>
+                        <span class="font-medium text-gray-900" x-text="selectedOrder?.pattern"></span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                        <span class="text-gray-400 block mb-0.5 text-xs">Jenis Potongan</span>
+                        <span class="font-medium text-gray-900" x-text="selectedOrder?.jenis_potongan"></span>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                        <span class="text-gray-400 block mb-0.5 text-xs">Lengan & Jahitan</span>
+                        <span class="font-medium text-gray-900" x-text="selectedOrder?.lengan_jahitan"></span>
+                    </div>
+                </div>
                             </div>
                             <div x-show="selectedOrder?.revision_note" class="mt-5 pt-4 border-t border-gray-100">
                                 <span class="text-orange-600 block mb-2 text-xs font-medium uppercase tracking-wider flex items-center gap-1.5">

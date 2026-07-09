@@ -74,7 +74,16 @@ class DesignController extends Controller
                     'material'          => $dr?->material ?? '-',
                     'collar'            => $dr?->collar_style ?? '-',
                     'pattern'           => $dr?->motif ?? '-',
-                    'notes'             => nl2br(e($dr?->additional_notes ?? $order->notes ?? 'Tidak ada catatan')),
+                    'jenis_potongan'    => $dr?->jenis_potongan ?? '-',
+                    'lengan_jahitan'    => $dr?->lengan_jahitan ?? '-',
+                    'notes'             => (function () use ($dr, $order) {
+                        $raw = $dr?->additional_notes ?? $order->notes ?? '';
+                        if (!$raw) return 'Tidak ada catatan';
+                        $parts = explode("\n=== Detail Pesanan ===\n", $raw, 2);
+                        return isset($parts[1]) && trim($parts[1])
+                            ? nl2br(e(trim($parts[1])))
+                            : 'Tidak ada catatan';
+                    })(),
                     'reference_files'   => array_merge(
                         $dr?->logo ? [asset('storage/' . $dr->logo)] : [],
                         collect($dr?->design_files ?? [])->map(fn($f) => asset('storage/' . $f['path']))->values()->toArray(),
