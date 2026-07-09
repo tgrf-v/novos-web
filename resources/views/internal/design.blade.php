@@ -279,6 +279,13 @@
                                     <p class="text-xs text-gray-400 mt-1">Upload semua gambar sponsor (multi upload)</p>
                                 </div>
 
+                                {{-- Pola --}}
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wider">5. Pola (CDR)</label>
+                                    <input type="file" class="filepond" id="pola-pond" name="pola_files[]" multiple accept=".cdr" data-max-file-size="50MB">
+                                    <p class="text-xs text-gray-400 mt-1">Upload pola jersey/bawahan/jaket format CorelDRAW (CDR)</p>
+                                </div>
+
                                 {{-- Status Dropdown --}}
                                 <div class="border-t border-gray-100 pt-5">
                                     <label class="block text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wider">2. Update Status</label>
@@ -335,18 +342,24 @@ function designApp() {
             if (!window.FilePond) return;
             this.destroyFilePond();
 
-            const ids = ['mockup-pond', 'detail-depan-pond', 'nama-punggung-pond', 'detail-sponsor-pond'];
+            const ids = ['mockup-pond', 'detail-depan-pond', 'nama-punggung-pond', 'detail-sponsor-pond', 'pola-pond'];
             ids.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
-                    const pond = FilePond.create(el, {
+                    const opts = {
                         allowMultiple: true,
                         instantUpload: false,
                         allowProcess: false,
                         credits: false,
                         stylePanelLayout: 'compact',
                         imagePreviewHeight: 80,
-                    });
+                    };
+                    if (id === 'pola-pond') {
+                        opts.acceptedFileTypes = ['.cdr'];
+                        opts.fileValidateTypeLabelExpectedTypes = 'Hanya file .cdr yang diperbolehkan';
+                        opts.allowImagePreview = false;
+                    }
+                    const pond = FilePond.create(el, opts);
 
                     pond.on('activatefile', (fileItem) => {
                         const file = fileItem.file;
@@ -380,8 +393,8 @@ function designApp() {
         submitDesign() {
             if(!this.updateStatus) return;
 
-            const pondIds = ['mockup-pond', 'detail-depan-pond', 'nama-punggung-pond', 'detail-sponsor-pond'];
-            const fieldNames = ['mockup_files', 'detail_depan_files', 'nama_punggung_files', 'detail_sponsor_files'];
+            const pondIds = ['mockup-pond', 'detail-depan-pond', 'nama-punggung-pond', 'detail-sponsor-pond', 'pola-pond'];
+            const fieldNames = ['mockup_files', 'detail_depan_files', 'nama_punggung_files', 'detail_sponsor_files', 'pola_files'];
 
             let totalFiles = 0;
             pondIds.forEach((id, idx) => {

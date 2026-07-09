@@ -126,6 +126,7 @@ class DesignController extends Controller
             'detail_depan_files'   => ['detail_depan'],
             'nama_punggung_files'  => ['detail_belakang'],
             'detail_sponsor_files' => ['sponsor'],
+            'pola_files'           => ['pola'],
         ];
 
         foreach ($roleMapping as $fieldName => $roles) {
