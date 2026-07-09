@@ -1541,6 +1541,7 @@ class OrderController extends Controller
                                         'left'  => ['borderStyle' => $BORDER_MEDIUM, 'color' => $BLACK]]];
         $bdrBottomM    = ['borders' => ['bottom'=> ['borderStyle' => $BORDER_MEDIUM, 'color' => $BLACK]]];
         $bdrOutline    = ['borders' => ['outline'=> ['borderStyle' => $BORDER_MEDIUM, 'color' => $BLACK]]];
+        $bdrThinAll    = ['borders' => ['allBorders' => ['borderStyle' => $BORDER_THIN,  'color' => $BLACK]]];
 
         $designFiles = $order->designRequest?->design_files ?? [];
         $deadlineDays = match ($order->designRequest?->priority) {
@@ -1559,6 +1560,8 @@ class OrderController extends Controller
             ->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
         $sheet->setShowGridLines(true);
         $sheet->getColumnDimension('A')->setWidth(9.22);
+        // Thin border grid di semua sel sebagai base
+        $sheet->getStyle('A1:J44')->applyFromArray($bdrThinAll);
 
         // ── Row 1: Title ──
         $sheet->setCellValue('A1', 'SURAT PERINTAH KERJA (SPK)');
@@ -1887,6 +1890,8 @@ class OrderController extends Controller
             ->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
         $sheet2->getPageMargins()->setTop(0.75)->setBottom(0.75)->setLeft(0.25)->setRight(0.25);
         $sheet2->setShowGridLines(true);
+        // Thin border grid di semua sel sebagai base
+        $sheet2->getStyle('A1:N33')->applyFromArray($bdrThinAll);
 
         $detailDepan    = null;
         $detailBelakang = null;
