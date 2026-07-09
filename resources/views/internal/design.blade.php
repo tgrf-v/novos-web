@@ -154,9 +154,35 @@
                             </div>
                             <div class="mt-5 pt-4 border-t border-gray-100">
                                 <span class="text-gray-500 block mb-2 text-xs font-medium uppercase tracking-wider flex items-center gap-1.5">
-                                    <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Catatan Customer / Admin
+                                    <i data-lucide="list" class="w-3.5 h-3.5"></i> Detail Item Pesanan
                                 </span>
-                                <div class="text-gray-700 bg-amber-50/50 p-4 rounded-xl border border-amber-200/60 leading-relaxed text-sm" x-html="selectedOrder?.notes"></div>
+                                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                                    <table class="w-full text-sm" x-show="selectedOrder?.item_details?.length">
+                                        <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                                            <tr>
+                                                <th class="px-3 py-2 text-left font-semibold">No Punggung</th>
+                                                <th class="px-3 py-2 text-left font-semibold">Nama Punggung</th>
+                                                <th class="px-3 py-2 text-left font-semibold">Model Lengan</th>
+                                                <th class="px-3 py-2 text-left font-semibold">Size</th>
+                                                <th class="px-3 py-2 text-left font-semibold">Keterangan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-100">
+                                            <template x-for="(d, i) in selectedOrder?.item_details || []" :key="i">
+                                                <tr class="hover:bg-gray-50 transition-colors">
+                                                    <td class="px-3 py-2 text-gray-800 font-medium" x-text="d.no_punggung"></td>
+                                                    <td class="px-3 py-2 text-gray-700" x-text="d.nama_punggung"></td>
+                                                    <td class="px-3 py-2 text-gray-700" x-text="d.model_lengan"></td>
+                                                    <td class="px-3 py-2 text-gray-700" x-text="d.size"></td>
+                                                    <td class="px-3 py-2 text-gray-700" x-text="d.keterangan"></td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-sm text-gray-400 text-center py-4" x-show="!selectedOrder?.item_details?.length">
+                                        Belum ada item detail pesanan.
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

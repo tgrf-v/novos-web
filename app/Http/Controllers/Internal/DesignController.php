@@ -13,7 +13,7 @@ class DesignController extends Controller
 {
     public function index()
     {
-        $orders = Order::with(['user', 'designRequest', 'statusHistories.changedBy.role'])
+        $orders = Order::with(['user', 'designRequest', 'statusHistories.changedBy.role', 'itemDetails'])
             ->whereIn('status', ['disetujui', 'di_design'])
             ->latest()
             ->get()
@@ -60,6 +60,14 @@ class DesignController extends Controller
                     ];
                 }
 
+                $itemDetails = $order->itemDetails->map(fn($d) => [
+                    'no_punggung'   => $d->no_punggung,
+                    'nama_punggung' => $d->nama_punggung,
+                    'model_lengan'  => $d->model_lengan,
+                    'size'          => $d->size,
+                    'keterangan'    => $d->keterangan,
+                ])->values()->toArray();
+
                 return [
                     'id'                => $order->id,
                     'order_id'          => $order->order_number,
@@ -89,6 +97,7 @@ class DesignController extends Controller
                         collect($dr?->design_files ?? [])->map(fn($f) => asset('storage/' . $f['path']))->values()->toArray(),
                     ),
                     'history_notes'     => $historyNotes,
+                    'item_details'      => $itemDetails,
                 ];
             })
             ->values()
