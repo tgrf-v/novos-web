@@ -146,13 +146,21 @@
                                 </span>
                                 <div class="text-gray-700 bg-orange-50 p-4 rounded-xl border border-orange-200/60 leading-relaxed text-sm" x-text="selectedOrder?.revision_note"></div>
                             </div>
-                            <div class="mt-5 pt-4 border-t border-gray-100">
-                                <span class="text-gray-500 block mb-2 text-xs font-medium uppercase tracking-wider flex items-center gap-1.5">
-                                    <i data-lucide="list" class="w-3.5 h-3.5"></i> Detail Item Pesanan
-                                </span>
-                                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                             <div class="mt-5 pt-4 border-t border-gray-100">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-gray-500 block text-xs font-medium uppercase tracking-wider flex items-center gap-1.5">
+                                        <i data-lucide="list" class="w-3.5 h-3.5"></i> Detail Item Pesanan
+                                    </span>
+                                    <button x-show="selectedOrder?.item_details?.length > 5"
+                                            @click="isItemsExpanded = !isItemsExpanded"
+                                            class="text-xs font-semibold text-[#1a237e] hover:underline focus:outline-none flex items-center gap-1">
+                                        <span x-text="isItemsExpanded ? 'Sembunyikan' : 'Lihat Semua (' + selectedOrder?.item_details?.length + ')'"></span>
+                                        <svg class="w-3 h-3 transition-transform duration-300" :class="isItemsExpanded ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                    </button>
+                                </div>
+                                <div :class="isItemsExpanded ? 'max-h-[10000px]' : 'max-h-[250px]'" class="overflow-y-auto rounded-lg border border-gray-200 transition-all duration-300 ease-in-out relative">
                                     <table class="w-full text-sm" x-show="selectedOrder?.item_details?.length">
-                                        <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                                        <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide sticky top-0 z-10">
                                             <tr>
                                                 <th class="px-3 py-2 text-left font-semibold">No Punggung</th>
                                                 <th class="px-3 py-2 text-left font-semibold">Nama Punggung</th>
@@ -161,7 +169,7 @@
                                                 <th class="px-3 py-2 text-left font-semibold">Keterangan</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="divide-y divide-gray-100">
+                                        <tbody class="divide-y divide-gray-100 bg-white">
                                             <template x-for="(d, i) in selectedOrder?.item_details || []" :key="i">
                                                 <tr class="hover:bg-gray-50 transition-colors">
                                                     <td class="px-3 py-2 text-gray-800 font-medium" x-text="d.no_punggung"></td>
@@ -176,6 +184,10 @@
                                     <div class="text-sm text-gray-400 text-center py-4" x-show="!selectedOrder?.item_details?.length">
                                         Belum ada item detail pesanan.
                                     </div>
+                                    
+                                    {{-- Fade overlay when collapsed --}}
+                                    <div x-show="selectedOrder?.item_details?.length > 5 && !isItemsExpanded" 
+                                         class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent pointer-events-none z-10"></div>
                                 </div>
                             </div>
                         </div>
@@ -314,6 +326,7 @@ function designApp() {
     return {
         isDetailOpen: false,
         selectedOrder: null,
+        isItemsExpanded: false,
         updateStatus: '',
         pondRefs: {},
 
@@ -322,6 +335,7 @@ function designApp() {
         openDetail(order) {
             this.selectedOrder = order;
             this.updateStatus = '';
+            this.isItemsExpanded = false;
             this.isDetailOpen = true;
 
             setTimeout(() => {

@@ -173,13 +173,21 @@
 
                         {{-- Detail Item Pesanan --}}
                         <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-                            <h4 class="font-semibold text-gray-900 mb-4 flex items-center gap-2 text-sm border-b border-gray-100 pb-3">
-                                <i data-lucide="list" class="w-4 h-4 text-[#1a237e]"></i>
-                                Detail Item Pesanan
-                            </h4>
-                            <div class="overflow-x-auto rounded-lg border border-gray-200">
+                            <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
+                                <h4 class="font-semibold text-gray-900 flex items-center gap-2 text-sm">
+                                    <i data-lucide="list" class="w-4 h-4 text-[#1a237e]"></i>
+                                    Detail Item Pesanan
+                                </h4>
+                                <button x-show="selectedOrder?.item_details?.length > 5"
+                                        @click="isItemsExpanded = !isItemsExpanded"
+                                        class="text-xs font-semibold text-[#1a237e] hover:underline focus:outline-none flex items-center gap-1">
+                                    <span x-text="isItemsExpanded ? 'Sembunyikan' : 'Lihat Semua (' + selectedOrder?.item_details?.length + ')'"></span>
+                                    <svg class="w-3 h-3 transition-transform duration-300" :class="isItemsExpanded ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                </button>
+                            </div>
+                            <div :class="isItemsExpanded ? 'max-h-[10000px]' : 'max-h-[250px]'" class="overflow-y-auto rounded-lg border border-gray-200 transition-all duration-300 ease-in-out relative">
                                 <table class="w-full text-sm">
-                                    <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                                    <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide sticky top-0 z-10">
                                         <tr>
                                             <th class="px-3 py-2 text-left font-semibold">No Punggung</th>
                                             <th class="px-3 py-2 text-left font-semibold">Nama Punggung</th>
@@ -188,7 +196,7 @@
                                             <th class="px-3 py-2 text-left font-semibold">Keterangan</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-gray-100">
+                                    <tbody class="divide-y divide-gray-100 bg-white">
                                         <template x-if="!selectedOrder?.item_details || selectedOrder.item_details.length === 0">
                                             <tr>
                                                 <td colspan="5" class="px-3 py-6 text-center text-gray-400 text-sm">Tidak ada detail item.</td>
@@ -205,6 +213,10 @@
                                         </template>
                                     </tbody>
                                 </table>
+                                
+                                {{-- Fade overlay when collapsed --}}
+                                <div x-show="selectedOrder?.item_details?.length > 5 && !isItemsExpanded" 
+                                     class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent pointer-events-none z-10"></div>
                             </div>
                         </div>
 
@@ -478,6 +490,7 @@ function produksiApp() {
     return {
         isDetailOpen: false,
         selectedOrder: null,
+        isItemsExpanded: false,
         updateStatus: '',
         productionNote: '',
         activeTab: 'printing',
@@ -534,6 +547,7 @@ function produksiApp() {
             }
             this.productionNote = '';
             this.targetStage = 'jahit';
+            this.isItemsExpanded = false;
             // Reset checklist QC setiap buka modal
             this.qcChecklist = { jahitan: false, cacat: false, ukuran: false, desain: false, perluRevisi: false };
             this.isDetailOpen = true;
