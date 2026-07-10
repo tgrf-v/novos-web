@@ -22,13 +22,15 @@ class Product extends Model
         'bahan',
         'jenis_potongan',
         'lengan_jahitan',
+        'product_attributes',
     ];
 
     protected function casts(): array
     {
         return [
-            'price' => 'decimal:2',
-            'is_active' => 'boolean',
+            'price'              => 'decimal:2',
+            'is_active'          => 'boolean',
+            'product_attributes' => 'array',
         ];
     }
 

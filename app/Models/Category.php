@@ -9,7 +9,15 @@ class Category extends Model
 {
     protected $fillable = [
         'name',
+        'attributes_schema',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'attributes_schema' => 'array',
+        ];
+    }
 
     public function products(): HasMany
     {
