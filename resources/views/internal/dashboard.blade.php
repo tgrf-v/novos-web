@@ -30,7 +30,7 @@ function statusBadgeType($status) {
 }
 @endphp
     <!-- Stats Row -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8">
 
         @if($isDesign)
 
@@ -73,18 +73,43 @@ function statusBadgeType($status) {
             <p class="text-gray-500 text-sm mt-2 font-medium">Menunggu ACC</p>
         </a>
 
-        <!-- Card D4: Selesai Hari Ini -->
-        <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+        <!-- Card D4: Selesai -->
+        <div x-data="{ period: 'day', open: false }" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 transition-all duration-300 group">
             <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
+                <div class="relative">
+                    <button @click="open = !open" class="text-xs text-gray-400 hover:text-[#1a237e] flex items-center gap-1 transition-colors">
+                        <span x-text="period === 'day' ? 'Hari Ini' : period === 'week' ? 'Minggu' : 'Bulan'" class="font-medium"></span>
+                        <svg class="w-3 h-3" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div x-show="open" @click.away="open = false" x-cloak x-transition class="absolute right-0 top-6 bg-white border border-gray-100 rounded-xl shadow-lg z-30 py-1 w-28">
+                        <button @click="period = 'day'; open = false" class="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50" :class="period === 'day' ? 'font-bold text-[#1a237e]' : ''">Hari Ini</button>
+                        <button @click="period = 'week'; open = false" class="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50" :class="period === 'week' ? 'font-bold text-[#1a237e]' : ''">Minggu Ini</button>
+                        <button @click="period = 'month'; open = false" class="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50" :class="period === 'month' ? 'font-bold text-[#1a237e]' : ''">Bulan Ini</button>
+                    </div>
+                </div>
             </div>
-            <h3 class="text-4xl font-bold text-gray-900 tracking-tight stats-counter" data-target="{{ $completedToday }}">0</h3>
-            <p class="text-gray-500 text-sm mt-2 font-medium">Selesai Hari Ini</p>
-        </a>
+            <template x-if="period === 'day'">
+                <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}">
+                    <h3 class="text-4xl font-bold text-gray-900 tracking-tight">{{ $completedToday }}</h3>
+                </a>
+            </template>
+            <template x-if="period === 'week'">
+                <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->startOfWeek()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}">
+                    <h3 class="text-4xl font-bold text-gray-900 tracking-tight">{{ $completedThisWeek ?? $completedToday }}</h3>
+                </a>
+            </template>
+            <template x-if="period === 'month'">
+                <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->startOfMonth()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}">
+                    <h3 class="text-4xl font-bold text-gray-900 tracking-tight">{{ $completedThisMonth ?? $completedToday }}</h3>
+                </a>
+            </template>
+            <p class="text-gray-500 text-sm mt-2 font-medium">Selesai</p>
+        </div>
 
         @elseif($isProduction)
 
@@ -136,26 +161,43 @@ function statusBadgeType($status) {
             <p class="text-gray-500 text-sm mt-2 font-medium">Sedang Diproduksi</p>
         </a>
 
-        <!-- Card P4: Selesai Hari Ini -->
-        <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+        <!-- Card P4: Selesai -->
+        <div x-data="{ period: 'day', open: false }" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 transition-all duration-300 group">
             <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-                <div class="flex items-center gap-1 text-xs font-semibold {{ $completedTrend >= 0 ? 'text-emerald-500 bg-emerald-50' : 'text-red-500 bg-red-50' }} px-2 py-1 rounded-full">
-                    @if($completedTrend >= 0)
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                    @else
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" /></svg>
-                    @endif
-                    <span>{{ $completedTrend >= 0 ? '+'.$completedTrend : $completedTrend }}</span>
+                <div class="relative">
+                    <button @click="open = !open" class="text-xs text-gray-400 hover:text-[#1a237e] flex items-center gap-1 transition-colors">
+                        <span x-text="period === 'day' ? 'Hari Ini' : period === 'week' ? 'Minggu' : 'Bulan'" class="font-medium"></span>
+                        <svg class="w-3 h-3" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div x-show="open" @click.away="open = false" x-cloak x-transition class="absolute right-0 top-6 bg-white border border-gray-100 rounded-xl shadow-lg z-30 py-1 w-28">
+                        <button @click="period = 'day'; open = false" class="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50" :class="period === 'day' ? 'font-bold text-[#1a237e]' : ''">Hari Ini</button>
+                        <button @click="period = 'week'; open = false" class="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50" :class="period === 'week' ? 'font-bold text-[#1a237e]' : ''">Minggu Ini</button>
+                        <button @click="period = 'month'; open = false" class="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50" :class="period === 'month' ? 'font-bold text-[#1a237e]' : ''">Bulan Ini</button>
+                    </div>
                 </div>
             </div>
-            <h3 class="text-4xl font-bold text-gray-900 tracking-tight stats-counter" data-target="{{ $completedToday }}">0</h3>
-            <p class="text-gray-500 text-sm mt-2 font-medium">Selesai Hari Ini</p>
-        </a>
+            <template x-if="period === 'day'">
+                <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}">
+                    <h3 class="text-4xl font-bold text-gray-900 tracking-tight">{{ $completedToday }}</h3>
+                </a>
+            </template>
+            <template x-if="period === 'week'">
+                <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->startOfWeek()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}">
+                    <h3 class="text-4xl font-bold text-gray-900 tracking-tight">{{ $completedThisWeek ?? $completedToday }}</h3>
+                </a>
+            </template>
+            <template x-if="period === 'month'">
+                <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->startOfMonth()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}">
+                    <h3 class="text-4xl font-bold text-gray-900 tracking-tight">{{ $completedThisMonth ?? $completedToday }}</h3>
+                </a>
+            </template>
+            <p class="text-gray-500 text-sm mt-2 font-medium">Selesai</p>
+        </div>
 
         @else
 
@@ -226,27 +268,43 @@ function statusBadgeType($status) {
             <p class="text-gray-500 text-sm mt-2 font-medium">Sedang Diproses</p>
         </a>
 
-        <!-- Card 4: Selesai Hari Ini -->
-        <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+        <!-- Card 4: Selesai -->
+        <div x-data="{ period: 'day', open: false }" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 transition-all duration-300 group">
             <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    {{-- Check Circle icon (Heroicons) --}}
+                <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-                <div class="flex items-center gap-1 text-xs font-semibold {{ $completedTrend >= 0 ? 'text-emerald-500 bg-emerald-50' : 'text-red-500 bg-red-50' }} px-2 py-1 rounded-full">
-                    @if($completedTrend >= 0)
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                    @else
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" /></svg>
-                    @endif
-                    <span>{{ $completedTrend >= 0 ? '+'.$completedTrend : $completedTrend }}</span>
+                <div class="relative">
+                    <button @click="open = !open" class="text-xs text-gray-400 hover:text-[#1a237e] flex items-center gap-1 transition-colors">
+                        <span x-text="period === 'day' ? 'Hari Ini' : period === 'week' ? 'Minggu' : 'Bulan'" class="font-medium"></span>
+                        <svg class="w-3 h-3" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div x-show="open" @click.away="open = false" x-cloak x-transition class="absolute right-0 top-6 bg-white border border-gray-100 rounded-xl shadow-lg z-30 py-1 w-28">
+                        <button @click="period = 'day'; open = false" class="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50" :class="period === 'day' ? 'font-bold text-[#1a237e]' : ''">Hari Ini</button>
+                        <button @click="period = 'week'; open = false" class="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50" :class="period === 'week' ? 'font-bold text-[#1a237e]' : ''">Minggu Ini</button>
+                        <button @click="period = 'month'; open = false" class="block w-full text-left px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50" :class="period === 'month' ? 'font-bold text-[#1a237e]' : ''">Bulan Ini</button>
+                    </div>
                 </div>
             </div>
-            <h3 class="text-4xl font-bold text-gray-900 tracking-tight stats-counter" data-target="{{ $completedToday }}">0</h3>
-            <p class="text-gray-500 text-sm mt-2 font-medium">Selesai Hari Ini</p>
-        </a>
+            <template x-if="period === 'day'">
+                <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}">
+                    <h3 class="text-4xl font-bold text-gray-900 tracking-tight">{{ $completedToday }}</h3>
+                </a>
+            </template>
+            <template x-if="period === 'week'">
+                <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->startOfWeek()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}">
+                    <h3 class="text-4xl font-bold text-gray-900 tracking-tight">{{ $completedThisWeek ?? $completedToday }}</h3>
+                </a>
+            </template>
+            <template x-if="period === 'month'">
+                <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->startOfMonth()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}">
+                    <h3 class="text-4xl font-bold text-gray-900 tracking-tight">{{ $completedThisMonth ?? $completedToday }}</h3>
+                </a>
+            </template>
+            <p class="text-gray-500 text-sm mt-2 font-medium">Selesai</p>
+        </div>
 
         @endif
 

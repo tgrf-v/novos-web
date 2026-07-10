@@ -693,8 +693,8 @@
                              x-transition:leave="transition ease-in duration-150"
                              x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                              x-transition:leave-end="opacity-0 scale-95 translate-y-1"
-                             class="absolute right-0 w-96 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden"
-                             style="top: 100%;">
+                             class="absolute right-0 w-72 sm:w-80 md:w-96 bg-white border border-gray-200 rounded-2xl shadow-2xl z-[200] overflow-hidden"
+                             style="top: calc(100% + 8px); max-height: calc(100vh - 80px);">
 
                             {{-- Header Dropdown --}}
                             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
@@ -708,7 +708,7 @@
                             </div>
 
                             {{-- Notif List --}}
-                            <div class="max-h-80 overflow-y-auto divide-y divide-gray-50">
+                            <div class="max-h-52 sm:max-h-72 overflow-y-auto divide-y divide-gray-50">
                                 <template x-if="loading">
                                     <div class="px-4 py-8 text-center">
                                         <svg class="w-6 h-6 mx-auto text-gray-300 mb-2 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -766,8 +766,8 @@
                                 <span class="text-white font-bold text-xs">{{ collect(explode(' ', auth()->user()->name))->map(fn($w) => substr($w, 0, 1))->take(2)->implode('') }}</span>
                             </div>
                         @endif
-                        <span class="text-gray-700 font-medium text-sm">{{ auth()->user()->role->name ?? auth()->user()->name }}</span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-500"></i>
+                        <span class="text-gray-700 font-medium text-sm hidden xl:inline">{{ auth()->user()->role->name ?? auth()->user()->name }}</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-500 hidden xl:inline"></i>
                     </button>
                     <div x-show="open" x-cloak x-transition class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
                         <div class="py-1">
