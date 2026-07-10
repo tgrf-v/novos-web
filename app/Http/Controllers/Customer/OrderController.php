@@ -39,7 +39,7 @@ class OrderController extends Controller
             $nextSeq = $lastOrder ? (int) substr($lastOrder->order_number, -3) + 1 : 1;
             $orderNumber = $todayPrefix . str_pad($nextSeq, 3, '0', STR_PAD_LEFT);
 
-            $totalQty = $data['total_qty'] ?? 0;
+            $totalQty = !empty($data['items']) ? count($data['items']) : ($data['total_qty'] ?? 0);
             $pricePerItem = \App\Models\Setting::get('base_price_per_pcs', 85000);
             $biayaPrioritas = match ($data['prioritas'] ?? 'normal') {
                 'express'       => 50000,
@@ -57,7 +57,7 @@ class OrderController extends Controller
 
             $catatanText = $data['catatan'] ? "=== Detail Pesanan ===\n" . $data['catatan'] : '';
 
-            // Bangun ringkasan atribut dari customizations untuk disimpan di notes
+            // Bangun ringkasan kustomisasi umum jika ada
             $customizations = is_array($data['customizations'] ?? null)
                 ? $data['customizations']
                 : (json_decode($data['customizations'] ?? '{}', true) ?? []);
@@ -86,8 +86,23 @@ class OrderController extends Controller
                 'subtotal'       => $totalQty * $pricePerItem,
             ]);
 
-            // Parse Detail Pesanan (catatan) ke order_item_details
-            if (!empty($data['catatan'])) {
+            // Simpan detail per baris item pesanan
+            if (!empty($data['items']) && is_array($data['items'])) {
+                foreach ($data['items'] as $item) {
+                    $rowCustom = $item['customizations'] ?? [];
+                    // Fallback model_lengan
+                    $modelLengan = $rowCustom['lengan_jahitan'] ?? $rowCustom['lengan'] ?? null;
+                    OrderItemDetail::create([
+                        'order_id'       => $order->id,
+                        'no_punggung'    => $item['no'] ?? null,
+                        'nama_punggung'  => $item['nama'] ?? null,
+                        'model_lengan'   => $modelLengan,
+                        'size'           => $item['size'] ?? 'M',
+                        'customizations' => $rowCustom,
+                        'price'          => 0,
+                    ]);
+                }
+            } elseif (!empty($data['catatan'])) {
                 $lines = explode("\n", trim($data['catatan']));
                 foreach ($lines as $line) {
                     $line = trim($line);
@@ -100,6 +115,7 @@ class OrderController extends Controller
                         'model_lengan' => $parts[2] ?? null,
                         'size'         => $parts[3] ?? null,
                         'keterangan'   => $parts[4] ?? null,
+                        'customizations' => [],
                     ]);
                 }
             }
