@@ -407,7 +407,12 @@ function statusBadgeType($status) {
                 });
             }
 
-            loadChart('week');
+            // Default ke Harian di mobile
+            if (window.innerWidth < 1024) {
+                filterSelect.value = 'day';
+            }
+
+            loadChart(filterSelect.value);
 
             // ==================== DOUGHNUT CHART ====================
             var ctxDonut = document.getElementById('donutChart');
