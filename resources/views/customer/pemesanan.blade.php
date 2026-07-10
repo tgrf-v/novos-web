@@ -317,6 +317,47 @@
                 </div>
             </div>
 
+            {{-- Spesifikasi Utama (Atribut Global) --}}
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm mt-6" x-show="selectedCategoryId">
+                <h4 class="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#1a237e]"></span>
+                    Spesifikasi Utama (Berlaku untuk Semua Jersey)
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <template x-for="attr in activeSchema" :key="attr.id">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-gray-600" x-text="attr.name"></span>
+                                <template x-if="attr.reference_image">
+                                    <button type="button" @click="showAttrGuide(attr)" class="text-[10px] text-blue-900 hover:underline flex items-center gap-0.5">
+                                        Panduan
+                                    </button>
+                                </template>
+                            </div>
+                            <template x-if="attr.type === 'select' || attr.type === 'radio'">
+                                <select
+                                    x-model="form.customizations[attr.id]"
+                                    class="w-full border border-gray-300 p-2 rounded-lg bg-white text-xs outline-none focus:ring-1 focus:ring-[#1a237e]"
+                                >
+                                    <option value="">- Pilih -</option>
+                                    <template x-for="opt in attr.options" :key="opt.value">
+                                        <option :value="opt.value" x-text="opt.value"></option>
+                                    </template>
+                                </select>
+                            </template>
+                            <template x-if="attr.type === 'text'">
+                                <input
+                                    type="text"
+                                    x-model="form.customizations[attr.id]"
+                                    class="w-full border border-gray-300 p-2 rounded-lg text-xs outline-none focus:ring-1 focus:ring-[#1a237e]"
+                                    :placeholder="'Masukkan ' + attr.name"
+                                >
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
             {{-- Detail Pesanan --}}
             <div>
                 <div class="flex items-center justify-between mb-1.5">
@@ -476,15 +517,15 @@
                 {{-- Tabel Data Produksi Dinamis --}}
                 <div class="mt-4 bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
                     <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center flex-wrap gap-2">
-                        <h4 class="text-sm font-bold text-gray-800">Tabel Rincian Pemain & Spesifikasi</h4>
-                        <div class="text-xs text-gray-500 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                            <span class="flex h-1.5 w-1.5 rounded-full bg-blue-600"></span>
-                            <span><strong>Tips:</strong> Klik kolom / centang massal untuk ubah sekaligus dengan cepat.</span>
+                        <h4 class="text-sm font-bold text-gray-800">Daftar Pemain & Ukuran</h4>
+                        <div class="text-xs text-gray-500 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5 animate-pulse">
+                            <span class="flex h-2 w-2 rounded-full bg-blue-600"></span>
+                            <span>Secara default, pemain mengikuti <strong>Spesifikasi Utama</strong> di atas. Gunakan kustomisasi jika ada yang berbeda.</span>
                         </div>
                     </div>
                     
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs min-w-[800px]">
+                        <table class="w-full text-left text-xs min-w-[700px]">
                             <thead class="bg-gray-800 text-white select-none">
                                 <tr>
                                     <th class="p-3 w-12 text-center">
@@ -494,9 +535,8 @@
                                     <th class="p-3 w-28">No Punggung</th>
                                     <th class="p-3">Nama Punggung</th>
                                     <th class="p-3 w-28">Size</th>
-                                    <template x-for="attr in activeSchema" :key="attr.id">
-                                        <th class="p-3 min-w-[150px]" x-text="attr.name"></th>
-                                    </template>
+                                    <th class="p-3 w-64">Status Spesifikasi</th>
+                                    <th class="p-3 w-28 text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
@@ -535,37 +575,38 @@
                                             </select>
                                         </td>
                                         
-                                        <!-- Dynamic Attribute Columns -->
-                                        <template x-for="attr in activeSchema" :key="attr.id">
-                                            <td class="p-3">
-                                                <!-- Select/Radio type -> render select dropdown inside cell -->
-                                                <template x-if="attr.type === 'select' || attr.type === 'radio'">
-                                                    <select
-                                                        x-model="item.customizations[attr.id]"
-                                                        :disabled="!isAttrActive(attr, item)"
-                                                        :class="!isAttrActive(attr, item) ? 'bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white border-gray-300 text-gray-900 focus:ring-[#1a237e]'"
-                                                        class="w-full border p-1.5 rounded outline-none focus:ring-1 focus:border-[#1a237e]"
-                                                    >
-                                                        <option value="" x-text="'- Pilih -'"></option>
-                                                        <template x-for="opt in attr.options" :key="opt.value">
-                                                            <option :value="opt.value" x-text="opt.value"></option>
+                                        <!-- Status Spesifikasi (Overrides) -->
+                                        <td class="p-3">
+                                            <template x-if="getOverrideCount(item) === 0">
+                                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold text-gray-500 bg-gray-100 border border-gray-200">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                                                    Mengikuti Spesifikasi Utama
+                                                </span>
+                                            </template>
+                                            <template x-if="getOverrideCount(item) > 0">
+                                                <div class="space-y-1">
+                                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold text-orange-700 bg-orange-50 border border-orange-200">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+                                                        Kustom (<span x-text="getOverrideCount(item)"></span> atribut berbeda)
+                                                    </span>
+                                                    <div class="flex flex-wrap gap-1">
+                                                        <template x-for="(val, key) in item.customizations" :key="key">
+                                                            <template x-if="val !== ''">
+                                                                <span class="text-[9px] bg-blue-50 text-blue-900 border border-blue-100 px-1 py-0.5 rounded" x-text="key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) + ': ' + val"></span>
+                                                            </template>
                                                         </template>
-                                                    </select>
-                                                </template>
-                                                
-                                                <!-- Text type -> render text input inside cell -->
-                                                <template x-if="attr.type === 'text'">
-                                                    <input
-                                                        type="text"
-                                                        x-model="item.customizations[attr.id]"
-                                                        :disabled="!isAttrActive(attr, item)"
-                                                        :class="!isAttrActive(attr, item) ? 'bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed' : 'bg-white border-gray-300 text-gray-900 focus:ring-[#1a237e]'"
-                                                        class="w-full border p-1.5 rounded outline-none focus:ring-1 focus:border-[#1a237e]"
-                                                        :placeholder="attr.name"
-                                                    >
-                                                </template>
-                                            </td>
-                                        </template>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </td>
+                                        
+                                        <!-- Actions -->
+                                        <td class="p-3 text-center">
+                                            <button type="button" @click="openOverrideModal(index)" class="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-bold text-[#1a237e] bg-[#1a237e]/5 hover:bg-[#1a237e]/10 border border-transparent rounded-lg transition-colors cursor-pointer">
+                                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                                                Kustomisasi
+                                            </button>
+                                        </td>
                                     </tr>
                                 </template>
                             </tbody>
@@ -577,34 +618,37 @@
                 <div x-show="countSelected() > 0" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-4 rounded-2xl shadow-2xl border border-gray-800 flex items-center gap-6 z-50">
                     <div class="border-r border-gray-800 pr-4">
                         <p class="text-[10px] text-gray-400 uppercase font-semibold">Terpilih</p>
-                        <p class="text-base font-bold text-orange-400" x-text="countSelected() + ' Baris'"></p>
+                        <p class="text-base font-bold text-orange-400" x-text="countSelected() + ' Pemain'"></p>
                     </div>
-                    <div class="flex items-center gap-4 text-xs">
-                        <span class="font-semibold text-gray-300">Set Massal:</span>
-                        <select x-model="bulkForm.size" class="bg-gray-800 border border-gray-700 text-white rounded p-1.5 text-xs outline-none">
-                            <option value="">-- Size --</option>
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                            <option value="XXL">XXL</option>
-                            <option value="3XL">3XL</option>
-                            <option value="4XL">4XL</option>
-                        </select>
-                        <template x-for="attr in activeSchema" :key="attr.id">
-                            <template x-if="attr.type === 'select' || attr.type === 'radio'">
-                                <select x-model="bulkForm[attr.id]" class="bg-gray-800 border border-gray-700 text-white rounded p-1.5 text-xs outline-none">
-                                    <option value="" x-text="'-- ' + attr.name + ' --'"></option>
-                                    <template x-for="opt in attr.options" :key="opt.value">
-                                        <option :value="opt.value" x-text="opt.value"></option>
-                                    </template>
-                                </select>
-                            </template>
-                        </template>
-                        <button type="button" @click="applyBulkAction()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-1.5 rounded transition-colors shadow">Terapkan</button>
+                    <div class="flex items-center gap-3 text-xs">
+                        <span class="font-semibold text-gray-300">Aksi Massal:</span>
+                        
+                        <div class="flex items-center gap-1.5 bg-gray-800 border border-gray-700 rounded-lg p-1">
+                            <span class="text-[10px] text-gray-400 font-semibold px-1">Ukuran:</span>
+                            <select x-model="bulkForm.size" @change="applyBulkSize()" class="bg-transparent text-white text-xs outline-none cursor-pointer pr-2">
+                                <option value="" class="bg-gray-800">-- Pilih --</option>
+                                <option value="S" class="bg-gray-800">S</option>
+                                <option value="M" class="bg-gray-800">M</option>
+                                <option value="L" class="bg-gray-800">L</option>
+                                <option value="XL" class="bg-gray-800">XL</option>
+                                <option value="XXL" class="bg-gray-800">XXL</option>
+                                <option value="3XL" class="bg-gray-800">3XL</option>
+                                <option value="4XL" class="bg-gray-800">4XL</option>
+                            </select>
+                        </div>
+
+                        <button type="button" @click="openOverrideModal(null)" class="bg-[#1a237e] hover:bg-[#283593] text-white font-bold px-3.5 py-1.5 rounded-lg transition-colors shadow flex items-center gap-1 cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                            Kustom Atribut
+                        </button>
+                        
+                        <button type="button" @click="resetSelectedOverrides()" class="bg-red-900/60 hover:bg-red-800 text-red-100 font-semibold px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer">
+                            Reset ke Default
+                        </button>
+                        
                         <button type="button" @click="clearSelection()" class="text-xs text-gray-400 hover:text-white underline ml-1">Batal</button>
                     </div>
-                </div>
+                </div>    </div>
             </div>
         </div>
 
@@ -1539,6 +1583,9 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
         bulkForm: {},
         showGuideAttr: null,
         showGuideModal: false,
+        showOverrideModal: false,
+        overrideForm: {},
+        overrideSingleIndex: null,
         prioritas: 'normal',
         showUkuranRef: false,
         orderNumber: null,
@@ -1717,19 +1764,78 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             this.lastCheckedIndex = null; 
         },
 
-        applyBulkAction() {
-            this.items.forEach(item => {
-                if (item.selected) {
-                    if (this.bulkForm.size) item.size = this.bulkForm.size;
+        getOverrideCount(item) {
+            if (!item.customizations) return 0;
+            return Object.keys(item.customizations).filter(k => {
+                const val = item.customizations[k];
+                return val !== undefined && val !== null && val.toString().trim() !== '';
+            }).length;
+        },
+
+        openOverrideModal(index = null) {
+            this.overrideSingleIndex = index;
+            this.overrideForm = {};
+            
+            this.activeSchema.forEach(attr => {
+                this.overrideForm[attr.id] = '';
+            });
+
+            if (index !== null) {
+                const item = this.items[index];
+                if (item.customizations) {
                     this.activeSchema.forEach(attr => {
-                        if (this.bulkForm[attr.id] !== undefined && this.bulkForm[attr.id] !== '') {
-                            item.customizations[attr.id] = this.bulkForm[attr.id];
+                        this.overrideForm[attr.id] = item.customizations[attr.id] || '';
+                    });
+                }
+            }
+            this.showOverrideModal = true;
+        },
+
+        saveOverrides() {
+            this.items.forEach((item, index) => {
+                if (item.selected || index === this.overrideSingleIndex) {
+                    if (!item.customizations) item.customizations = {};
+                    this.activeSchema.forEach(attr => {
+                        const val = this.overrideForm[attr.id];
+                        if (val !== undefined && val !== null && val.toString().trim() !== '') {
+                            item.customizations[attr.id] = val;
+                        } else {
+                            delete item.customizations[attr.id];
                         }
                     });
                 }
             });
+            this.showOverrideModal = false;
+            this.overrideForm = {};
+            this.clearSelection();
+        },
+
+        resetSelectedOverrides() {
+            this.items.forEach(item => {
+                if (item.selected) {
+                    item.customizations = {};
+                }
+            });
+            this.clearSelection();
+        },
+
+        applyBulkSize() {
+            if (!this.bulkForm.size) return;
+            this.items.forEach(item => {
+                if (item.selected) {
+                    item.size = this.bulkForm.size;
+                }
+            });
             this.clearSelection();
             this.bulkForm = {};
+        },
+
+        isOverrideAttrActive(attr) {
+            if (!attr.depends_on || !attr.depends_on.attribute_id) return true;
+            const parentVal = this.overrideForm[attr.depends_on.attribute_id] !== undefined && this.overrideForm[attr.depends_on.attribute_id] !== ''
+                ? this.overrideForm[attr.depends_on.attribute_id]
+                : this.form.customizations[attr.depends_on.attribute_id];
+            return parentVal === attr.depends_on.value;
         },
 
         showAttrGuide(attr) {
@@ -1815,10 +1921,14 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             const schema = this.activeSchema;
             return this.items.every(item => {
                 if (!item.size) return false;
+                const compiled = Object.assign({}, this.form.customizations, item.customizations);
                 return schema.every(attr => {
                     if (!attr.required) return true;
-                    if (!this.isAttrActive(attr, item)) return true;
-                    const val = item.customizations[attr.id];
+                    if (attr.depends_on && attr.depends_on.attribute_id) {
+                        const parentVal = compiled[attr.depends_on.attribute_id];
+                        if (parentVal !== attr.depends_on.value) return true;
+                    }
+                    const val = compiled[attr.id];
                     return val !== undefined && val !== null && val.toString().trim() !== '';
                 });
             });
@@ -2020,7 +2130,8 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
 
             // Generate catatan legacy from items array
             this.form.catatan = this.items.map(item => {
-                const customParts = Object.entries(item.customizations || {})
+                const compiled = Object.assign({}, this.form.customizations, item.customizations);
+                const customParts = Object.entries(compiled)
                     .filter(([k, v]) => v !== undefined && v !== null && v !== '')
                     .map(([k, v]) => v)
                     .join(', ');
@@ -2044,10 +2155,11 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
 
             // Append structured items array
             this.items.forEach((item, index) => {
+                const compiled = Object.assign({}, this.form.customizations, item.customizations);
                 formData.append(`items[${index}][no]`, item.no || '');
                 formData.append(`items[${index}][nama]`, item.nama || '');
                 formData.append(`items[${index}][size]`, item.size || 'M');
-                formData.append(`items[${index}][customizations]`, JSON.stringify(item.customizations || {}));
+                formData.append(`items[${index}][customizations]`, JSON.stringify(compiled));
             });
 
             // Logo tim (logo_files) & Referensi Desain (design_files) dari FilePond
@@ -2146,7 +2258,8 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
 
             // Generate catatan legacy from items array
             this.form.catatan = this.items.map(item => {
-                const customParts = Object.entries(item.customizations || {})
+                const compiled = Object.assign({}, this.form.customizations, item.customizations);
+                const customParts = Object.entries(compiled)
                     .filter(([k, v]) => v !== undefined && v !== null && v !== '')
                     .map(([k, v]) => v)
                     .join(', ');
@@ -2172,7 +2285,14 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                     nama_pemesan: this.form.nama_pemesan,
                     detail_sponsor: this.form.detail_sponsor,
                     customizations: this.form.customizations || {},
-                    items: this.items,
+                    items: this.items.map(item => {
+                        return {
+                            no: item.no,
+                            nama: item.nama,
+                            size: item.size,
+                            customizations: Object.assign({}, this.form.customizations, item.customizations)
+                        };
+                    }),
                     catatan: this.form.catatan,
                     total_qty: this.form.total_qty,
                     prioritas: this.prioritas,
@@ -2367,6 +2487,69 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             </div>
             <div class="px-6 py-4 border-t border-gray-100 flex justify-end">
                 <button @click="showGuideModal = false" class="px-6 py-2 bg-[#1a237e] hover:bg-[#283593] text-white text-sm font-semibold rounded-lg">Mengerti</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template x-teleport="body">
+    <div
+        x-show="showOverrideModal"
+        x-cloak
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+        @click.self="showOverrideModal = false"
+    >
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col" @click.stop>
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
+                <div>
+                    <h3 class="text-base font-bold text-gray-900" x-text="overrideSingleIndex !== null ? 'Kustomisasi Atribut Pemain' : 'Kustomisasi Atribut Massal'"></h3>
+                    <p class="text-[10px] text-gray-500 mt-0.5" x-text="overrideSingleIndex !== null ? 'Mengubah spesifikasi pemain baris #' + (overrideSingleIndex + 1) : 'Mengubah ' + countSelected() + ' pemain terpilih'"></p>
+                </div>
+                <button @click="showOverrideModal = false" class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 flex items-center justify-center transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="px-6 py-5 overflow-y-auto max-h-[60vh] space-y-4 bg-gray-50/50 grow">
+                <p class="text-xs text-gray-500">Atribut yang dikosongkan atau diset ke <strong>Default</strong> akan otomatis mengikuti <strong>Spesifikasi Utama</strong> di halaman pemesanan.</p>
+                
+                <template x-for="attr in activeSchema" :key="attr.id">
+                    <div class="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-gray-700" x-text="attr.name"></span>
+                            <template x-if="overrideForm[attr.id]">
+                                <span class="text-[9px] font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full border border-orange-100">Kustom</span>
+                            </template>
+                            <template x-if="!overrideForm[attr.id]">
+                                <span class="text-[9px] font-medium text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded-full">Default (Utama)</span>
+                            </template>
+                        </div>
+                        
+                        <template x-if="attr.type === 'select' || attr.type === 'radio'">
+                            <select
+                                x-model="overrideForm[attr.id]"
+                                class="w-full border border-gray-300 p-2 rounded-lg bg-white text-xs outline-none focus:ring-1 focus:ring-[#1a237e]"
+                            >
+                                <option value="">- Ikuti Spesifikasi Utama -</option>
+                                <template x-for="opt in attr.options" :key="opt.value">
+                                    <option :value="opt.value" x-text="opt.value"></option>
+                                </template>
+                            </select>
+                        </template>
+                        
+                        <template x-if="attr.type === 'text'">
+                            <input
+                                type="text"
+                                x-model="overrideForm[attr.id]"
+                                class="w-full border border-gray-300 p-2 rounded-lg text-xs outline-none focus:ring-1 focus:ring-[#1a237e]"
+                                placeholder="- Ikuti Spesifikasi Utama -"
+                            >
+                        </template>
+                    </div>
+                </template>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-2 shrink-0 bg-white">
+                <button @click="showOverrideModal = false" class="px-4 py-2 border border-gray-300 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-50">Batal</button>
+                <button @click="saveOverrides()" class="px-5 py-2 bg-[#1a237e] hover:bg-[#283593] text-white text-xs font-semibold rounded-lg">Terapkan</button>
             </div>
         </div>
     </div>
