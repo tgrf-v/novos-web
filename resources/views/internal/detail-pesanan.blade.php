@@ -233,7 +233,15 @@ if (!empty($order['item_details'])) {
             {{-- Item Details Table --}}
             @if(!empty($order['item_details']))
             <div class="mb-4">
-                <span class="text-xs font-medium text-gray-600 mb-2 block">Detail Item Pesanan</span>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-gray-600 block">Detail Item Pesanan</span>
+                    @if($canValidate)
+                    <button @click="openItemsModal()" class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-white bg-[#1a237e] hover:bg-[#0d124a] rounded-lg transition-colors cursor-pointer shadow-sm">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        Kelola Item & Harga
+                    </button>
+                    @endif
+                </div>
                 <div class="overflow-x-auto rounded-lg border border-gray-200">
                     <table class="w-full text-sm">
                         <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
@@ -242,7 +250,8 @@ if (!empty($order['item_details'])) {
                                 <th class="px-3 py-2 text-left font-semibold">Nama Punggung</th>
                                 <th class="px-3 py-2 text-left font-semibold">Model Lengan</th>
                                 <th class="px-3 py-2 text-left font-semibold">Size</th>
-                                <th class="px-3 py-2 text-left font-semibold">Keterangan</th>
+                                <th class="px-3 py-2 text-left font-semibold">Atribut / Keterangan</th>
+                                <th class="px-3 py-2 text-right font-semibold">Harga</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -252,7 +261,21 @@ if (!empty($order['item_details'])) {
                                 <td class="px-3 py-2 text-gray-700">{{ $detail['nama_punggung'] ?? '-' }}</td>
                                 <td class="px-3 py-2 text-gray-700">{{ $detail['model_lengan'] ?? '-' }}</td>
                                 <td class="px-3 py-2 text-gray-700">{{ $detail['size'] ?? '-' }}</td>
-                                <td class="px-3 py-2 text-gray-700 max-w-[200px] truncate">{{ $detail['keterangan'] ?? '-' }}</td>
+                                <td class="px-3 py-2 text-gray-700">
+                                    @if(!empty($detail['customizations']))
+                                        <div class="flex flex-wrap gap-1 mb-1">
+                                            @foreach($detail['customizations'] as $k => $v)
+                                                @if($v !== '')
+                                                    <span class="inline-block bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded text-[10px]"><strong class="text-gray-500">{{ ucwords(str_replace('_', ' ', $k)) }}:</strong> {{ $v }}</span>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                    @if($detail['keterangan'])
+                                        <div class="text-xs text-gray-500 italic">{{ $detail['keterangan'] }}</div>
+                                    @endif
+                                </td>
+                                <td class="px-3 py-2 text-right font-medium text-gray-900">{{ 'Rp ' . number_format($detail['price'] ?? 0, 0, ',', '.') }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -260,6 +283,99 @@ if (!empty($order['item_details'])) {
                 </div>
             </div>
             @endif
+
+            {{-- Kelola Item & Harga Modal --}}
+            <div x-show="itemsModalOpen" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+                <div class="flex items-center justify-center min-h-screen px-4">
+                    <div x-show="itemsModalOpen" x-transition.opacity class="fixed inset-0 transition-opacity bg-black/40" @click="itemsModalOpen = false"></div>
+                    <div x-show="itemsModalOpen" x-transition.scale.origin.bottom class="relative w-full max-w-5xl p-6 my-8 bg-white rounded-2xl shadow-2xl border border-gray-200">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="text-lg font-bold text-gray-900">Kelola Item Pesanan & Harga Invoice</h3>
+                            <button @click="itemsModalOpen = false" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto rounded-lg border border-gray-200 mb-4 max-h-[60vh]">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide border-b border-gray-200">
+                                    <tr>
+                                        <th class="px-3 py-3 font-semibold w-24">No Punggung</th>
+                                        <th class="px-3 py-3 font-semibold w-40">Nama Punggung</th>
+                                        <th class="px-3 py-3 font-semibold w-24">Size</th>
+                                        <th class="px-3 py-3 font-semibold">Customizations</th>
+                                        <th class="px-3 py-3 font-semibold w-48">Harga (Rp)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100 bg-white">
+                                    <template x-for="(item, idx) in items" :key="item.id">
+                                        <tr class="hover:bg-gray-50/50 transition-colors">
+                                            <td class="px-3 py-2">
+                                                <input type="text" x-model="item.no_punggung" class="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:ring-1 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none">
+                                            </td>
+                                            <td class="px-3 py-2">
+                                                <input type="text" x-model="item.nama_punggung" class="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:ring-1 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none">
+                                            </td>
+                                            <td class="px-3 py-2">
+                                                <input type="text" x-model="item.size" class="w-full px-2 py-1 text-sm border border-gray-200 rounded focus:ring-1 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none">
+                                            </td>
+                                            <td class="px-3 py-2 space-y-1">
+                                                <div class="grid grid-cols-2 gap-2">
+                                                    @foreach($attributesSchema as $attr)
+                                                        <div>
+                                                            <span class="text-[10px] text-gray-400 font-semibold block">{{ $attr['name'] }}</span>
+                                                            @if(!empty($attr['options']))
+                                                                <select x-model="item.customizations['{{ $attr['id'] }}']" class="w-full px-1.5 py-0.5 text-xs border border-gray-200 rounded bg-white">
+                                                                    <option value="">-</option>
+                                                                    @foreach($attr['options'] as $opt)
+                                                                        <option value="{{ $opt }}">{{ $opt }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            @else
+                                                                <input type="text" x-model="item.customizations['{{ $attr['id'] }}']" class="w-full px-1.5 py-0.5 text-xs border border-gray-200 rounded">
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </td>
+                                            <td class="px-3 py-2">
+                                                <div class="relative rounded-md shadow-sm">
+                                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5">
+                                                        <span class="text-xs text-gray-500 font-medium">Rp</span>
+                                                    </div>
+                                                    <input
+                                                        type="number"
+                                                        x-model="item.price"
+                                                        @keydown.enter.prevent="applyShortcut(idx)"
+                                                        @keydown.down.prevent="applyShortcut(idx)"
+                                                        @blur="applyShortcut(idx)"
+                                                        class="w-full pl-8 pr-2.5 py-1 text-sm border border-gray-200 rounded focus:ring-1 focus:ring-[#1a237e] focus:border-[#1a237e] outline-none font-semibold text-gray-900"
+                                                        placeholder="85000"
+                                                    >
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-xs text-gray-500 mb-4 bg-blue-50 p-3 rounded-lg flex items-start gap-2 border border-blue-100">
+                            <svg class="w-4 h-4 text-blue-900 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <div>
+                                <span class="font-bold text-blue-900">Tips Shortcut Admin:</span> Ketik ribuan (misal: 115 atau 122.5), lalu tekan <kbd class="bg-white border border-gray-300 rounded px-1 text-[10px]">Enter</kbd> / <kbd class="bg-white border border-gray-300 rounded px-1 text-[10px]">Panah Bawah</kbd> / pindah input untuk otomatis melipatgandakan menjadi ribuan (<span class="font-semibold">Rp 115.000</span> / <span class="font-semibold">Rp 122.500</span>).
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                            <button @click="itemsModalOpen = false" class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                                Batal
+                            </button>
+                            <button @click="saveItems()" :disabled="loading" class="px-5 py-2 text-sm font-semibold text-white bg-[#1a237e] hover:bg-[#0d124a] rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2">
+                                <svg x-show="loading" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                                Simpan Item & Update Invoice
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {{-- Edit Modal --}}
             <div x-show="editModalOpen" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
                 <div class="flex items-center justify-center min-h-screen px-4">
@@ -944,7 +1060,9 @@ function updateStatusSection() {
     function editProduk() {
         return {
             editModalOpen: false,
+            itemsModalOpen: false,
             loading: false,
+            items: [],
             form: {
                 team_name: '',
                 nama_artikel: '',
@@ -972,6 +1090,45 @@ function updateStatusSection() {
                 this.form.additional_notes = p.notes || '';
                 this.form.customizations = p.customizations ? JSON.parse(JSON.stringify(p.customizations)) : {};
                 this.editModalOpen = true;
+            },
+            openItemsModal() {
+                this.items = JSON.parse(JSON.stringify(@json($order['item_details'])));
+                this.items.forEach(item => {
+                    if (!item.customizations) item.customizations = {};
+                });
+                this.itemsModalOpen = true;
+            },
+            applyShortcut(index) {
+                let val = parseFloat(this.items[index].price);
+                if (val > 0 && val < 1000) {
+                    this.items[index].price = val * 1000;
+                }
+            },
+            async saveItems() {
+                this.loading = true;
+                try {
+                    const res = await fetch('{{ route("staf.pesanan.update-items", $order["order_id"]) }}', {
+                        method: 'PUT',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ items: this.items })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        Notify.success(data.message, 'Berhasil!');
+                        this.itemsModalOpen = false;
+                        setTimeout(() => location.reload(), 800);
+                    } else {
+                        Notify.error(data.message || 'Terjadi kesalahan.');
+                    }
+                } catch (e) {
+                    Notify.error('Terjadi kesalahan sistem.');
+                } finally {
+                    this.loading = false;
+                }
             },
             async save() {
                 this.loading = true;

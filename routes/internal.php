@@ -38,6 +38,8 @@ Route::get('/daftar-pesanan/export', [OrderController::class, 'exportDaftarPesan
         Route::post('/pesanan/{order:order_number}/delete-spk-file', [OrderController::class, 'deleteSpkFile'])->name('pesanan.delete-spk-file');
         Route::post('/pesanan/{order:order_number}/update-spk-notes', [OrderController::class, 'updateSpkNotes'])->name('pesanan.update-spk-notes');
         Route::patch('/pesanan/{order:order_number}/design-request', [OrderController::class, 'updateDesignRequest'])->name('pesanan.update-design-request');
+        Route::put('/pesanan/{order:order_number}/items', [OrderController::class, 'updateItems'])->name('pesanan.update-items');
+
 
         Route::get('/design', [DesignController::class, 'index'])->name('design');
         Route::post('/design/update/{order:order_number}', [DesignController::class, 'updateStatus'])->name('design.update');

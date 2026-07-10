@@ -137,7 +137,7 @@ class OrderController extends Controller
 
         $order->load([
             'user',
-            'orderItems',
+            'orderItems.product.category',
             'itemDetails',
             'designRequest',
             'payment',
@@ -360,11 +360,14 @@ class OrderController extends Controller
         if ($order->itemDetails && $order->itemDetails->isNotEmpty()) {
             foreach ($order->itemDetails as $detail) {
                 $itemDetails[] = [
-                    'no_punggung'  => $detail->no_punggung,
+                    'id'            => $detail->id,
+                    'no_punggung'   => $detail->no_punggung,
                     'nama_punggung' => $detail->nama_punggung,
-                    'model_lengan' => $detail->model_lengan,
-                    'size'         => $detail->size,
-                    'keterangan'   => $detail->keterangan,
+                    'model_lengan'  => $detail->model_lengan,
+                    'size'          => $detail->size,
+                    'keterangan'    => $detail->keterangan,
+                    'customizations'=> $detail->customizations ?? [],
+                    'price'         => (float) ($detail->price ?? 0),
                 ];
             }
         }
@@ -416,7 +419,16 @@ class OrderController extends Controller
             ],
         ];
 
-        return view('internal.detail-pesanan', compact('order', 'badgeType', 'badgeLabel', 'steps') + ['rawStatus' => $rawStatus]);
+        $attributesSchema = [];
+        $firstItem = $order->orderItems->first();
+        if ($firstItem && $firstItem->product && $firstItem->product->category) {
+            $attributesSchema = $firstItem->product->category->attributes_schema ?? [];
+        }
+
+        return view('internal.detail-pesanan', compact('order', 'badgeType', 'badgeLabel', 'steps') + [
+            'rawStatus' => $rawStatus,
+            'attributesSchema' => $attributesSchema,
+        ]);
     }
 
     public function assign(AssignOrderRequest $request, Order $order)
@@ -2128,5 +2140,78 @@ class OrderController extends Controller
         ]);
 
         return response()->json(['success' => true, 'message' => 'Catatan SPK berhasil diperbarui.']);
+    }
+
+    public function updateItems(Request $request, Order $order)
+    {
+        $request->validate([
+            'items' => 'required|array',
+            'items.*.id' => 'required|exists:order_item_details,id',
+            'items.*.no_punggung' => 'nullable|string|max:50',
+            'items.*.nama_punggung' => 'nullable|string|max:100',
+            'items.*.model_lengan' => 'nullable|string|max:100',
+            'items.*.size' => 'nullable|string|max:20',
+            'items.*.price' => 'required|numeric|min:0',
+            'items.*.customizations' => 'nullable|array',
+        ]);
+
+        $itemsData = $request->input('items');
+        
+        DB::transaction(function() use ($itemsData, $order) {
+            $totalItemPrice = 0;
+            
+            foreach ($itemsData as $item) {
+                $detail = OrderItemDetail::findOrFail($item['id']);
+                
+                $rowCustom = $item['customizations'] ?? $detail->customizations ?? [];
+                // Sync model_lengan with customizations fallback
+                $modelLengan = $item['model_lengan'] ?? $rowCustom['lengan_jahitan'] ?? $rowCustom['lengan'] ?? $detail->model_lengan;
+
+                $detail->update([
+                    'no_punggung' => $item['no_punggung'] ?? null,
+                    'nama_punggung' => $item['nama_punggung'] ?? null,
+                    'model_lengan' => $modelLengan,
+                    'size' => $item['size'] ?? null,
+                    'price' => $item['price'] ?? 0,
+                    'customizations' => $rowCustom,
+                ]);
+                $totalItemPrice += (float) ($item['price'] ?? 0);
+            }
+            
+            // Prioritas fee
+            $prioritas = $order->designRequest?->priority ?? 'normal';
+            $biayaPrioritas = match ($prioritas) {
+                'express' => 50000.0,
+                'super_express' => 150000.0,
+                default => 0.0,
+            };
+            
+            $newTotalPrice = $totalItemPrice + $biayaPrioritas;
+            $totalQty = count($itemsData);
+            
+            // Update Order total_price
+            $order->update([
+                'total_price' => $newTotalPrice
+            ]);
+            
+            // Update OrderItem subtotal/price per item if single
+            $singleItem = $order->orderItems()->first();
+            if ($singleItem) {
+                $singleItem->update([
+                    'qty' => $totalQty,
+                    'price_per_item' => $totalQty > 0 ? ($totalItemPrice / $totalQty) : 0,
+                    'subtotal' => $totalItemPrice,
+                ]);
+            }
+            
+            // Update related payment amount
+            if ($order->payment) {
+                $order->payment->update([
+                    'amount' => $newTotalPrice
+                ]);
+            }
+        });
+
+        return response()->json(['success' => true, 'message' => 'Detail item pesanan & harga invoice berhasil diperbarui.']);
     }
 }
