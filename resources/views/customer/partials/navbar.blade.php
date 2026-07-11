@@ -40,13 +40,7 @@
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 translate-y-2"
                      class="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-64 z-50">
-                    <div class="bg-white rounded-xl shadow-lg border border-gray-100 py-2">
-                    <a href="{{ route('katalog') }}"
-                       class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1a237e] transition-colors font-medium">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                        Semua Produk
-                    </a>
-                    <div class="border-t border-gray-100 my-1"></div>
+                     <div class="bg-white rounded-xl shadow-lg border border-gray-100 py-2">
                     @foreach($navbarCategories as $cat)
                     <a href="{{ route('katalog', ['kategori' => \Illuminate\Support\Str::slug($cat->name)]) }}"
                        class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1a237e] transition-colors">{{ $cat->name }}</a>
@@ -519,7 +513,6 @@
                 <svg class="w-4 h-4 transition-transform" :class="katalogOpen ? 'rotate-180' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div x-show="katalogOpen" x-cloak class="mt-2 ml-4 space-y-2">
-                <a href="{{ route('katalog') }}" class="block text-sm text-gray-500 hover:text-[#1a237e]">Semua Produk</a>
                 @foreach($navbarCategories as $cat)
                 <a href="{{ route('katalog', ['kategori' => \Illuminate\Support\Str::slug($cat->name)]) }}" class="block text-sm text-gray-500 hover:text-[#1a237e]">{{ $cat->name }}</a>
                 @endforeach
