@@ -46,11 +46,10 @@ function statusBadgeType($status) {
 
     <!-- Stats Row -->
     @if($isDesign)
-    <div class="-mx-4 px-4 lg:mx-0 lg:px-0 overflow-x-hidden mb-8">
-        <div class="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide lg:grid lg:grid-cols-4 lg:gap-6 lg:overflow-x-visible">
+    <div class="grid grid-flow-col auto-cols-[calc(50%-0.375rem)] lg:grid-flow-row lg:grid-cols-4 gap-3 lg:gap-6 mb-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory scrollbar-hide">
 
             <!-- Card D1: Menunggu Desain -->
-            <a href="{{ route('staf.daftar-pesanan') }}?status=dikonfirmasi" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-purple-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}?status=dikonfirmasi" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-purple-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -63,7 +62,7 @@ function statusBadgeType($status) {
             </a>
 
             <!-- Card D2: Sedang Di Desain -->
-            <a href="{{ route('staf.daftar-pesanan') }}?status=di_design" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-blue-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}?status=di_design" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-blue-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -76,7 +75,7 @@ function statusBadgeType($status) {
             </a>
 
             <!-- Card D3: Menunggu ACC -->
-            <a href="{{ route('staf.daftar-pesanan') }}?status=disetujui" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-orange-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}?status=disetujui" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-orange-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -89,7 +88,7 @@ function statusBadgeType($status) {
             </a>
 
             <!-- Card D4: Selesai Hari Ini -->
-            <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -102,13 +101,11 @@ function statusBadgeType($status) {
             </a>
 
         </div>
-    </div>
     @elseif($isProduction)
-    <div class="-mx-4 px-4 lg:mx-0 lg:px-0 overflow-x-hidden mb-8">
-        <div class="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide lg:grid lg:grid-cols-4 lg:gap-6 lg:overflow-x-visible">
+    <div class="grid grid-flow-col auto-cols-[calc(50%-0.375rem)] lg:grid-flow-row lg:grid-cols-4 gap-3 lg:gap-6 mb-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory scrollbar-hide">
 
             <!-- Card P1: Total Pesanan -->
-            <a href="{{ route('staf.daftar-pesanan') }}" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-[#1a237e]/30 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-[#1a237e]/30 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-[#1a237e] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -129,7 +126,7 @@ function statusBadgeType($status) {
             </a>
 
             <!-- Card P2: Antrian Cetak -->
-            <a href="{{ route('staf.daftar-pesanan') }}?status=siap_cetak" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-red-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}?status=siap_cetak" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-red-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -142,7 +139,7 @@ function statusBadgeType($status) {
             </a>
 
             <!-- Card P3: Sedang Diproduksi -->
-            <a href="{{ route('staf.daftar-pesanan') }}?status=diproduksi" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-purple-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}?status=diproduksi" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-purple-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -156,7 +153,7 @@ function statusBadgeType($status) {
             </a>
 
             <!-- Card P4: Selesai Hari Ini -->
-            <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -177,13 +174,11 @@ function statusBadgeType($status) {
             </a>
 
         </div>
-    </div>
     @else
-    <div class="-mx-4 px-4 lg:mx-0 lg:px-0 overflow-x-hidden mb-8">
-        <div class="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide lg:grid lg:grid-cols-4 lg:gap-6 lg:overflow-x-visible">
+    <div class="grid grid-flow-col auto-cols-[calc(50%-0.375rem)] lg:grid-flow-row lg:grid-cols-4 gap-3 lg:gap-6 mb-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory scrollbar-hide">
 
             <!-- Card 1: Total Pesanan -->
-            <a href="{{ route('staf.daftar-pesanan') }}" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-[#1a237e]/30 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-[#1a237e]/30 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-[#1a237e] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         {{-- Clipboard List icon (Heroicons) --}}
@@ -205,7 +200,7 @@ function statusBadgeType($status) {
             </a>
 
             <!-- Card 2: Menunggu Pembayaran -->
-            <a href="{{ route('staf.daftar-pesanan') }}?status=menunggu_pembayaran" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-orange-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}?status=menunggu_pembayaran" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-orange-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         {{-- Clock icon (Heroicons) --}}
@@ -227,7 +222,7 @@ function statusBadgeType($status) {
             </a>
 
             <!-- Card 3: Sedang Diproses -->
-            <a href="{{ route('staf.daftar-pesanan') }}?status=tahap_produksi" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-blue-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}?status=tahap_produksi" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-blue-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         {{-- Cog / Settings icon (Heroicons) --}}
@@ -250,7 +245,7 @@ function statusBadgeType($status) {
             </a>
 
             <!-- Card 4: Selesai Hari Ini -->
-            <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}" class="w-[calc(50%-0.375rem)] shrink-0 snap-start lg:w-auto lg:shrink bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+            <a href="{{ route('staf.daftar-pesanan') }}?status=selesai&date_from={{ now()->format('Y-m-d') }}&date_to={{ now()->format('Y-m-d') }}" class="snap-start bg-white rounded-2xl shadow-sm border border-gray-200 p-4 lg:p-6 flex flex-col hover:shadow-xl hover:border-green-300/50 lg:hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
                 <div class="flex justify-between items-start mb-4">
                     <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                         {{-- Check Circle icon (Heroicons) --}}
@@ -272,7 +267,6 @@ function statusBadgeType($status) {
             </a>
 
         </div>
-    </div>
     @endif
 
     <!-- Charts Row -->
