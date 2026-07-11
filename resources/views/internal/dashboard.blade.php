@@ -321,7 +321,7 @@ function statusBadgeType($status) {
                 Lihat Semua <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
         </div>
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto max-h-72 overflow-y-auto lg:max-h-none lg:overflow-y-visible">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-gray-50/50 border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wider">
