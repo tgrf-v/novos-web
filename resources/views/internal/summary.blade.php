@@ -190,7 +190,7 @@
     <div class="px-6 py-4 border-b border-gray-100">
         <h3 class="font-semibold text-gray-900">👥 Performance & Workload Tim</h3>
     </div>
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto overflow-y-auto max-h-80 lg:overflow-visible lg:max-h-none">
         <table class="w-full text-sm">
             <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
                 <tr>
