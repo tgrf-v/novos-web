@@ -90,6 +90,12 @@ class OrderController extends Controller
             if (!empty($data['items']) && is_array($data['items'])) {
                 foreach ($data['items'] as $item) {
                     $rowCustom = $item['customizations'] ?? [];
+                    if (!empty($item['tipe_bawahan'])) {
+                        $rowCustom['tipe_bawahan'] = $item['tipe_bawahan'];
+                    }
+                    if (!empty($item['size_bawahan'])) {
+                        $rowCustom['size_bawahan'] = $item['size_bawahan'];
+                    }
                     // Fallback model_lengan
                     $modelLengan = $rowCustom['lengan_jahitan'] ?? $rowCustom['lengan'] ?? null;
                     OrderItemDetail::create([
