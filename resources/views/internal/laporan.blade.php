@@ -8,8 +8,8 @@
 
 @section('internal-content')
 <div x-data="laporanApp()" x-init="init()" class="space-y-6">
-    {{-- Filter Bar --}}
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-4">
+    {{-- Filter Bar: Desktop --}}
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-4 hidden md:block">
         <div class="flex flex-wrap items-center gap-2">
             {{-- Pill buttons: Desktop only --}}
             <div class="hidden xl:flex gap-1.5">
@@ -82,6 +82,68 @@
             </span>
             <strong class="text-gray-600" x-text="startDate"></strong> — <strong class="text-gray-600" x-text="endDate"></strong>
         </p>
+    </div>{{-- end desktop filter card --}}
+
+    {{-- Mobile Filter Card --}}
+    <div class="block md:hidden">
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 space-y-4">
+            <span class="inline-flex items-center text-[8px] font-medium text-gray-900"><span x-text="startDate"></span> — <span x-text="endDate"></span></span>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Pilih Periode</label>
+                <select x-model="filter" @change="applyFilter($event.target.value)"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all">
+                    <option value="today">Hari Ini</option>
+                    <option value="week">Minggu Ini</option>
+                    <option value="month">Bulan Ini</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+
+            <div x-show="filter === 'custom'" class="space-y-2" x-cloak>
+                <div>
+                    <label class="block text-[11px] text-gray-500 mb-0.5">Dari</label>
+                    <input type="date" x-model="customStart"
+                           class="w-full text-sm border-gray-300 rounded-lg focus:ring-[#1a237e] focus:border-[#1a237e] px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-[11px] text-gray-500 mb-0.5">Sampai</label>
+                    <input type="date" x-model="customEnd"
+                           class="w-full text-sm border-gray-300 rounded-lg focus:ring-[#1a237e] focus:border-[#1a237e] px-3 py-2">
+                </div>
+                <button @click="applyCustomFilter()"
+                        class="w-full px-4 py-2 bg-[#1a237e] text-white text-sm rounded-lg hover:bg-[#283593] transition-colors">
+                    Terapkan
+                </button>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Unduh Laporan</label>
+                <div class="flex gap-2">
+                    <a :href="'{{ route('staf.laporan.csv') }}?filter=' + filter + '&start_date=' + customStart + '&end_date=' + customEnd"
+                       class="flex-1 flex flex-col items-center justify-center gap-1.5 px-2 py-3 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 text-xs font-medium rounded-lg transition-colors shadow-sm">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100">
+                            <i data-lucide="file-spreadsheet" class="w-4 h-4 text-blue-600"></i>
+                        </span>
+                        <span>CSV</span>
+                    </a>
+                    <a :href="'{{ route('staf.laporan.excel') }}?filter=' + filter + '&start_date=' + customStart + '&end_date=' + customEnd"
+                       class="flex-1 flex flex-col items-center justify-center gap-1.5 px-2 py-3 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 text-xs font-medium rounded-lg transition-colors shadow-sm">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-green-100">
+                            <i data-lucide="file-spreadsheet" class="w-4 h-4 text-green-600"></i>
+                        </span>
+                        <span>Excel</span>
+                    </a>
+                    <a :href="'{{ route('staf.laporan.pdf') }}?filter=' + filter + '&start_date=' + customStart + '&end_date=' + customEnd"
+                       class="flex-1 flex flex-col items-center justify-center gap-1.5 px-2 py-3 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 text-xs font-medium rounded-lg transition-colors shadow-sm">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-red-100">
+                            <i data-lucide="file-text" class="w-4 h-4 text-red-600"></i>
+                        </span>
+                        <span>PDF</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
     {{-- Loading --}}
