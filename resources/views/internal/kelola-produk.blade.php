@@ -74,22 +74,16 @@
                             <td class="text-center text-gray-500 font-medium" x-text="prod.id"></td>
                             <td>
                                 <div class="flex items-center gap-1.5">
-                                    <div class="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
-                                        <template x-if="prod.image_depan">
-                                            <img :src="prod.image_depan" class="object-cover w-full h-full" alt="Depan">
-                                        </template>
-                                        <template x-if="!prod.image_depan">
+                                    <template x-for="(img, i) in (prod.images || [])" :key="i">
+                                        <div class="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
+                                            <img :src="img" class="object-cover w-full h-full" :alt="'Foto ' + (i+1)">
+                                        </div>
+                                    </template>
+                                    <template x-if="!prod.images || prod.images.length === 0">
+                                        <div class="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
                                             <i data-lucide="image" class="w-4 h-4 text-gray-400"></i>
-                                        </template>
-                                    </div>
-                                    <div class="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
-                                        <template x-if="prod.image_belakang">
-                                            <img :src="prod.image_belakang" class="object-cover w-full h-full" alt="Belakang">
-                                        </template>
-                                        <template x-if="!prod.image_belakang">
-                                            <i data-lucide="image" class="w-4 h-4 text-gray-400"></i>
-                                        </template>
-                                    </div>
+                                        </div>
+                                    </template>
                                 </div>
                             </td>
                             <td class="font-bold text-gray-900" x-text="prod.name"></td>
@@ -403,15 +397,10 @@
                         </div>
                     </template>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Foto Tampak Depan</label>
-                            <input type="file" class="filepond" id="pondDepan" name="image" accept="image/*" data-max-file-size="5MB" data-allow-multiple="false">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Foto Tampak Belakang</label>
-                            <input type="file" class="filepond" id="pondBelakang" name="image_belakang" accept="image/*" data-max-file-size="5MB" data-allow-multiple="false">
-                        </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Foto Produk</label>
+                        <input type="file" class="filepond" id="pondImages" name="images[]" accept="image/*" data-max-file-size="5MB" data-allow-multiple="true">
+                        <p class="text-xs text-gray-400 mt-1">Upload 2-4 foto produk (depan, belakang, samping, dll)</p>
                     </div>
 
                     <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100 mt-6">
@@ -472,8 +461,7 @@ function kelolaProdukApp() {
             return (cat && cat.attributes_schema) ? cat.attributes_schema : [];
         },
 
-        originalImageDepan: null,
-        originalImageBelakang: null,
+        originalImages: [],
 
         initApp() {
             this.renderIcons();
@@ -509,8 +497,7 @@ function kelolaProdukApp() {
                 description: '',
                 product_attributes: {},
             };
-            this.originalImageDepan = null;
-            this.originalImageBelakang = null;
+            this.originalImages = [];
             this.clearFilePonds();
             this.showModal = true;
             this.$nextTick(() => this.renderIcons());
@@ -526,16 +513,13 @@ function kelolaProdukApp() {
                 description: product.description,
                 product_attributes: product.product_attributes || {},
             };
-            this.originalImageDepan = product.image_depan || null;
-            this.originalImageBelakang = product.image_belakang || null;
+            this.originalImages = product.images || [];
             this.clearFilePonds();
-            if (product.image_depan) {
-                const p1 = FilePond.find(document.querySelector('#pondDepan'));
-                if (p1) p1.addFile(product.image_depan);
-            }
-            if (product.image_belakang) {
-                const p2 = FilePond.find(document.querySelector('#pondBelakang'));
-                if (p2) p2.addFile(product.image_belakang);
+            var pond = FilePond.find(document.querySelector('#pondImages'));
+            if (pond) {
+                (product.images || []).forEach(function(url) {
+                    pond.addFile(url);
+                });
             }
             this.showModal = true;
             this.$nextTick(() => this.renderIcons());
@@ -547,10 +531,8 @@ function kelolaProdukApp() {
         },
 
         clearFilePonds() {
-            ['pondDepan', 'pondBelakang'].forEach(id => {
-                const pond = FilePond.find(document.querySelector('#' + id));
-                if (pond) pond.removeFiles();
-            });
+            var pond = FilePond.find(document.querySelector('#pondImages'));
+            if (pond) pond.removeFiles();
         },
 
         async saveProduct() {
@@ -561,23 +543,27 @@ function kelolaProdukApp() {
             fd.append('category_id', this.formData.category_id);
             fd.append('price', this.formData.price);
             fd.append('description', this.formData.description || '');
-            // Kirim product_attributes sebagai JSON string
             fd.append('product_attributes', JSON.stringify(this.formData.product_attributes || {}));
 
-            const pondDepan = FilePond.find(document.querySelector('#pondDepan'));
-            if (pondDepan && pondDepan.getFiles().length > 0) {
-                const f = pondDepan.getFiles()[0];
-                if (f.file instanceof File) fd.append('image', f.file, f.file.name);
-            } else if (this.formMode === 'edit' && this.originalImageDepan) {
-                fd.append('image', '');
+            var pond = FilePond.find(document.querySelector('#pondImages'));
+            var newFiles = [];
+            var keptPaths = [];
+            if (pond) {
+                pond.getFiles().forEach(function(f) {
+                    if (f.file instanceof File) {
+                        newFiles.push(f.file);
+                    } else if (f.file) {
+                        keptPaths.push(f.file.name || f.file);
+                    }
+                });
             }
-
-            const pondBelakang = FilePond.find(document.querySelector('#pondBelakang'));
-            if (pondBelakang && pondBelakang.getFiles().length > 0) {
-                const f = pondBelakang.getFiles()[0];
-                if (f.file instanceof File) fd.append('image_belakang', f.file, f.file.name);
-            } else if (this.formMode === 'edit' && this.originalImageBelakang) {
-                fd.append('image_belakang', '');
+            newFiles.forEach(function(file) {
+                fd.append('images[]', file, file.name);
+            });
+            if (this.formMode === 'edit') {
+                keptPaths.forEach(function(path, i) {
+                    fd.append('existing_images[' + i + ']', path);
+                });
             }
 
             const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');

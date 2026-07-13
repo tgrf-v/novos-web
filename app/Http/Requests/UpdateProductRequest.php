@@ -18,8 +18,10 @@ class UpdateProductRequest extends FormRequest
             'category_id'        => 'required|exists:categories,id',
             'price'              => 'required|numeric|min:0',
             'description'        => 'nullable|string|max:5000',
-            'image'              => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'image_belakang'     => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'images'             => 'nullable|array',
+            'images.*'           => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'existing_images'    => 'nullable|array',
+            'existing_images.*'  => 'string',
             // Kolom lama (tetap nullable untuk backward compat)
             'kerah'              => 'nullable|string|max:100',
             'bahan'              => 'nullable|string|max:100',

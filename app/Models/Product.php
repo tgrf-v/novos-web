@@ -12,8 +12,7 @@ class Product extends Model
         'name',
         'description',
         'price',
-        'image',
-        'image_belakang',
+        'images',
         'min_qty',
         'production_days',
         'is_active',
@@ -31,6 +30,7 @@ class Product extends Model
             'price'              => 'decimal:2',
             'is_active'          => 'boolean',
             'product_attributes' => 'array',
+            'images'             => 'array',
         ];
     }
 
