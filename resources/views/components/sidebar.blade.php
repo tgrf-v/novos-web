@@ -7,23 +7,30 @@ $isSidebarOpen = !(isset($_COOKIE['sidebar_open']) && $_COOKIE['sidebar_open'] =
 {{-- Sidebar wrapper: shared Alpine scope for backdrop + aside --}}
 <div
     x-data="{
-        sidebarOpen: window.innerWidth >= 1280 ? {{ $isSidebarOpen ? 'true' : 'false' }} : false,
+        sidebarOpen: {{ $isSidebarOpen ? 'true' : 'false' }},
+        mobileOpen: false,
+        isDesktop: window.innerWidth >= 1280,
         toggle() {
-            this.sidebarOpen = !this.sidebarOpen;
-            document.cookie = 'sidebar_open=' + this.sidebarOpen + '; path=/; SameSite=Lax; max-age=' + (60 * 60 * 24 * 365);
+            if (this.isDesktop) {
+                this.sidebarOpen = !this.sidebarOpen;
+                document.cookie = 'sidebar_open=' + this.sidebarOpen + '; path=/; SameSite=Lax; max-age=' + (60 * 60 * 24 * 365);
+            } else {
+                this.mobileOpen = !this.mobileOpen;
+            }
         }
     }"
     @sidebar-toggle.window="toggle()"
+    @resize.window="isDesktop = window.innerWidth >= 1280"
     class="contents">
 
     {{-- Backdrop for mobile sidebar --}}
-    <div x-show="sidebarOpen" x-cloak
-         @click="toggle()"
+    <div x-show="mobileOpen" x-cloak
+         @click="mobileOpen = false"
          class="fixed inset-0 z-40 bg-black/50 xl:hidden">
     </div>
     <aside
-        :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-        :style="window.innerWidth >= 1280 ? 'width: ' + (sidebarOpen ? '16rem' : '5rem') + '; transition: all 0.3s ease;' : 'transition: all 0.3s ease;'"
+        :class="isDesktop ? '' : (mobileOpen ? 'translate-x-0' : '-translate-x-full')"
+        :style="isDesktop ? 'width: ' + (sidebarOpen ? '16rem' : '5rem') + '; transition: all 0.3s ease;' : 'transition: all 0.3s ease;'"
         style="width: {{ $isSidebarOpen ? '16rem' : '5rem' }}; transition: all 0.3s ease;"
         class="bg-white min-h-screen border-r border-gray-200 flex flex-col shrink-0 z-50
                fixed inset-y-0 left-0 w-64 -translate-x-full
@@ -31,12 +38,12 @@ $isSidebarOpen = !(isset($_COOKIE['sidebar_open']) && $_COOKIE['sidebar_open'] =
 
     {{-- Logo Area --}}
     <div class="h-16 flex items-center justify-between px-6 border-b border-gray-200 overflow-hidden">
-        <a href="{{ route('staf.dashboard') }}" @click="if(window.innerWidth < 1280) sidebarOpen = false" class="flex items-center gap-1">
+        <a href="{{ route('staf.dashboard') }}" @click="if(!isDesktop) mobileOpen = false" class="flex items-center gap-1">
 <div class="w-10 h-10 shrink-0 flex items-center justify-center">
     <img src="{{ asset('images/logo.png') }}" alt="Novos Logo" class="w-10 h-10 object-contain">
 </div>
 
-            <span x-show="sidebarOpen"
+            <span x-show="!isDesktop || sidebarOpen"
                   @if(!$isSidebarOpen) style="display:none" @endif
                   class="text-xl font-bold text-gray-900 whitespace-nowrap">
                 Novos
@@ -44,109 +51,109 @@ $isSidebarOpen = !(isset($_COOKIE['sidebar_open']) && $_COOKIE['sidebar_open'] =
         </a>
 
         {{-- Close button for mobile --}}
-        <button @click="toggle()"
+        <button @click="mobileOpen = false"
                 class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors xl:hidden">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
     </div>
 
     {{-- Menu Items --}}
-    <nav @click="if(window.innerWidth < 1280) sidebarOpen = false" class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+    <nav @click="if(!isDesktop) mobileOpen = false" class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
         @canAccess('dashboard')
         <a href="{{ route('staf.dashboard') }}"
-           :class="sidebarOpen ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
+           :class="(!isDesktop || sidebarOpen) ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
            class="flex items-center py-3 rounded-xl transition-colors {{ request()->routeIs('staf.dashboard') ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
             <i data-lucide="layout-dashboard" class="w-5 h-5 shrink-0 {{ request()->routeIs('staf.dashboard') ? 'text-white' : 'text-[#1a237e]' }}"></i>
-            <span x-show="sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Dashboard</span>
+            <span x-show="!isDesktop || sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Dashboard</span>
         </a>
         @endcanAccess
 
         @canAccess('summary')
         <a href="{{ route('staf.summary') }}"
-           :class="sidebarOpen ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
+           :class="(!isDesktop || sidebarOpen) ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
            class="flex items-center py-3 rounded-xl transition-colors {{ request()->routeIs('staf.summary') ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
             <i data-lucide="pie-chart" class="w-5 h-5 shrink-0 {{ request()->routeIs('staf.summary') ? 'text-white' : 'text-[#1a237e]' }}"></i>
-            <span x-show="sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Summary</span>
+            <span x-show="!isDesktop || sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Summary</span>
         </a>
         @endcanAccess
 
         @canAccess('orders')
         <a href="{{ route('staf.daftar-pesanan') }}"
-           :class="sidebarOpen ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
+           :class="(!isDesktop || sidebarOpen) ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
            class="flex items-center py-3 rounded-xl transition-colors {{ request()->routeIs('staf.daftar-pesanan') || request()->routeIs('staf.detail-pesanan') || request()->routeIs('staf.chat') ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
             <i data-lucide="shopping-bag" class="w-5 h-5 shrink-0 {{ request()->routeIs('staf.daftar-pesanan') || request()->routeIs('staf.detail-pesanan') || request()->routeIs('staf.chat') ? 'text-white' : 'text-[#1a237e]' }}"></i>
-            <span x-show="sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Daftar Pesanan</span>
+            <span x-show="!isDesktop || sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Daftar Pesanan</span>
         </a>
         @endcanAccess
 
         @canAccess('design')
         <a href="{{ route('staf.design') }}"
-           :class="sidebarOpen ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
+           :class="(!isDesktop || sidebarOpen) ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
            class="flex items-center py-3 rounded-xl transition-colors {{ request()->routeIs('staf.design') ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
             <i data-lucide="pen-tool" class="w-5 h-5 shrink-0 {{ request()->routeIs('staf.design') ? 'text-white' : 'text-[#1a237e]' }}"></i>
-            <span x-show="sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Design</span>
+            <span x-show="!isDesktop || sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Design</span>
         </a>
         @endcanAccess
 
         @canAccess('production')
         <a href="{{ route('staf.produksi') }}"
-           :class="sidebarOpen ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
+           :class="(!isDesktop || sidebarOpen) ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
            class="flex items-center py-3 rounded-xl transition-colors {{ request()->routeIs('staf.produksi') ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
             <i data-lucide="scissors" class="w-5 h-5 shrink-0 {{ request()->routeIs('staf.produksi') ? 'text-white' : 'text-[#1a237e]' }}"></i>
-            <span x-show="sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Produksi</span>
+            <span x-show="!isDesktop || sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Produksi</span>
         </a>
         @endcanAccess
 
         @canAccess('daily-mental-check')
         <a href="{{ route('staf.daily-mental-check') }}"
-           :class="sidebarOpen ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
+           :class="(!isDesktop || sidebarOpen) ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
            class="flex items-center py-3 rounded-xl transition-colors {{ request()->routeIs('staf.daily-mental-check') ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
             <i data-lucide="heart" class="w-5 h-5 shrink-0 {{ request()->routeIs('staf.daily-mental-check') ? 'text-white' : 'text-[#1a237e]' }}"></i>
-            <span x-show="sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Daily Mental Check</span>
+            <span x-show="!isDesktop || sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Daily Mental Check</span>
         </a>
         @endcanAccess
 
         @canAccess('reports')
         <a href="{{ route('staf.laporan') }}"
-           :class="sidebarOpen ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
+           :class="(!isDesktop || sidebarOpen) ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
            class="flex items-center py-3 rounded-xl transition-colors {{ request()->routeIs('staf.laporan') ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
             <i data-lucide="file-text" class="w-5 h-5 shrink-0 {{ request()->routeIs('staf.laporan') ? 'text-white' : 'text-[#1a237e]' }}"></i>
-            <span x-show="sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Laporan</span>
+            <span x-show="!isDesktop || sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Laporan</span>
         </a>
         @endcanAccess
 
         @canAccess('manage-products')
         <a href="{{ route('staf.kelola-produk') }}"
-           :class="sidebarOpen ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
+           :class="(!isDesktop || sidebarOpen) ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
            class="flex items-center py-3 rounded-xl transition-colors {{ request()->routeIs('staf.kelola-produk') ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
             <i data-lucide="package" class="w-5 h-5 shrink-0 {{ request()->routeIs('staf.kelola-produk') ? 'text-white' : 'text-[#1a237e]' }}"></i>
-            <span x-show="sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Kelola Produk</span>
+            <span x-show="!isDesktop || sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Kelola Produk</span>
         </a>
         @endcanAccess
 
         @canAccess('categories')
         <a href="{{ route('staf.kategori') }}"
-           :class="sidebarOpen ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
+           :class="(!isDesktop || sidebarOpen) ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
            class="flex items-center py-3 rounded-xl transition-colors {{ request()->routeIs('staf.kategori') ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
             <i data-lucide="folder-tree" class="w-5 h-5 shrink-0 {{ request()->routeIs('staf.kategori') ? 'text-white' : 'text-[#1a237e]' }}"></i>
-            <span x-show="sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Kategori</span>
+            <span x-show="!isDesktop || sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Kategori</span>
         </a>
         @endcanAccess
 
         @canAccess('manage-users')
         <a href="{{ route('staf.kelola-pengguna') }}"
-           :class="sidebarOpen ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
+           :class="(!isDesktop || sidebarOpen) ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
            class="flex items-center py-3 rounded-xl transition-colors {{ request()->routeIs('staf.kelola-pengguna') ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
             <i data-lucide="users" class="w-5 h-5 shrink-0 {{ request()->routeIs('staf.kelola-pengguna') ? 'text-white' : 'text-[#1a237e]' }}"></i>
-            <span x-show="sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Kelola Pengguna</span>
+            <span x-show="!isDesktop || sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Kelola Pengguna</span>
         </a>
         @endcanAccess
 
         <a href="{{ route('staf.pengaturan') }}"
-           :class="sidebarOpen ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
+           :class="(!isDesktop || sidebarOpen) ? 'justify-start gap-3 px-4' : 'justify-center gap-0 px-0'"
            class="flex items-center py-3 rounded-xl transition-colors {{ request()->routeIs('staf.pengaturan') ? 'bg-[#1a237e]/90 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
             <i data-lucide="settings" class="w-5 h-5 shrink-0 {{ request()->routeIs('staf.pengaturan') ? 'text-white' : 'text-[#1a237e]' }}"></i>
-            <span x-show="sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Pengaturan</span>
+            <span x-show="!isDesktop || sidebarOpen" @if(!$isSidebarOpen) style="display:none" @endif class="font-medium whitespace-nowrap">Pengaturan</span>
         </a>
     </nav>
 
