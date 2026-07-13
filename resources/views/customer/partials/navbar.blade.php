@@ -39,7 +39,7 @@
                      x-transition:leave="transition ease-in duration-100"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 translate-y-2"
-                     class="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[540px] z-50">
+                     class="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50" style="width: 540px; min-width: 540px;">
                      <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-5 grid grid-cols-3 gap-6">
                         @foreach($navbarCategories as $parentCat)
                             <div>
