@@ -9,9 +9,9 @@
 @section('internal-content')
 <div x-data="dailyMentalCheck({ role: '{{ auth()->user()->role->name }}', posterUrl: '{{ $posterUrl }}', reminderTimes: {{ json_encode($reminderTimes) }} })">
     {{-- Tab Navigation --}}
-    <div class="flex max-w-2xl gap-1 bg-white rounded-2xl p-1.5 shadow-sm border border-gray-200 mb-8">
+    <div class="hidden md:flex max-w-2xl gap-1 bg-white rounded-2xl p-1.5 shadow-sm border border-gray-200 mb-8">
         <template x-for="(tab, i) in tabs" :key="i">
-            <button @click="activeTab = i"
+            <button @click="activeTab = i; location.hash = 'dmc=' + i"
                 :class="activeTab === i ? 'bg-[#1a237e] text-white shadow-sm' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'"
                 class="flex-1 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2"
             >
@@ -1144,6 +1144,14 @@ function dailyMentalCheck(config = {}) {
                 }));
                 this.compliancePercent = histData.compliance_percent;
             } catch (e) { console.error('Failed to load history:', e); }
+
+            const dmcMatch = location.hash.match(/^#dmc=(\d)$/);
+            if (dmcMatch) this.activeTab = parseInt(dmcMatch[1]);
+
+            window.addEventListener('hashchange', () => {
+                const m = location.hash.match(/^#dmc=(\d)$/);
+                if (m) this.activeTab = parseInt(m[1]);
+            });
 
             if (['Super Admin', 'Manager'].includes(this.userRole)) {
                 await this.fetchReport();
