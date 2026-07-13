@@ -661,33 +661,39 @@
                         <p class="text-[10px] text-gray-400 uppercase font-semibold tracking-wider">Terpilih</p>
                         <p class="text-sm sm:text-base font-bold text-orange-400" x-text="countSelected() + ' Pemain'"></p>
                     </div>
-                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 text-xs w-full sm:w-auto">
-                        <span class="font-semibold text-gray-300 w-full sm:w-auto text-center sm:text-left mb-0.5 sm:mb-0 hidden sm:inline">Aksi Massal:</span>
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 text-xs w-full sm:w-auto">
+                        <span class="font-semibold text-gray-300 hidden sm:inline">Aksi Massal:</span>
                         
-                        <div class="flex items-center gap-1.5 bg-gray-800 border border-gray-700 rounded-lg p-1">
-                            <span class="text-[10px] text-gray-400 font-semibold px-1">Ukuran:</span>
-                            <select x-model="bulkForm.size" @change="applyBulkSize()" class="bg-transparent text-white text-xs outline-none cursor-pointer pr-2">
-                                <option value="" class="bg-gray-800">-- Pilih --</option>
-                                <option value="S" class="bg-gray-800">S</option>
-                                <option value="M" class="bg-gray-800">M</option>
-                                <option value="L" class="bg-gray-800">L</option>
-                                <option value="XL" class="bg-gray-800">XL</option>
-                                <option value="XXL" class="bg-gray-800">XXL</option>
-                                <option value="3XL" class="bg-gray-800">3XL</option>
-                                <option value="4XL" class="bg-gray-800">4XL</option>
-                            </select>
-                        </div>
+                        <!-- Main Tools -->
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <div class="flex-1 sm:flex-initial flex items-center gap-1.5 bg-gray-800 border border-gray-700 rounded-lg p-1">
+                                <span class="text-[10px] text-gray-400 font-semibold px-1">Ukuran:</span>
+                                <select x-model="bulkForm.size" @change="applyBulkSize()" class="bg-transparent text-white text-xs outline-none cursor-pointer pr-2 w-full sm:w-auto">
+                                    <option value="" class="bg-gray-800">-- Pilih --</option>
+                                    <option value="S" class="bg-gray-800">S</option>
+                                    <option value="M" class="bg-gray-800">M</option>
+                                    <option value="L" class="bg-gray-800">L</option>
+                                    <option value="XL" class="bg-gray-800">XL</option>
+                                    <option value="XXL" class="bg-gray-800">XXL</option>
+                                    <option value="3XL" class="bg-gray-800">3XL</option>
+                                    <option value="4XL" class="bg-gray-800">4XL</option>
+                                </select>
+                            </div>
 
-                        <button type="button" @click="openOverrideModal(null)" class="bg-[#1a237e] hover:bg-[#283593] text-white font-bold px-3 py-1.5 rounded-lg transition-colors shadow flex items-center gap-1 cursor-pointer">
-                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-                            Kustom Atribut
-                        </button>
+                            <button type="button" @click="openOverrideModal(null)" class="flex-1 sm:flex-initial bg-[#1a237e] hover:bg-[#283593] text-white font-bold px-3 py-1.5 rounded-lg transition-colors shadow flex items-center justify-center gap-1 cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                                Kustom Atribut
+                            </button>
+                        </div>
                         
-                        <button type="button" @click="resetSelectedOverrides()" class="bg-red-900/60 hover:bg-red-800 text-red-100 font-semibold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer">
-                            Reset
-                        </button>
-                        
-                        <button type="button" @click="clearSelection()" class="text-xs text-gray-400 hover:text-white underline ml-1">Batal</button>
+                        <!-- Reset & Cancel (Aligned far apart on mobile) -->
+                        <div class="flex items-center justify-between sm:justify-start gap-4 w-full sm:w-auto border-t sm:border-t-0 border-gray-800/60 pt-2.5 sm:pt-0 mt-1 sm:mt-0">
+                            <button type="button" @click="resetSelectedOverrides()" class="bg-red-900/60 hover:bg-red-800 text-red-100 font-semibold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer">
+                                Reset
+                            </button>
+                            
+                            <button type="button" @click="clearSelection()" class="text-xs text-gray-400 hover:text-white underline">Batal</button>
+                        </div>
                     </div>
                 </div>
 
