@@ -173,92 +173,94 @@ $isSidebarOpen = !(isset($_COOKIE['sidebar_open']) && $_COOKIE['sidebar_open'] =
 </div>{{-- end sidebar wrapper --}}
 
 <script>
-document.addEventListener('alpine:init', function () {
-    window.navigateAjax = function (url, isPopState) {
-        if (!url || url === window.location.href) return;
-        const main = document.querySelector('main');
-        if (!main) { window.location.href = url; return; }
+window.navigateAjax = function (url, isPopState) {
+    if (!url || url === window.location.href) return;
+    const main = document.querySelector('main');
+    if (!main) { window.location.href = url; return; }
 
-        main.innerHTML = '<div class="flex items-center justify-center py-20"><div class="flex flex-col items-center gap-3"><div class="w-8 h-8 border-2 border-[#1a237e] border-t-transparent rounded-full animate-spin"></div><p class="text-sm text-gray-500">Memuat...</p></div></div>';
+    main.innerHTML = '<div class="flex items-center justify-center py-20"><div class="flex flex-col items-center gap-3"><div class="w-8 h-8 border-2 border-[#1a237e] border-t-transparent rounded-full animate-spin"></div><p class="text-sm text-gray-500">Memuat...</p></div></div>';
 
-        fetch(url, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'text/html, */*'
+    fetch(url, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'text/html, */*'
+        }
+    })
+    .then(r => {
+        if (!r.ok) throw new Error('Page load failed');
+        return r.text();
+    })
+    .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const newTitle = doc.getElementById('ajax-page-title')?.textContent || document.title;
+        const newTopbar = doc.getElementById('ajax-topbar-title')?.innerHTML || '';
+        const newContent = doc.getElementById('ajax-content')?.innerHTML || '';
+
+        if (newContent) {
+            document.title = newTitle;
+            const topbarEl = document.querySelector('#topbar-title');
+            if (topbarEl) topbarEl.innerHTML = newTopbar;
+            if (main) {
+                main.innerHTML = '<div class="animate-entrance">' + newContent + '</div>';
             }
-        })
-        .then(r => {
-            if (!r.ok) throw new Error('Page load failed');
-            return r.text();
-        })
-        .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-
-            const newTitle = doc.getElementById('ajax-page-title')?.textContent || document.title;
-            const newTopbar = doc.getElementById('ajax-topbar-title')?.innerHTML || '';
-            const newContent = doc.getElementById('ajax-content')?.innerHTML || '';
-
-            if (newContent) {
-                document.title = newTitle;
-                const topbarEl = document.querySelector('#topbar-title');
-                if (topbarEl) topbarEl.innerHTML = newTopbar;
-                if (main) {
-                    main.innerHTML = '<div class="animate-entrance">' + newContent + '</div>';
-                }
-                if (!isPopState) window.history.pushState({ url: url }, '', url);
-                updateSidebarActive(url);
-                var allScripts = main.querySelectorAll('script');
-                allScripts.forEach(function(oldScript) {
-                    var newScript = document.createElement('script');
-                    Array.from(oldScript.attributes).forEach(function(attr) {
-                        newScript.setAttribute(attr.name, attr.value);
-                    });
-                    newScript.textContent = oldScript.textContent;
-                    oldScript.parentNode.replaceChild(newScript, oldScript);
+            if (!isPopState) window.history.pushState({ url: url }, '', url);
+            updateSidebarActive(url);
+            var allScripts = main.querySelectorAll('script');
+            allScripts.forEach(function(oldScript) {
+                var newScript = document.createElement('script');
+                Array.from(oldScript.attributes).forEach(function(attr) {
+                    newScript.setAttribute(attr.name, attr.value);
                 });
-                if (window.lucide && window.lucide.createIcons) {
-                    window.lucide.createIcons({ icons: window.lucide.icons });
-                }
+                newScript.textContent = oldScript.textContent;
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+            if (window.lucide && window.lucide.createIcons) {
+                window.lucide.createIcons({ icons: window.lucide.icons });
             }
-        })
-        .catch(function() { window.location.href = url; });
-    }
+            if (window.Alpine) {
+                window.Alpine.initTree(main);
+            }
+        }
+    })
+    .catch(function() { window.location.href = url; });
+}
 
-    function updateSidebarActive(url) {
-        document.querySelectorAll('nav a[data-ajax-nav]').forEach(function(link) {
-            var href = link.getAttribute('href');
-            var isActive = url === href || (url + '/') === href || (url.endsWith('/') && url.slice(0, -1) === href);
-            link.classList.remove('bg-[#1a237e]/90', 'text-white');
-            link.classList.add('text-gray-700', 'hover:bg-gray-100');
-            var icon = link.querySelector('[data-lucide]');
+function updateSidebarActive(url) {
+    document.querySelectorAll('nav a[data-ajax-nav]').forEach(function(link) {
+        var href = link.getAttribute('href');
+        var isActive = url === href || (url + '/') === href || (url.endsWith('/') && url.slice(0, -1) === href);
+        link.classList.remove('bg-[#1a237e]/90', 'text-white');
+        link.classList.add('text-gray-700', 'hover:bg-gray-100');
+        var icon = link.querySelector('[data-lucide]');
+        if (icon) {
+            icon.classList.remove('text-white');
+            icon.classList.add('text-[#1a237e]');
+        }
+        if (isActive) {
+            link.classList.add('bg-[#1a237e]/90', 'text-white');
+            link.classList.remove('text-gray-700', 'hover:bg-gray-100');
             if (icon) {
-                icon.classList.remove('text-white');
-                icon.classList.add('text-[#1a237e]');
+                icon.classList.add('text-white');
+                icon.classList.remove('text-[#1a237e]');
             }
-            if (isActive) {
-                link.classList.add('bg-[#1a237e]/90', 'text-white');
-                link.classList.remove('text-gray-700', 'hover:bg-gray-100');
-                if (icon) {
-                    icon.classList.add('text-white');
-                    icon.classList.remove('text-[#1a237e]');
-                }
-            }
-        });
-    }
-
-    document.addEventListener('click', function (e) {
-        var link = e.target.closest('a[data-ajax-nav]');
-        if (!link) return;
-        var url = link.getAttribute('href');
-        if (!url || url === window.location.href || url.startsWith('#')) return;
-        e.preventDefault();
-        navigateAjax(url);
-    });
-
-    window.addEventListener('popstate', function (e) {
-        if (e.state && e.state.url) {
-            navigateAjax(e.state.url, true);
         }
     });
+}
+
+document.addEventListener('click', function (e) {
+    var link = e.target.closest('a[data-ajax-nav]');
+    if (!link) return;
+    var url = link.getAttribute('href');
+    if (!url || url === window.location.href || url.startsWith('#')) return;
+    e.preventDefault();
+    navigateAjax(url);
+});
+
+window.addEventListener('popstate', function (e) {
+    if (e.state && e.state.url) {
+        navigateAjax(e.state.url, true);
+    }
+});
 </script>
