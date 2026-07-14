@@ -102,7 +102,7 @@
         margin-bottom: 24px;
     }
     table thead th {
-        background: #000;
+        background: #888;
         color: #fff;
         padding: 9px 10px;
         font-size: 10px;
@@ -112,14 +112,14 @@
         letter-spacing: 0.4px;
     }
     table thead th:last-child { text-align: right; }
-    table tbody tr:nth-child(odd) td { background: #f5f5f5; }
-    table tbody tr:nth-child(even) td { background: #fff; }
     table tbody td {
         padding: 8px 10px;
         font-size: 11px;
         color: #333;
-        border-bottom: 1px solid #e0e0e0;
+        border: 1px solid #ccc;
+        border-top: none;
     }
+    table tbody tr:first-child td { border-top: 1px solid #ccc; }
     table tbody td:last-child { text-align: right; font-weight: 600; }
     .customization-tag {
         display: inline-block;
@@ -161,11 +161,12 @@
     .summary-row .s-value { font-weight: 600; color: #000; }
     .summary-row.dp-row .s-value { color: #000; }
     .summary-row.total-final {
-        background: #000;
+        background: #fff;
+        border-top: 2px solid #000;
         padding: 12px 14px;
     }
-    .summary-row.total-final .s-label { color: #ccc; font-weight: 700; font-size: 12px; }
-    .summary-row.total-final .s-value { color: #fff; font-weight: 800; font-size: 13px; }
+    .summary-row.total-final .s-label { color: #000; font-weight: 700; font-size: 12px; }
+    .summary-row.total-final .s-value { color: #000; font-weight: 800; font-size: 13px; }
 
     /* ── DISCLAIMER ── */
     .disclaimer {
@@ -185,6 +186,13 @@
         font-size: 10px;
         color: #444;
         line-height: 1.5;
+    }
+
+    @media screen {
+        body {
+            max-width: 210mm;
+            margin: 0 auto;
+        }
     }
 
     .bank-line {
