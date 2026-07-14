@@ -9,7 +9,7 @@
     body {
         font-family: 'DejaVu Sans', Arial, sans-serif;
         font-size: 12px;
-        color: #1a1a2e;
+        color: #000;
         background: #fff;
         padding: 32px;
     }
@@ -19,19 +19,19 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        border-bottom: 3px solid #1a237e;
+        border-bottom: 3px solid #000;
         padding-bottom: 20px;
         margin-bottom: 24px;
     }
     .brand-name {
         font-size: 26px;
         font-weight: 700;
-        color: #1a237e;
+        color: #000;
         letter-spacing: 1px;
     }
     .brand-tagline {
         font-size: 10px;
-        color: #6b7280;
+        color: #555;
         margin-top: 2px;
     }
     .invoice-meta {
@@ -40,18 +40,18 @@
     .invoice-meta .label {
         font-size: 22px;
         font-weight: 700;
-        color: #1a237e;
+        color: #000;
         letter-spacing: 2px;
     }
     .invoice-meta .number {
         font-size: 12px;
         font-weight: 600;
-        color: #374151;
+        color: #333;
         margin-top: 4px;
     }
     .invoice-meta .date {
         font-size: 10px;
-        color: #6b7280;
+        color: #555;
         margin-top: 2px;
     }
 
@@ -63,37 +63,37 @@
     }
     .info-box {
         flex: 1;
-        background: #f8f9ff;
-        border: 1px solid #e5e7f0;
+        background: #f5f5f5;
+        border: 1px solid #ddd;
         border-radius: 8px;
         padding: 14px 16px;
     }
     .info-box-title {
         font-size: 9px;
         font-weight: 700;
-        color: #6b7280;
+        color: #555;
         text-transform: uppercase;
         letter-spacing: 0.8px;
         margin-bottom: 8px;
     }
     .info-row {
         font-size: 11px;
-        color: #374151;
+        color: #333;
         margin-bottom: 3px;
     }
     .info-row strong {
-        color: #111827;
+        color: #000;
     }
 
     /* ── TABLE ── */
     .section-title {
         font-size: 11px;
         font-weight: 700;
-        color: #1a237e;
+        color: #000;
         text-transform: uppercase;
         letter-spacing: 0.6px;
         margin-bottom: 10px;
-        border-left: 3px solid #1a237e;
+        border-left: 3px solid #000;
         padding-left: 8px;
     }
     table {
@@ -102,7 +102,7 @@
         margin-bottom: 24px;
     }
     table thead th {
-        background: #1a237e;
+        background: #000;
         color: #fff;
         padding: 9px 10px;
         font-size: 10px;
@@ -112,27 +112,27 @@
         letter-spacing: 0.4px;
     }
     table thead th:last-child { text-align: right; }
-    table tbody tr:nth-child(odd) td { background: #f8f9ff; }
+    table tbody tr:nth-child(odd) td { background: #f5f5f5; }
     table tbody tr:nth-child(even) td { background: #fff; }
     table tbody td {
         padding: 8px 10px;
         font-size: 11px;
-        color: #374151;
-        border-bottom: 1px solid #e9ecf5;
+        color: #333;
+        border-bottom: 1px solid #e0e0e0;
     }
     table tbody td:last-child { text-align: right; font-weight: 600; }
     .customization-tag {
         display: inline-block;
         font-size: 9px;
-        background: #e8eaf6;
-        color: #3949ab;
+        background: #e8e8e8;
+        color: #333;
         padding: 1px 5px;
         border-radius: 3px;
         margin: 1px 2px 1px 0;
     }
     .empty-row td {
         text-align: center;
-        color: #9ca3af;
+        color: #888;
         padding: 16px;
         font-style: italic;
     }
@@ -145,7 +145,7 @@
     }
     .summary-box {
         width: 260px;
-        border: 1px solid #e5e7f0;
+        border: 1px solid #ddd;
         border-radius: 8px;
         overflow: hidden;
     }
@@ -154,23 +154,23 @@
         justify-content: space-between;
         padding: 9px 14px;
         font-size: 11px;
-        border-bottom: 1px solid #f1f3f9;
+        border-bottom: 1px solid #eee;
     }
     .summary-row:last-child { border-bottom: none; }
-    .summary-row .s-label { color: #6b7280; }
-    .summary-row .s-value { font-weight: 600; color: #111827; }
-    .summary-row.dp-row .s-value { color: #16a34a; }
+    .summary-row .s-label { color: #555; }
+    .summary-row .s-value { font-weight: 600; color: #000; }
+    .summary-row.dp-row .s-value { color: #000; }
     .summary-row.total-final {
-        background: #1a237e;
+        background: #000;
         padding: 12px 14px;
     }
-    .summary-row.total-final .s-label { color: #c7d2fe; font-weight: 700; font-size: 12px; }
+    .summary-row.total-final .s-label { color: #ccc; font-weight: 700; font-size: 12px; }
     .summary-row.total-final .s-value { color: #fff; font-weight: 800; font-size: 13px; }
 
     /* ── DISCLAIMER ── */
     .disclaimer {
-        background: #fffbeb;
-        border: 1px solid #fcd34d;
+        background: #f5f5f5;
+        border: 1px solid #ccc;
         border-radius: 8px;
         padding: 12px 16px;
         margin-bottom: 24px;
@@ -178,24 +178,24 @@
     .disclaimer-title {
         font-size: 10px;
         font-weight: 700;
-        color: #92400e;
+        color: #333;
         margin-bottom: 4px;
     }
     .disclaimer p {
         font-size: 10px;
-        color: #78350f;
+        color: #444;
         line-height: 1.5;
     }
 
     .bank-line {
         font-size: 11px;
         font-weight: 700;
-        color: #111827;
+        color: #000;
     }
 
     /* ── FOOTER ── */
     .footer {
-        border-top: 1px solid #e5e7f0;
+        border-top: 1px solid #ddd;
         padding-top: 16px;
         display: flex;
         justify-content: space-between;
@@ -203,7 +203,7 @@
     }
     .footer-left {
         font-size: 9px;
-        color: #9ca3af;
+        color: #888;
         line-height: 1.6;
     }
     .footer-right {
@@ -211,15 +211,15 @@
     }
     .ttd-box {
         width: 120px;
-        border-top: 1px solid #374151;
+        border-top: 1px solid #333;
         padding-top: 4px;
         font-size: 9px;
-        color: #6b7280;
+        color: #555;
         text-align: center;
     }
     .ttd-label {
         font-size: 9px;
-        color: #9ca3af;
+        color: #888;
         margin-bottom: 40px;
     }
 </style>
@@ -232,7 +232,7 @@
             <div class="brand-name">{{ $company_name }}</div>
             <div class="brand-tagline">Konveksi & Custom Jersey</div>
             @if($company_phone)
-            <div class="brand-tagline" style="margin-top:4px">📱 {{ $company_phone }}</div>
+            <div class="brand-tagline" style="margin-top:4px">{{ $company_phone }}</div>
             @endif
         </div>
         <div class="invoice-meta">
@@ -248,10 +248,10 @@
             <div class="info-box-title">Informasi Customer</div>
             <div class="info-row"><strong>{{ $order->user->fullname ?? $order->user->name }}</strong></div>
             @if($order->user->phone)
-            <div class="info-row">📱 {{ $order->user->phone }}</div>
+            <div class="info-row">Telp: {{ $order->user->phone }}</div>
             @endif
             @if($order->user->email)
-            <div class="info-row">✉ {{ $order->user->email }}</div>
+            <div class="info-row">Email: {{ $order->user->email }}</div>
             @endif
         </div>
         <div class="info-box">
@@ -360,7 +360,7 @@
 
     {{-- ── DISCLAIMER ONGKIR ── --}}
     <div class="disclaimer">
-        <div class="disclaimer-title">⚠ Perhatian — Harga Belum Termasuk Ongkos Kirim</div>
+        <div class="disclaimer-title">Perhatian — Harga Belum Termasuk Ongkos Kirim</div>
         <p>
             Total tagihan di atas merupakan biaya produksi jersey. Ongkos kirim akan ditentukan setelah pesanan selesai diproduksi
             berdasarkan berat paket dan lokasi pengiriman, dan akan dikomunikasikan oleh tim kami via WhatsApp.
