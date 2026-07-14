@@ -75,9 +75,10 @@ class InvoiceController extends Controller
         }
         $groupedItems = collect($groupedItems)->values();
 
-        $companyName  = Setting::get('company_name', 'Novos Jersey');
-        $companyPhone = Setting::get('company_phone', '');
-        $companyBank  = Setting::get('company_bank_info', '');
+        $companyName      = Setting::get('company_name', 'Novos Jersey');
+        $companyPhone     = Setting::get('company_phone', '');
+        $companyBank      = Setting::get('company_bank_info', '');
+        $companyInstagram = Setting::get('company_instagram', '');
 
         return [
             'order'         => $order,
@@ -88,9 +89,10 @@ class InvoiceController extends Controller
             'subtotal'      => $subtotal,
             'dp_paid'       => $dpPaid,
             'sisa_bayar'    => $sisaBayar,
-            'company_name'  => $companyName,
-            'company_phone' => $companyPhone,
-            'company_bank'  => $companyBank,
+            'company_name'      => $companyName,
+            'company_phone'     => $companyPhone,
+            'company_bank'      => $companyBank,
+            'company_instagram' => $companyInstagram,
         ];
     }
 
