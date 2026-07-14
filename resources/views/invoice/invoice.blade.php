@@ -56,16 +56,6 @@
     }
 
     /* ── TABLE ── */
-    .section-title {
-        font-size: 11px;
-        font-weight: 700;
-        color: #000;
-        text-transform: uppercase;
-        letter-spacing: 0.6px;
-        margin-bottom: 10px;
-        border-left: 3px solid #000;
-        padding-left: 8px;
-    }
     table {
         width: 100%;
         border-collapse: collapse;
@@ -219,7 +209,6 @@
     </div>
 
     {{-- ── TABEL RINCIAN PESANAN ── --}}
-    <div class="section-title">Rincian Pesanan</div>
     <table>
         <thead>
             <tr>
