@@ -10,8 +10,8 @@
 @section('internal-content')
 <div x-data="settingApp()" x-init="init()" class="max-w-4xl mx-auto">
 
-    {{-- Tab Navigation --}}
-    <div class="flex gap-1 mb-6 bg-white border border-gray-200 rounded-2xl p-1.5 w-fit shadow-sm">
+    {{-- Tab Navigation (Desktop Only) --}}
+    <div class="hidden md:flex gap-1 mb-6 bg-white border border-gray-200 rounded-2xl p-1.5 w-fit shadow-sm">
         @if(auth()->user()->role->name === 'Super Admin')
         <button @click="tab='toko'"
             :class="tab==='toko' ? 'bg-[#1a237e] text-white shadow-md' : 'text-gray-600 hover:bg-gray-100'"
@@ -31,9 +31,63 @@
         </button>
     </div>
 
+    {{-- Mobile Menu Selection --}}
+    <div x-show="tab === 'menu'" x-transition class="md:hidden space-y-6">
+        <p class="text-sm text-gray-500 -mt-2">Kelola informasi aplikasi dan preferensi Anda</p>
+        
+        <div class="bg-white border border-gray-100 rounded-2xl shadow-sm divide-y divide-gray-100 overflow-hidden">
+            @if(auth()->user()->role->name === 'Super Admin')
+            <!-- Toko Menu -->
+            <button @click="tab = 'toko'" class="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors text-left">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center shrink-0">
+                        <i data-lucide="store" class="w-6 h-6 text-indigo-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-sm">Toko</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Kelola informasi toko, kontak, dan jam operasional</p>
+                    </div>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+            </button>
+            @endif
+
+            <!-- Tampilan Menu -->
+            <button @click="tab = 'tampilan'" class="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors text-left">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center shrink-0">
+                        <i data-lucide="palette" class="w-6 h-6 text-emerald-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-sm">Tampilan</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Atur tema, warna, dan preferensi tampilan aplikasi</p>
+                    </div>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+            </button>
+
+            <!-- Panduan Menu -->
+            <button @click="tab = 'panduan'" class="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors text-left">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-yellow-50 rounded-2xl flex items-center justify-center shrink-0">
+                        <i data-lucide="book-open" class="w-6 h-6 text-yellow-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-sm">Panduan</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Lihat panduan penggunaan dan FAQ</p>
+                    </div>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+            </button>
+        </div>
+    </div>
+
     {{-- ======================== TAB TOKO ======================== --}}
     @if(auth()->user()->role->name === 'Super Admin')
     <div x-show="tab==='toko'" x-transition>
+        <button @click="tab = 'menu'" class="flex items-center gap-2 mb-6 text-[#1a237e] hover:bg-gray-50 font-semibold md:hidden bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm w-fit">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Pengaturan
+        </button>
         <div class="bg-white shadow-sm rounded-2xl p-7">
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 bg-[#1a237e]/10 rounded-xl flex items-center justify-center">
@@ -113,6 +167,9 @@
 
     {{-- ======================== TAB TAMPILAN ======================== --}}
     <div x-show="tab==='tampilan'" x-transition x-cloak class="space-y-5">
+        <button @click="tab = 'menu'" class="flex items-center gap-2 text-[#1a237e] hover:bg-gray-50 font-semibold md:hidden bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm w-fit">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Pengaturan
+        </button>
 
         {{-- Mode Tema --}}
         <div class="bg-white shadow-sm rounded-2xl p-7">
@@ -352,6 +409,9 @@
 
     {{-- ======================== TAB PANDUAN ======================== --}}
     <div x-show="tab==='panduan'" x-transition x-cloak class="space-y-5">
+        <button @click="tab = 'menu'" class="flex items-center gap-2 text-[#1a237e] hover:bg-gray-50 font-semibold md:hidden bg-white border border-gray-200 rounded-xl px-4 py-2.5 shadow-sm w-fit">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Pengaturan
+        </button>
 
         {{-- Header --}}
         <div class="glass-card rounded-2xl p-7 panduan-header-bg">
@@ -461,6 +521,7 @@ function settingApp() {
     return {
         tab: @json(auth()->user()->role->name === 'Super Admin' ? 'toko' : 'tampilan'),
         saving: false,
+        isMobile: window.innerWidth < 768,
 
         form: {
             company_name: '',
@@ -710,6 +771,19 @@ function settingApp() {
             this.form.hours_weekday     = @json($settings['hours_weekday'] ?? '08.00 - 17.00');
             this.form.hours_saturday    = @json($settings['hours_saturday'] ?? '08.00 - 13.00');
             this.form.hours_sunday      = @json($settings['hours_sunday'] ?? 'Libur');
+
+            this.isMobile = window.innerWidth < 768;
+            if (this.isMobile) {
+                this.tab = 'menu';
+            }
+
+            window.addEventListener('resize', () => {
+                const wasMobile = this.isMobile;
+                this.isMobile = window.innerWidth < 768;
+                if (wasMobile && !this.isMobile && this.tab === 'menu') {
+                    this.tab = @json(auth()->user()->role->name === 'Super Admin' ? 'toko' : 'tampilan');
+                }
+            });
 
             const saved = localStorage.getItem('novos_appearance');
             if (saved) {
