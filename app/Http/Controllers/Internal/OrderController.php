@@ -431,6 +431,7 @@ class OrderController extends Controller
                 'subtotal'          => (float) ($order->orderItems->sum('subtotal')),
                 'biaya_prioritas'   => 0,
                 'total'             => (float) ($order->payment?->amount ?? $order->total_price ?? 0),
+                'dp_amount'         => $order->payment?->dp_amount ? (float) $order->payment->dp_amount : null,
                 'method'            => $order->payment?->payment_method ?? '-',
                 'status'            => $order->payment?->status === 'success' ? 'lunas' : 'pending',
                 'payment_proof'     => $order->payment?->payment_proof ? asset('storage/' . $order->payment->payment_proof) : null,

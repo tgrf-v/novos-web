@@ -804,12 +804,12 @@ if (!empty($order['item_details'])) {
 
             <div class="flex justify-between text-sm mt-1">
                 <span class="text-gray-500">DP Dibayar</span>
-                <span class="font-semibold text-green-600">Rp {{ number_format($order['payment']['dp_amount'] ?? 0, 0, ',', '.') }}</span>
+                <span class="font-semibold text-green-600" x-text="dpDisplay">Rp {{ number_format($order['payment']['dp_amount'] ?? 0, 0, ',', '.') }}</span>
             </div>
             
             <div class="flex justify-between text-sm mt-1">
                 <span class="text-gray-500">Sisa Bayar</span>
-                <span class="font-bold text-gray-900">Rp {{ number_format(max(0, $order['payment']['total'] - ($order['payment']['dp_amount'] ?? 0)), 0, ',', '.') }}</span>
+                <span class="font-bold text-gray-900" x-text="sisaBayarDisplay">Rp {{ number_format(max(0, $order['payment']['total'] - ($order['payment']['dp_amount'] ?? 0)), 0, ',', '.') }}</span>
             </div>
 
             {{-- Form Input DP (Hanya Admin / Super Admin / Manager) --}}
@@ -934,10 +934,23 @@ function paymentSection() {
     return {
         loading: false,
         savingDp: false,
-        dpAmount: '{{ $order['payment']['dp_amount'] ?? 0 }}',
+        dpAmount: '{{ $order['payment']['dp_amount'] ?? '' }}',
+        paymentTotal: {{ $order['payment']['total'] ?? 0 }},
+        get dpDisplay() {
+            const val = parseInt(this.dpAmount);
+            return isNaN(val) || val === 0 ? 'Rp 0' : 'Rp ' + val.toLocaleString('id-ID');
+        },
+        get sisaBayar() {
+            const dp = parseInt(this.dpAmount);
+            return isNaN(dp) ? this.paymentTotal : Math.max(0, this.paymentTotal - dp);
+        },
+        get sisaBayarDisplay() {
+            return 'Rp ' + this.sisaBayar.toLocaleString('id-ID');
+        },
         async saveDp() {
             if (this.savingDp) return;
-            if (!this.dpAmount || this.dpAmount < 0) {
+            const amount = parseInt(this.dpAmount);
+            if (isNaN(amount) || amount < 0) {
                 Notify.error('Jumlah DP tidak valid.');
                 return;
             }
@@ -952,13 +965,13 @@ function paymentSection() {
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                        dp_amount: this.dpAmount
+                        dp_amount: amount
                     })
                 });
                 const data = await res.json();
                 if (data.success) {
+                    this.dpAmount = data.dp_amount;
                     Notify.success('DP berhasil disimpan!', 'Berhasil!');
-                    setTimeout(() => location.reload(), 1000);
                 } else {
                     Notify.error(data.message || 'Gagal menyimpan DP');
                 }
