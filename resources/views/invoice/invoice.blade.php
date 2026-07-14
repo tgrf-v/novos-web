@@ -55,36 +55,6 @@
         margin-top: 2px;
     }
 
-    /* ── INFO GRID ── */
-    .info-grid {
-        display: flex;
-        gap: 20px;
-        margin-bottom: 24px;
-    }
-    .info-box {
-        flex: 1;
-        background: #f5f5f5;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 14px 16px;
-    }
-    .info-box-title {
-        font-size: 9px;
-        font-weight: 700;
-        color: #555;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        margin-bottom: 8px;
-    }
-    .info-row {
-        font-size: 11px;
-        color: #333;
-        margin-bottom: 3px;
-    }
-    .info-row strong {
-        color: #000;
-    }
-
     /* ── TABLE ── */
     .section-title {
         font-size: 11px;
@@ -241,31 +211,7 @@
         </div>
     </div>
 
-    {{-- ── INFO CUSTOMER + ORDER ── --}}
-    <div class="info-box" style="margin-bottom:24px">
-        <div class="info-box-title">Detail Pesanan</div>
-        @if($design && $design->team_name)
-        <div class="info-row"><strong>Nama Tim:</strong> {{ $design->team_name }}</div>
-        @endif
-        @if($design && $design->nama_artikel)
-        <div class="info-row"><strong>Nama Artikel:</strong> {{ $design->nama_artikel }}</div>
-        @endif
-        @if($design && $design->nama_pemesan)
-        <div class="info-row"><strong>Nama Pemesan:</strong> {{ $design->nama_pemesan }}</div>
-        @endif
-        <div class="info-row"><strong>Status:</strong>
-            {{ match($order->status) {
-                'menunggu_pembayaran' => 'Menunggu Pembayaran DP',
-                'dikonfirmasi'        => 'Dikonfirmasi',
-                'disetujui'           => 'Disetujui',
-                'di_design'           => 'Tahap Desain',
-                'siap_cetak'          => 'Siap Cetak',
-                'diproduksi'          => 'Diproduksi',
-                'selesai'             => 'Selesai',
-                default               => $order->status,
-            } }}
-        </div>
-    </div>
+
 
     {{-- ── TABEL RINCIAN PESANAN ── --}}
     <div class="section-title">Rincian Pesanan</div>
