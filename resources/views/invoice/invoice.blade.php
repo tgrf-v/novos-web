@@ -20,11 +20,11 @@
         justify-content: space-between;
         align-items: flex-start;
         border-bottom: 3px solid #000;
-        padding-bottom: 20px;
-        margin-bottom: 24px;
+        padding-bottom: 16px;
+        margin-bottom: 16px;
     }
     .brand-name {
-        font-size: 26px;
+        font-size: 22px;
         font-weight: 700;
         color: #000;
         letter-spacing: 1px;
@@ -59,13 +59,13 @@
     table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
     }
     table thead th {
         background: #fff;
         color: #000;
-        padding: 9px 10px;
-        font-size: 10px;
+        padding: 6px 10px;
+        font-size: 9px;
         font-weight: 600;
         text-align: left;
         text-transform: uppercase;
@@ -76,8 +76,8 @@
     table tbody tr:nth-child(odd) td { background: #f5f5f5; }
     table tbody tr:nth-child(even) td { background: #fff; }
     table tbody td {
-        padding: 8px 10px;
-        font-size: 11px;
+        padding: 6px 10px;
+        font-size: 10px;
         color: #333;
     }
     table tbody td:last-child { text-align: right; font-weight: 600; }
@@ -92,7 +92,7 @@
     .summary-wrapper {
         display: flex;
         justify-content: flex-end;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
     }
     .summary-box {
         width: 260px;
@@ -103,8 +103,8 @@
     .summary-row {
         display: flex;
         justify-content: space-between;
-        padding: 9px 14px;
-        font-size: 11px;
+        padding: 6px 14px;
+        font-size: 10px;
         border-bottom: 1px solid #eee;
     }
     .summary-row:last-child { border-bottom: none; }
@@ -122,8 +122,8 @@
     /* ── DISCLAIMER ── */
     .disclaimer {
         border-top: 1px solid #ccc;
-        padding-top: 12px;
-        margin-bottom: 24px;
+        padding-top: 8px;
+        margin-bottom: 16px;
         font-size: 10px;
         color: #555;
     }
@@ -136,7 +136,9 @@
     }
 
     @media print {
+        @page { margin: 8mm; }
         body {
+            padding: 0;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -151,31 +153,12 @@
     /* ── FOOTER ── */
     .footer {
         border-top: 1px solid #ddd;
-        padding-top: 16px;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
+        padding-top: 8px;
     }
     .footer-left {
         font-size: 9px;
         color: #888;
         line-height: 1.6;
-    }
-    .footer-right {
-        text-align: center;
-    }
-    .ttd-box {
-        width: 120px;
-        border-top: 1px solid #333;
-        padding-top: 4px;
-        font-size: 9px;
-        color: #555;
-        text-align: center;
-    }
-    .ttd-label {
-        font-size: 9px;
-        color: #888;
-        margin-bottom: 40px;
     }
 </style>
 </head>
@@ -221,7 +204,7 @@
             </tr>
         </thead>
         <tbody>
-            @php $maxRows = 18; @endphp
+            @php $maxRows = 14; @endphp
             @forelse($grouped_items as $i => $group)
             <tr>
                 <td>{{ $i + 1 }}</td>
@@ -289,14 +272,14 @@
         </thead>
         <tbody>
             <tr style="background: #fff;">
-                <td style="padding: 10px 0; font-size: 11px; color: #000; line-height: 1.8; text-align: left; font-weight: 700; vertical-align: top; width: 70%;">
+                <td style="padding: 6px 0; font-size: 10px; color: #000; line-height: 1.6; text-align: left; font-weight: 700; vertical-align: top; width: 70%;">
                     Pilihan #1: BRI 6965 01 003981 53 8<br>
                     Pilihan #2: Mandiri 1380019031454<br>
                     Pilihan #3: BNI 0899192812<br>
                     <br>
                     Minimal DP 10% Dulu Baru Akan Di Produksi
                 </td>
-                <td style="padding: 10px 0; font-size: 11px; color: #000; line-height: 1.8; text-align: left; font-weight: 700; vertical-align: top;">
+                <td style="padding: 6px 0; font-size: 10px; color: #000; line-height: 1.6; text-align: left; font-weight: 700; vertical-align: top;">
                     @if($company_instagram)
                         Instagram : {{ '@' . ltrim($company_instagram, '@') }}
                     @endif
@@ -310,10 +293,7 @@
         <div class="footer-left">
             Dokumen ini diterbitkan secara digital oleh sistem {{ $company_name }}.
         </div>
-        <div class="footer-right">
-            <div class="ttd-label">Hormat kami,</div>
-            <div class="ttd-box">{{ $company_name }}</div>
-        </div>
+
     </div>
 
 </body>
