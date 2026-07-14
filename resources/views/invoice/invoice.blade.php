@@ -242,40 +242,28 @@
     </div>
 
     {{-- ── INFO CUSTOMER + ORDER ── --}}
-    <div class="info-grid">
-        <div class="info-box">
-            <div class="info-box-title">Informasi Customer</div>
-            <div class="info-row"><strong>{{ $order->user->fullname ?? $order->user->name }}</strong></div>
-            @if($order->user->phone)
-            <div class="info-row">Telp: {{ $order->user->phone }}</div>
-            @endif
-            @if($order->user->email)
-            <div class="info-row">Email: {{ $order->user->email }}</div>
-            @endif
-        </div>
-        <div class="info-box">
-            <div class="info-box-title">Detail Pesanan</div>
-            @if($design && $design->team_name)
-            <div class="info-row"><strong>Nama Tim:</strong> {{ $design->team_name }}</div>
-            @endif
-            @if($design && $design->nama_artikel)
-            <div class="info-row"><strong>Nama Artikel:</strong> {{ $design->nama_artikel }}</div>
-            @endif
-            @if($design && $design->nama_pemesan)
-            <div class="info-row"><strong>Nama Pemesan:</strong> {{ $design->nama_pemesan }}</div>
-            @endif
-            <div class="info-row"><strong>Status:</strong>
-                {{ match($order->status) {
-                    'menunggu_pembayaran' => 'Menunggu Pembayaran DP',
-                    'dikonfirmasi'        => 'Dikonfirmasi',
-                    'disetujui'           => 'Disetujui',
-                    'di_design'           => 'Tahap Desain',
-                    'siap_cetak'          => 'Siap Cetak',
-                    'diproduksi'          => 'Diproduksi',
-                    'selesai'             => 'Selesai',
-                    default               => $order->status,
-                } }}
-            </div>
+    <div class="info-box" style="margin-bottom:24px">
+        <div class="info-box-title">Detail Pesanan</div>
+        @if($design && $design->team_name)
+        <div class="info-row"><strong>Nama Tim:</strong> {{ $design->team_name }}</div>
+        @endif
+        @if($design && $design->nama_artikel)
+        <div class="info-row"><strong>Nama Artikel:</strong> {{ $design->nama_artikel }}</div>
+        @endif
+        @if($design && $design->nama_pemesan)
+        <div class="info-row"><strong>Nama Pemesan:</strong> {{ $design->nama_pemesan }}</div>
+        @endif
+        <div class="info-row"><strong>Status:</strong>
+            {{ match($order->status) {
+                'menunggu_pembayaran' => 'Menunggu Pembayaran DP',
+                'dikonfirmasi'        => 'Dikonfirmasi',
+                'disetujui'           => 'Disetujui',
+                'di_design'           => 'Tahap Desain',
+                'siap_cetak'          => 'Siap Cetak',
+                'diproduksi'          => 'Diproduksi',
+                'selesai'             => 'Selesai',
+                default               => $order->status,
+            } }}
         </div>
     </div>
 
