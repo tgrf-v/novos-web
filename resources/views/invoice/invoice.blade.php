@@ -237,6 +237,7 @@
             </tr>
         </thead>
         <tbody>
+            @php $maxRows = 18; @endphp
             @forelse($grouped_items as $i => $group)
             <tr>
                 <td>{{ $i + 1 }}</td>
@@ -257,6 +258,16 @@
                 <td colspan="6">Belum ada rincian item pesanan</td>
             </tr>
             @endforelse
+            @for($e = $grouped_items->count(); $e < $maxRows; $e++)
+            <tr>
+                <td>&nbsp;</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            @endfor
         </tbody>
     </table>
 
