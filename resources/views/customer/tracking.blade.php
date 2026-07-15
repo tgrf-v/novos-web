@@ -264,6 +264,7 @@ function trackingForm() {
                 'di_design': 'Di Design',
                 'siap_cetak': 'Siap Cetak',
                 'diproduksi': 'Diproduksi',
+                'menunggu_spk': 'Di Design',
                 'selesai': 'Selesai',
                 'dibatalkan': 'Dibatalkan'
             };
@@ -278,6 +279,7 @@ function trackingForm() {
                 'di_design': 'bg-purple-100 text-purple-800',
                 'siap_cetak': 'bg-indigo-100 text-indigo-800',
                 'diproduksi': 'bg-orange-100 text-orange-800',
+                'menunggu_spk': 'bg-purple-100 text-purple-800',
                 'selesai': 'bg-green-100 text-green-800',
                 'dibatalkan': 'bg-red-100 text-red-800'
             };

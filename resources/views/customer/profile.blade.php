@@ -1743,6 +1743,7 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
                 'di_design': 'Tahap Desain',
                 'siap_cetak': 'Menunggu ACC Desain',
                 'diproduksi': 'Sedang Diproduksi / Kirim',
+                'menunggu_spk': 'Tahap Desain',
                 'selesai': 'Pesanan Selesai',
                 'dibatalkan': 'Pesanan Dibatalkan'
             };
@@ -1757,6 +1758,7 @@ function profileDashboard(orders = [], user = {}, initialAddresses = [], initial
                 'di_design': 'bg-purple-100 text-purple-800',
                 'siap_cetak': 'bg-pink-100 text-pink-800',
                 'diproduksi': 'bg-orange-100 text-orange-800',
+                'menunggu_spk': 'bg-purple-100 text-purple-800',
                 'selesai': 'bg-green-100 text-green-800',
                 'dibatalkan': 'bg-red-100 text-red-800'
             };
