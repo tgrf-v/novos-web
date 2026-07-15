@@ -125,6 +125,13 @@ function statusBadgeType($status) {
             <p class="text-gray-500 text-xs md:text-sm mt-1.5 md:mt-2 font-medium">Selesai Hari Ini</p>
         </a>
 
+        </div>
+        <div class="stats-dots" id="stats-dots-design">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+        </div>
+    </div>
+
     @elseif($isProduction)
     <div class="relative" id="stats-scroll-production">
     <div class="grid grid-flow-col auto-cols-[calc(50%-0.375rem)] lg:grid-flow-row lg:grid-cols-4 gap-3 lg:gap-6 mb-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory scrollbar-hide">
