@@ -39,12 +39,12 @@
                  @touchend="touchEnd($event)">
               @if($imageUrl)
                 <div class="w-full h-full shrink-0 flex items-center justify-center relative cursor-zoom-in" @click="openLightbox(0)">
-                  <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                  <img src="{{ $imageUrl }}" alt="{{ $product->name }}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27300%27 viewBox=%270 0 300 300%27%3E%3Crect fill=%27%231a237e%27 width=%27300%27 height=%27300%27/%3E%3Ctext fill=%27white%27 font-family=%27sans-serif%27 font-size=%2716%27 text-anchor=%27middle%27 x=%27150%27 y=%27150%27%3ENo Image%3C/text%3E%3C/svg%3E'">
                 </div>
               @endif
               @if($imageBelakangUrl)
                 <div class="w-full h-full shrink-0 flex items-center justify-center relative cursor-zoom-in" @click="openLightbox(1)">
-                  <img src="{{ $imageBelakangUrl }}" alt="{{ $product->name }} Belakang" class="w-full h-full object-cover">
+                  <img src="{{ $imageBelakangUrl }}" alt="{{ $product->name }} Belakang" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27300%27 viewBox=%270 0 300 300%27%3E%3Crect fill=%27%231a237e%27 width=%27300%27 height=%27300%27/%3E%3Ctext fill=%27white%27 font-family=%27sans-serif%27 font-size=%2716%27 text-anchor=%27middle%27 x=%27150%27 y=%27150%27%3ENo Image%3C/text%3E%3C/svg%3E'">
                 </div>
               @endif
               @if(!$imageUrl && !$imageBelakangUrl)
@@ -79,12 +79,12 @@
               <button @click="activeImg = 0"
                 :class="activeImg === 0 ? 'border-2 border-[#1a237e] opacity-100' : 'border border-gray-200 opacity-60 hover:opacity-100'"
                 class="w-16 h-20 bg-gray-50 overflow-hidden transition-all duration-200">
-                <img src="{{ $imageUrl }}" class="w-full h-full object-cover" alt="Depan">
+                <img src="{{ $imageUrl }}" class="w-full h-full object-cover" alt="Depan" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27300%27 viewBox=%270 0 300 300%27%3E%3Crect fill=%27%231a237e%27 width=%27300%27 height=%27300%27/%3E%3Ctext fill=%27white%27 font-family=%27sans-serif%27 font-size=%2716%27 text-anchor=%27middle%27 x=%27150%27 y=%27150%27%3ENo Image%3C/text%3E%3C/svg%3E'">
               </button>
               <button @click="activeImg = 1"
                 :class="activeImg === 1 ? 'border-2 border-[#1a237e] opacity-100' : 'border border-gray-200 opacity-60 hover:opacity-100'"
                 class="w-16 h-20 bg-gray-50 overflow-hidden transition-all duration-200">
-                <img src="{{ $imageBelakangUrl }}" class="w-full h-full object-cover" alt="Belakang">
+                <img src="{{ $imageBelakangUrl }}" class="w-full h-full object-cover" alt="Belakang" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27300%27 viewBox=%270 0 300 300%27%3E%3Crect fill=%27%231a237e%27 width=%27300%27 height=%27300%27/%3E%3Ctext fill=%27white%27 font-family=%27sans-serif%27 font-size=%2716%27 text-anchor=%27middle%27 x=%27150%27 y=%27150%27%3ENo Image%3C/text%3E%3C/svg%3E'">
               </button>
             </div>
           @endif

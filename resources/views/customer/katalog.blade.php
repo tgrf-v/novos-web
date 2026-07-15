@@ -71,6 +71,7 @@ function katalogData() {
             searchQuery: '',
             currentPage: 1,
             perPage: 12,
+            loading: false,
             currentImages: {},
             products: @json($products),
             categories: @json($categories),
@@ -259,11 +260,11 @@ function katalogData() {
                                 <div class="flex h-full transition-transform duration-300 ease-out"
                                      :style="`transform: translateX(-${(currentImages[product.id] || 0) * 100}%)`">
                                     <div class="w-full h-full shrink-0 group-hover:scale-105 transition-transform duration-300 ease-out">
-                                        <img :src="product.image || 'https://placehold.co/300x300/1a237e/ffffff?text=Jersey'" :alt="product.name" class="w-full h-full object-cover">
+                                        <img :src="product.image || 'https://placehold.co/300x300/1a237e/ffffff?text=Jersey'" :alt="product.name" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27300%27 viewBox=%270 0 300 300%27%3E%3Crect fill=%27%231a237e%27 width=%27300%27 height=%27300%27/%3E%3Ctext fill=%27white%27 font-family=%27sans-serif%27 font-size=%2716%27 text-anchor=%27middle%27 x=%27150%27 y=%27150%27%3ENo Image%3C/text%3E%3C/svg%3E'">
                                     </div>
                                     <template x-if="product.image_belakang">
                                         <div class="w-full h-full shrink-0 group-hover:scale-105 transition-transform duration-300 ease-out">
-                                            <img :src="product.image_belakang" :alt="product.name" class="w-full h-full object-cover">
+                                            <img :src="product.image_belakang" :alt="product.name" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27300%27 viewBox=%270 0 300 300%27%3E%3Crect fill=%27%231a237e%27 width=%27300%27 height=%27300%27/%3E%3Ctext fill=%27white%27 font-family=%27sans-serif%27 font-size=%2716%27 text-anchor=%27middle%27 x=%27150%27 y=%27150%27%3ENo Image%3C/text%3E%3C/svg%3E'">
                                         </div>
                                     </template>
                                 </div>
