@@ -5,7 +5,7 @@
 <title>Sales Order #{{ $order->order_number }}</title>
 <style>
     @page {
-        margin: 25px;
+        margin: 40px 45px;
     }
     
     /* Global Styles for PDF / Print */
