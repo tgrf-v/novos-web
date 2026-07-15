@@ -97,7 +97,7 @@
             <p class="text-sm text-gray-500 mt-1">Pilih jenis pesanan yang sesuai kebutuhan Anda</p>
 
             {{-- Banner Konsultasi WhatsApp --}}
-            <div class="mb-5 flex items-center justify-between gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-2.5 sm:py-3 animate-fade-slide">
+            <div class="mt-4 mb-5 flex items-center justify-between gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-2.5 sm:py-3 animate-fade-slide">
                 <div class="flex items-center gap-2.5 min-w-0">
                     <span class="shrink-0 text-green-600">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
