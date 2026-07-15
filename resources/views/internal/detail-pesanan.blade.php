@@ -1133,23 +1133,24 @@ function updateStatusSection() {
     const __product = @json($order['product']);
 
     function editProduk() {
+        const p = __product;
         return {
             editModalOpen: false,
             itemsModalOpen: false,
             loading: false,
             items: [],
             form: {
-                team_name: '',
-                nama_artikel: '',
-                nama_pemesan: '',
-                detail_sponsor: '',
-                material: '',
-                collar_style: '',
-                jenis_potongan: '',
-                lengan_jahitan: '',
-                priority: 'normal',
-                additional_notes: '',
-                customizations: {},
+                team_name: p.team_name || '',
+                nama_artikel: p.nama_artikel || '',
+                nama_pemesan: p.nama_pemesan || '',
+                detail_sponsor: p.detail_sponsor || '',
+                material: p.material || '',
+                collar_style: p.collar_style || '',
+                jenis_potongan: p.jenis_potongan || '',
+                lengan_jahitan: p.lengan_jahitan || '',
+                priority: p.priority || 'normal',
+                additional_notes: p.notes || '',
+                customizations: p.customizations ? JSON.parse(JSON.stringify(p.customizations)) : {},
             },
             openModal() {
                 const p = __product;
