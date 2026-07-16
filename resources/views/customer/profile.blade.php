@@ -621,7 +621,7 @@
                                                     </template>
 
                                                     {{-- Catatan: tabel detail jersey per pemain --}}
-                                                    <template x-if="item.design_data.catatan">
+                                                    <template x-if="item.design_data.items && item.design_data.items.length > 0">
                                                         <div class="pt-1">
                                                             <p class="text-xs font-bold text-[#1a237e] uppercase tracking-wider mb-2 flex items-center gap-1.5">
                                                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
@@ -631,9 +631,48 @@
                                                                 <table class="w-full text-xs">
                                                                     <thead>
                                                                         <tr class="bg-[#1a237e] text-white text-left">
-                                                                            <th class="px-3 py-2 font-semibold whitespace-nowrap">No Punggung</th>
+                                                                            <th class="px-3 py-2 font-semibold whitespace-nowrap">No</th>
                                                                             <th class="px-3 py-2 font-semibold whitespace-nowrap">Nama Punggung</th>
-                                                                            <th class="px-3 py-2 font-semibold whitespace-nowrap">Model Lengan</th>
+                                                                            <th class="px-3 py-2 font-semibold whitespace-nowrap">NPG</th>
+                                                                            <th class="px-3 py-2 font-semibold">Size</th>
+                                                                            <th class="px-3 py-2 font-semibold">Keterangan</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <template x-for="(detail, idx) in item.design_data.items" :key="idx">
+                                                                            <tr :class="idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'" class="border-t border-gray-100">
+                                                                                <td class="px-3 py-2 font-bold text-[#1a237e]" x-text="idx + 1"></td>
+                                                                                <td class="px-3 py-2 font-medium text-gray-800" x-text="detail.nama || '-'"></td>
+                                                                                <td class="px-3 py-2 text-gray-700 whitespace-nowrap" x-text="detail.no || '-'"></td>
+                                                                                <td class="px-3 py-2 text-center">
+                                                                                    <span class="inline-block bg-blue-100 text-blue-800 text-[10px] font-bold px-1.5 py-0.5 rounded" x-text="detail.size || '-'"></span>
+                                                                                </td>
+                                                                                <td class="px-3 py-2 text-gray-500">
+                                                                                    <template x-if="detail.customizations && Object.keys(detail.customizations).length > 0">
+                                                                                        <span x-text="Object.entries(detail.customizations).filter(([k,v]) => v !== undefined && v !== null && v !== '').map(([k,v]) => v).join(', ')"></span>
+                                                                                    </template>
+                                                                                    <template x-if="!detail.customizations || Object.keys(detail.customizations).length === 0">-</template>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </template>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <template x-if="!item.design_data.items || item.design_data.items.length === 0">
+                                                        <div class="pt-1">
+                                                            <p class="text-xs font-bold text-[#1a237e] uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                                                                Detail Jersey per Pemain
+                                                            </p>
+                                                            <div class="overflow-x-auto rounded-lg border border-gray-200">
+                                                                <table class="w-full text-xs">
+                                                                    <thead>
+                                                                        <tr class="bg-[#1a237e] text-white text-left">
+                                                                            <th class="px-3 py-2 font-semibold whitespace-nowrap">No</th>
+                                                                            <th class="px-3 py-2 font-semibold whitespace-nowrap">Nama Punggung</th>
+                                                                            <th class="px-3 py-2 font-semibold whitespace-nowrap">NPG</th>
                                                                             <th class="px-3 py-2 font-semibold">Size</th>
                                                                             <th class="px-3 py-2 font-semibold">Keterangan</th>
                                                                         </tr>
@@ -641,9 +680,9 @@
                                                                     <tbody>
                                                                         <template x-for="(row, idx) in parseCatatan(item.design_data.catatan)" :key="idx">
                                                                             <tr :class="idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'" class="border-t border-gray-100">
-                                                                                <td class="px-3 py-2 font-bold text-[#1a237e]" x-text="row.no"></td>
+                                                                                <td class="px-3 py-2 font-bold text-[#1a237e]" x-text="idx + 1"></td>
                                                                                 <td class="px-3 py-2 font-medium text-gray-800" x-text="row.nama"></td>
-                                                                                <td class="px-3 py-2 text-gray-700 whitespace-nowrap" x-text="row.model"></td>
+                                                                                <td class="px-3 py-2 text-gray-700 whitespace-nowrap" x-text="row.no"></td>
                                                                                 <td class="px-3 py-2 text-center">
                                                                                     <span class="inline-block bg-blue-100 text-blue-800 text-[10px] font-bold px-1.5 py-0.5 rounded" x-text="row.size"></span>
                                                                                 </td>

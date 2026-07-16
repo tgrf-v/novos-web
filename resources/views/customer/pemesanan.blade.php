@@ -2518,7 +2518,8 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                     .filter(([k, v]) => v !== undefined && v !== null && v !== '')
                     .map(([k, v]) => v)
                     .join(', ');
-                return `${item.no || '-'}, ${item.nama || '-'}, ${item.size || 'M'}${customParts ? ', ' + customParts : ''}`;
+                const modelLengan = compiled.lengan_jahitan || compiled.model_lengan || item.model_lengan || '-';
+                return `${item.no || '-'}, ${item.nama || '-'}, ${modelLengan}, ${item.size || 'M'}${customParts ? ', ' + customParts : ''}`;
             }).join('\n');
 
             const formData = new FormData();
@@ -2651,7 +2652,8 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                     .filter(([k, v]) => v !== undefined && v !== null && v !== '')
                     .map(([k, v]) => v)
                     .join(', ');
-                return `${item.no || '-'}, ${item.nama || '-'}, ${item.size || 'M'}${customParts ? ', ' + customParts : ''}`;
+                const modelLengan = compiled.lengan_jahitan || compiled.model_lengan || item.model_lengan || '-';
+                return `${item.no || '-'}, ${item.nama || '-'}, ${modelLengan}, ${item.size || 'M'}${customParts ? ', ' + customParts : ''}`;
             }).join('\n');
 
             const getFirstImage = () => {
@@ -2674,11 +2676,13 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
                     detail_sponsor: this.form.detail_sponsor,
                     customizations: this.form.customizations || {},
                     items: this.items.map(item => {
+                        const compiled = Object.assign({}, this.form.customizations, item.customizations);
                         return {
                             no: item.no,
                             nama: item.nama,
                             size: item.size,
-                            customizations: Object.assign({}, this.form.customizations, item.customizations)
+                            model_lengan: compiled.lengan_jahitan || compiled.model_lengan || item.model_lengan || '-',
+                            customizations: compiled
                         };
                     }),
                     catatan: this.form.catatan,

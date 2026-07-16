@@ -59,6 +59,56 @@ if (!empty($order['item_details'])) {
         }
     }
 }
+
+// Majority-rule calculation for product specifications
+$majoritySpecs = [];
+if (!empty($order['item_details'])) {
+    $fields = [
+        'material' => 'material',
+        'collar_style' => 'collar_style', 
+        'jenis_potongan' => 'jenis_potongan',
+        'lengan_jahitan' => 'lengan_jahitan',
+    ];
+    
+    // Add dynamic customization fields from attributes_schema
+    if (!empty($attributesSchema)) {
+        foreach ($attributesSchema as $attr) {
+            $fields[$attr['id']] = $attr['id'];
+        }
+    }
+    
+    foreach ($fields as $fieldKey => $fieldName) {
+        $counts = [];
+        foreach ($order['item_details'] as $detail) {
+            $val = null;
+            if ($fieldKey === 'material') {
+                $val = $detail['customizations']['bahan'] ?? $order['product']['material'] ?? null;
+            } elseif ($fieldKey === 'collar_style') {
+                $val = $detail['customizations']['kerah'] ?? $order['product']['collar_style'] ?? null;
+            } elseif ($fieldKey === 'jenis_potongan') {
+                $val = $detail['customizations']['jenis_potongan'] ?? $order['product']['jenis_potongan'] ?? null;
+            } elseif ($fieldKey === 'lengan_jahitan') {
+                $val = $detail['customizations']['lengan_jahitan'] ?? $order['product']['lengan_jahitan'] ?? null;
+            } else {
+                $val = $detail['customizations'][$fieldKey] ?? null;
+            }
+            
+            if ($val) {
+                $val = trim($val);
+                $counts[$val] = ($counts[$val] ?? 0) + 1;
+            }
+        }
+        
+        if (!empty($counts)) {
+            arsort($counts);
+            $majoritySpecs[$fieldKey] = [
+                'value' => key($counts),
+                'count' => current($counts),
+                'total' => count($order['item_details']),
+            ];
+        }
+    }
+}
 @endphp
 
 <div x-data="detailPesananApp()">
@@ -211,22 +261,40 @@ if (!empty($order['item_details'])) {
                 <div><span class="text-gray-500 text-xs">Nama Artikel</span><div class="font-medium text-gray-900" :class="{ 'text-gray-400 italic': !form.nama_artikel }" x-text="form.nama_artikel || 'Belum diisi'">{{ $order['product']['nama_artikel'] ?? '-' }}</div></div>
                 <div><span class="text-gray-500 text-xs">Nama Pemesan</span><div class="font-medium text-gray-900" x-text="form.nama_pemesan || '-'">{{ $order['product']['nama_pemesan'] ?? '-' }}</div></div>
                 <div><span class="text-gray-500 text-xs">Detail Sponsor</span><div class="font-medium text-gray-900" x-text="form.detail_sponsor || '-'">{{ $order['product']['detail_sponsor'] ?? '-' }}</div></div>
-                <template x-if="form.customizations && Object.keys(form.customizations).length > 0">
-                    <template x-for="(val, key) in form.customizations" :key="key">
-                        <div>
-                            <span class="text-gray-500 text-xs" x-text="key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())"></span>
-                            <div class="font-medium text-gray-900" x-text="val || '-'"></div>
-                        </div>
-                    </template>
-                </template>
-                <template x-if="!form.customizations || Object.keys(form.customizations).length === 0">
-                    <div class="contents">
-                        <div><span class="text-gray-500 text-xs">Bahan</span><div class="font-medium text-gray-900" x-text="form.material || '-'">{{ $order['product']['material'] ?? '-' }}</div></div>
-                        <div><span class="text-gray-500 text-xs">Kerah</span><div class="font-medium text-gray-900" x-text="form.collar_style || '-'">{{ $order['product']['collar_style'] ?? '-' }}</div></div>
-                        <div><span class="text-gray-500 text-xs">Jenis Potongan</span><div class="font-medium text-gray-900" x-text="form.jenis_potongan || '-'">{{ $order['product']['jenis_potongan'] ?? '-' }}</div></div>
-                        <div><span class="text-gray-500 text-xs">Lengan & Jahitan</span><div class="font-medium text-gray-900" x-text="form.lengan_jahitan || '-'">{{ $order['product']['lengan_jahitan'] ?? '-' }}</div></div>
-                    </div>
-                </template>
+                
+                {{-- Majority-based Spesifikasi Jersey --}}
+                @php
+                    $getMajority = function($key, $fallback = '-') use ($majoritySpecs, $order) {
+                        if (isset($majoritySpecs[$key])) {
+                            return $majoritySpecs[$key]['value'];
+                        }
+                        // Fallback to product-level data
+                        $productKey = $key;
+                        if ($key === 'material') $productKey = 'material';
+                        elseif ($key === 'collar_style') $productKey = 'collar_style';
+                        elseif ($key === 'jenis_potongan') $productKey = 'jenis_potongan';
+                        elseif ($key === 'lengan_jahitan') $productKey = 'lengan_jahitan';
+                        return $order['product'][$productKey] ?? $fallback;
+                    };
+                @endphp
+                
+                <div><span class="text-gray-500 text-xs">Bahan</span><div class="font-medium text-gray-900">{{ $getMajority('material') }}</div></div>
+                <div><span class="text-gray-500 text-xs">Kerah</span><div class="font-medium text-gray-900">{{ $getMajority('collar_style') }}</div></div>
+                <div><span class="text-gray-500 text-xs">Jenis Potongan</span><div class="font-medium text-gray-900">{{ $getMajority('jenis_potongan') }}</div></div>
+                <div><span class="text-gray-500 text-xs">Lengan & Jahitan</span><div class="font-medium text-gray-900">{{ $getMajority('lengan_jahitan') }}</div></div>
+                
+                {{-- Dynamic customization attributes (majority) --}}
+                @if(!empty($attributesSchema))
+                    @foreach($attributesSchema as $attr)
+                        @if(isset($majoritySpecs[$attr['id']]))
+                            <div>
+                                <span class="text-gray-500 text-xs">{{ $attr['name'] }}</span>
+                                <div class="font-medium text-gray-900">{{ $majoritySpecs[$attr['id']]['value'] }}</div>
+                            </div>
+                        @endif
+                    @endforeach
+                @endif
+                
                 <div><span class="text-gray-500 text-xs">Prioritas</span><div class="font-medium" :class="{'text-green-600 font-semibold': form.priority === 'normal', 'text-orange-600 font-semibold': form.priority === 'express', 'text-red-600 font-bold': form.priority === 'super_express'}" x-text="form.priority === 'express' ? 'Express' : form.priority === 'super_express' ? 'Super Express' : 'Normal'">{{ $order['product']['priority'] ?? 'normal' }}</div></div>
                 <div><span class="text-gray-500 text-xs">Tanggal Masuk</span><div class="font-medium text-gray-900">{{ $order['tanggal_masuk'] }}</div></div>
                 <div><span class="text-gray-500 text-xs">Deadline</span><div class="font-medium text-red-600">{{ $order['deadline'] }}</div></div>
