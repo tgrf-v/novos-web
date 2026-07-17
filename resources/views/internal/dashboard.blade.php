@@ -294,16 +294,26 @@ function statusBadgeType($status) {
         </div>
         <!-- Donut Chart -->
         <div class="bg-white shadow-sm rounded-xl p-4 sm:p-6 overflow-hidden">
-            <h3 class="font-bold text-gray-900 mb-4 text-lg">Status Pesanan Saat Ini</h3>
-            <div class="flex items-center gap-3 lg:block overflow-hidden">
-                <div class="w-28 h-28 lg:w-full lg:h-64 flex justify-center flex-shrink-0">
+            <h3 class="font-bold text-gray-900 mb-3 text-sm sm:text-lg">Status Pesanan Saat Ini</h3>
+            <div class="flex flex-col lg:flex-row items-center lg:items-start gap-4 lg:gap-6">
+                <!-- Donut + Center Label -->
+                <div class="relative w-36 h-36 lg:w-64 lg:h-64 flex justify-center flex-shrink-0">
                     <canvas id="donutChart"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-xl lg:text-2xl font-extrabold text-gray-900 leading-none">{{ $statusData[0] + $statusData[1] + $statusData[2] + $statusData[3] }}</span>
+                        <span class="text-[10px] lg:text-xs text-gray-400 font-medium mt-0.5">Total Aktif</span>
+                    </div>
                 </div>
-                <div class="lg:hidden flex-1 min-w-0 overflow-hidden space-y-1.5 pl-3 border-l border-gray-100">
+                <!-- Rich List Legend -->
+                <div class="w-full lg:w-auto lg:flex-1 lg:pt-2 space-y-1.5">
+                    @php $colors = ['#eab308', '#3b82f6', '#f97316', '#a855f7', '#22c55e']; @endphp
                     @foreach($statusLabels as $i => $label)
-                    <div class="flex items-center py-0.5 min-w-0">
-                        <span class="w-2 h-2 rounded-full flex-shrink-0 mr-1.5" style="background-color: {{ ['#eab308', '#3b82f6', '#f97316', '#a855f7', '#22c55e'][$i] }}"></span>
-                        <span class="text-xs font-medium text-gray-600 truncate">{{ $label }}</span>
+                    <div class="flex items-center justify-between py-0.5">
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color: {{ $colors[$i] }}"></span>
+                            <span class="text-xs font-medium text-gray-600 truncate">{{ $label }}</span>
+                        </div>
+                        <span class="text-xs font-bold text-gray-900 flex-shrink-0 ml-2">{{ $statusData[$i] }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -553,14 +563,7 @@ function statusBadgeType($status) {
                         },
                         plugins: {
                             legend: {
-                                display: window.innerWidth >= 1024,
-                                position: 'bottom',
-                                labels: { 
-                                    padding: 20, 
-                                    usePointStyle: true, 
-                                    pointStyle: 'circle',
-                                    font: { family: "'Poppins', sans-serif", size: 12 }
-                                }
+                                display: false,
                             },
                             tooltip: {
                                 padding: window.innerWidth < 768 ? 8 : 12,
@@ -587,16 +590,12 @@ function statusBadgeType($status) {
                     }
                 });
 
-                // Dynamically toggle built-in legend and tooltip configurations on window resize
+                // Dynamically toggle tooltip configurations on window resize
                 window.addEventListener('resize', function() {
                     var isDesktop = window.innerWidth >= 1024;
                     var needsUpdate = false;
 
-                    if (donutChart.options.plugins.legend.display !== isDesktop) {
-                        donutChart.options.plugins.legend.display = isDesktop;
-                        needsUpdate = true;
-                    }
-                    if (donutChart.options.plugins.tooltip.displayColors !== isDesktop) {
+                    if (donutChart.options.tooltip.displayColors !== isDesktop) {
                         donutChart.options.plugins.tooltip.displayColors = isDesktop;
                         needsUpdate = true;
                     }
