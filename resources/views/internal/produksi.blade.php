@@ -118,10 +118,18 @@
                         <button @click="open = !open"
                                 class="flex items-center justify-between w-full px-4 py-3.5 text-left transition-colors"
                                 :class="open ? 'bg-[#1a237e]/5' : 'bg-white hover:bg-gray-50'">
-                            <div class="flex items-center gap-2.5 min-w-0 flex-1">
-                                <div class="w-2 h-2 rounded-full shrink-0"
-                                     :class="activeTab === 'printing' ? 'bg-blue-500' : (activeTab === 'press' ? 'bg-orange-500' : (activeTab === 'jahit' ? 'bg-amber-500' : 'bg-emerald-500'))"></div>
-                                <span class="font-bold text-[#1a237e] text-xs tracking-wide" x-text="order.order_id"></span>
+                            <div class="min-w-0 flex-1 mr-2">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <div class="w-2 h-2 rounded-full shrink-0"
+                                         :class="activeTab === 'printing' ? 'bg-blue-500' : (activeTab === 'press' ? 'bg-orange-500' : (activeTab === 'jahit' ? 'bg-amber-500' : 'bg-emerald-500'))"></div>
+                                    <span class="font-bold text-[#1a237e] text-xs tracking-wide" x-text="order.order_id"></span>
+                                    <span class="text-[10px] font-bold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded" x-text="order.total_qty + ' pcs'"></span>
+                                </div>
+                                <div class="flex items-center gap-1.5 ml-4 text-xs text-gray-600">
+                                    <span class="truncate font-medium" x-text="order.customer"></span>
+                                    <span class="text-gray-300 shrink-0">•</span>
+                                    <span class="truncate text-gray-400" x-text="order.team_name"></span>
+                                </div>
                             </div>
                             <div class="flex items-center gap-2 shrink-0">
                                 <span x-show="order.priority === 'super_express'"
