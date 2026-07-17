@@ -155,7 +155,27 @@ $moreKpi = array_slice($allKpi, 4);
     </div>
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
         <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-1.5"><span class="w-7 h-7 rounded-lg bg-[#1a237e]/10 flex items-center justify-center shrink-0"><i data-lucide="pie-chart" class="w-4 h-4 text-[#1a237e]"></i></span> Distribusi Jenis Pesanan</h3>
-        <div class="h-40 flex justify-center"><canvas id="chartDist"></canvas></div>
+        @php $distColors = ['#1a237e', '#38bdf8']; @endphp
+        <div class="flex flex-col lg:flex-row items-center lg:items-center gap-4 lg:gap-6">
+            <div class="relative w-36 h-36 lg:w-48 lg:h-48 flex justify-center flex-shrink-0">
+                <canvas id="chartDist"></canvas>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span class="text-xl lg:text-2xl font-extrabold text-gray-900 leading-none">{{ array_sum($distData) }}</span>
+                    <span class="text-[10px] lg:text-xs text-gray-400 font-medium mt-0.5">Total Pesanan</span>
+                </div>
+            </div>
+            <div class="w-full lg:w-auto lg:flex-1 max-w-[250px] lg:pt-2 space-y-1.5">
+                @foreach($distLabels as $i => $label)
+                <div class="flex items-center justify-between py-0.5">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                        <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color: {{ $distColors[$i] }}"></span>
+                        <span class="text-xs font-medium text-gray-600 truncate">{{ $label }}</span>
+                    </div>
+                    <span class="text-xs font-bold text-gray-900 flex-shrink-0 ml-2">{{ $distData[$i] }}</span>
+                </div>
+                @endforeach
+            </div>
+        </div>
     </div>
 </div>
 
@@ -333,7 +353,7 @@ new Chart(document.getElementById('chartTop5'), {
 new Chart(document.getElementById('chartDist'), {
     type:'doughnut',
     data:{ labels:@json($distLabels), datasets:[{ data:@json($distData), backgroundColor:['#1a237e','#38bdf8'], borderWidth:3, borderColor:'#fff', hoverOffset:4 }]},
-    options:{ responsive:true, maintainAspectRatio:false, cutout:'72%', plugins:{ legend:{ position:'bottom', labels:{ padding:20, usePointStyle:true, pointStyle:'circle', font:{ family:"'Poppins',sans-serif", size:12 }}}}}
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'72%', plugins:{ legend:{display:false} }}
 });
 
 }
