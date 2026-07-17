@@ -728,34 +728,25 @@ if (!empty($order['item_details'])) {
                     Riwayat Status
                 </h3>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
-                        <tr>
-                            <th class="px-6 py-3 text-left font-semibold">Tanggal</th>
-                            <th class="px-6 py-3 text-left font-semibold">Status</th>
-                            <th class="px-6 py-3 text-left font-semibold">Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @forelse($order['status_history'] as $sh)
-                        @php
-                        $st = match($sh['status']) { 'menunggu_pembayaran'=>'orange','tahap_desain'=>'blue','menunggu_acc'=>'orange','siap_cetak'=>'indigo','menunggu_spk'=>'yellow','tahap_produksi'=>'purple','selesai'=>'green','dibatalkan'=>'red',default=>'gray' };
-                        $sl = match($sh['status']) { 'menunggu_pembayaran'=>'Menunggu Pembayaran','tahap_desain'=>'Tahap Desain','menunggu_acc'=>'Menunggu ACC','siap_cetak'=>'Siap Cetak','menunggu_spk'=>'Menunggu SPK','tahap_produksi'=>'Produksi','selesai'=>'Selesai','dibatalkan'=>'Dibatalkan',default=>$sh['status'] };
-                        @endphp
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-3.5 text-gray-700">{{ $sh['date'] }}</td>
-                            <td class="px-6 py-3.5"><x-badge type="{{ $st }}">{{ $sl }}</x-badge></td>
-                            <td class="px-6 py-3.5 text-gray-700">{{ $sh['note'] }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="3" class="px-6 py-8 text-center text-gray-400 text-sm">Belum ada riwayat status.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <div class="divide-y divide-gray-100">
+                @forelse($order['status_history'] as $sh)
+                @php
+                $st = match($sh['status']) { 'menunggu_pembayaran'=>'orange','tahap_desain'=>'blue','menunggu_acc'=>'orange','siap_cetak'=>'indigo','menunggu_spk'=>'yellow','tahap_produksi'=>'purple','selesai'=>'green','dibatalkan'=>'red',default=>'gray' };
+                $sl = match($sh['status']) { 'menunggu_pembayaran'=>'Menunggu Pembayaran','tahap_desain'=>'Tahap Desain','menunggu_acc'=>'Menunggu ACC','siap_cetak'=>'Siap Cetak','menunggu_spk'=>'Menunggu SPK','tahap_produksi'=>'Produksi','selesai'=>'Selesai','dibatalkan'=>'Dibatalkan',default => $sh['status'] };
+                @endphp
+                <div class="px-4 md:px-6 py-3.5">
+                    <div class="flex items-center justify-between gap-3 mb-1">
+                        <x-badge type="{{ $st }}">{{ $sl }}</x-badge>
+                        <span class="text-[11px] text-gray-400 shrink-0">{{ $sh['date'] }}</span>
+                    </div>
+                    @if(!empty($sh['note']))
+                    <p class="text-xs text-gray-600 mt-1.5">{{ $sh['note'] }}</p>
+                    @endif
                 </div>
+                @empty
+                <p class="px-4 py-8 text-center text-gray-400 text-sm">Belum ada riwayat status.</p>
+                @endforelse
+            </div>
             </div>
             </template>
         </div>
