@@ -295,7 +295,7 @@ function statusBadgeType($status) {
         <!-- Donut Chart -->
         <div class="bg-white shadow-sm rounded-xl p-4 sm:p-6 overflow-hidden">
             <h3 class="font-bold text-gray-900 mb-3 text-sm sm:text-lg">Status Pesanan Saat Ini</h3>
-            <div class="flex flex-col lg:flex-row items-center lg:items-start gap-4 lg:gap-6">
+            <div class="flex flex-col lg:flex-row items-center lg:items-center gap-4 lg:gap-6">
                 <!-- Donut + Center Label -->
                 <div class="relative w-36 h-36 lg:w-64 lg:h-64 flex justify-center flex-shrink-0">
                     <canvas id="donutChart"></canvas>
@@ -305,7 +305,7 @@ function statusBadgeType($status) {
                     </div>
                 </div>
                 <!-- Rich List Legend -->
-                <div class="w-full lg:w-auto lg:flex-1 lg:pt-2 space-y-1.5">
+                <div class="w-full lg:w-auto lg:flex-1 max-w-[250px] lg:pt-2 space-y-1.5">
                     @php $colors = ['#eab308', '#3b82f6', '#f97316', '#a855f7', '#22c55e']; @endphp
                     @foreach($statusLabels as $i => $label)
                     <div class="flex items-center justify-between py-0.5">
