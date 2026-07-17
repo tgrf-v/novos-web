@@ -268,11 +268,11 @@ function statusBadgeType($status) {
     @endif
 
     <!-- Charts Row -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <!-- Line Chart -->
-        <div class="bg-white shadow-sm rounded-xl p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="font-bold text-gray-900 text-lg">Pesanan</h3>
+        <div class="bg-white shadow-sm rounded-xl p-4 sm:p-6">
+            <div class="flex items-center justify-between mb-3 md:mb-6">
+                <h3 class="font-bold text-gray-900 text-sm md:text-lg">Pesanan</h3>
                 {{-- Desktop: pill tab buttons --}}
                 <div class="hidden lg:flex gap-1 bg-gray-100 rounded-lg p-1" id="chartFilters">
                     <button data-filter="day" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all text-gray-500 hover:text-gray-700">Harian</button>
@@ -281,14 +281,14 @@ function statusBadgeType($status) {
                     <button data-filter="year" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all text-gray-500 hover:text-gray-700">Tahunan</button>
                 </div>
                 {{-- Mobile: select dropdown --}}
-                <select id="chartFilterSelect" class="lg:hidden block w-28 px-3 py-1.5 text-xs font-semibold bg-gray-50 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all">
+                <select id="chartFilterSelect" class="lg:hidden block w-24 px-2 py-1 text-xs font-semibold bg-gray-50 border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all">
                     <option value="day">Harian</option>
                     <option value="week" selected>Mingguan</option>
                     <option value="month">Bulanan</option>
                     <option value="year">Tahunan</option>
                 </select>
             </div>
-            <div class="h-64">
+            <div class="h-28 md:h-64">
                 <canvas id="lineChart"></canvas>
             </div>
         </div>
@@ -415,14 +415,14 @@ function statusBadgeType($status) {
                             data: chartInfo.data,
                             borderColor: '#1a237e',
                             backgroundColor: 'rgba(26, 35, 126, 0.05)',
-                            borderWidth: 2,
+                            borderWidth: window.innerWidth < 768 ? 1.5 : 2,
                             tension: 0.4,
                             fill: true,
                             pointBackgroundColor: '#1a237e',
                             pointBorderColor: '#fff',
-                            pointBorderWidth: 2,
-                            pointRadius: 4,
-                            pointHoverRadius: 6
+                            pointBorderWidth: window.innerWidth < 768 ? 1 : 2,
+                            pointRadius: window.innerWidth < 768 ? 2 : 4,
+                            pointHoverRadius: window.innerWidth < 768 ? 4 : 6
                         }]
                     },
                     options: {
@@ -448,12 +448,14 @@ function statusBadgeType($status) {
                         scales: {
                             y: { 
                                 beginAtZero: true, 
-                                grid: { color: '#f3f4f6', borderDash: [4, 4] },
-                                border: { display: false }
+                                grid: { color: window.innerWidth < 768 ? 'transparent' : '#f3f4f6', borderDash: [4, 4] },
+                                border: { display: false },
+                                ticks: { display: window.innerWidth >= 768 }
                             },
                             x: { 
                                 grid: { display: false },
-                                border: { display: false }
+                                border: { display: false },
+                                ticks: { display: window.innerWidth >= 768, maxRotation: 0 }
                             }
                         }
                     }
