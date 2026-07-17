@@ -289,6 +289,10 @@ function rupiah($n) {
                     <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-orange-50 text-orange-600 text-[10px] font-bold border border-orange-200">
                         <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Express
                     </span>
+                    @else
+                    <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 text-[10px] font-bold border border-gray-200">
+                        Normal
+                    </span>
                     @endif
                     <div class="w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300"
                          :class="open ? 'bg-[#1a237e] rotate-180' : 'bg-gray-100'">
