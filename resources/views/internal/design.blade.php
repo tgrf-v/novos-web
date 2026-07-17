@@ -189,14 +189,9 @@
                             <div class="mx-4 mt-3 border-t border-gray-100"></div>
 
                             {{-- Action Buttons --}}
-                            <div class="px-4 py-3 flex gap-2">
-                                <button @click="open = false"
-                                        class="flex-1 py-2 text-xs font-semibold rounded-xl border border-gray-300 text-gray-600 bg-white hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5">
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                    Tutup
-                                </button>
+                            <div class="px-4 py-3">
                                 <button @click.stop="openDetail(order)"
-                                        class="flex-1 py-2 text-xs font-bold rounded-xl bg-[#1a237e] text-white hover:bg-[#283593] transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-[#1a237e]/20">
+                                        class="w-full py-2.5 text-xs font-bold rounded-xl bg-[#1a237e] text-white hover:bg-[#283593] transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-[#1a237e]/20">
                                     Lihat Detail
                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                                 </button>
