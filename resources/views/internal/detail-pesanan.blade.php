@@ -158,58 +158,65 @@ if (!empty($order['item_details'])) {
     {{-- ── KOLOM KIRI ─────────────────────────────────────────────── --}}
     <div class="flex-1 min-w-0">
         <div x-show="activeTab === 'detail'" class="space-y-5">
-            {{-- Info Pesanan (Stepper) --}}
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h3 class="font-semibold text-gray-900 mb-6 flex items-center gap-2 text-sm">
+            {{-- Info Pesanan --}}
+        @php
+            $currentStep = collect($steps)->firstWhere('current', true);
+            $nextStep = collect($steps)->filter(fn($s) => !$s['done'] && !$s['current'])->first();
+            $doneSteps = collect($steps)->filter(fn($s) => $s['done'])->count();
+        @endphp
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 md:p-6">
+            <h3 class="font-semibold text-gray-900 mb-4 md:mb-6 flex items-center gap-2 text-sm">
                 <svg class="w-4 h-4 text-[#1a237e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                 </svg>
                 Info Pesanan
             </h3>
 
-            {{-- Stepper --}}
-            <div class="relative flex flex-col md:flex-row items-start md:items-start">
-                {{-- Connector line (behind circles) - horizontal on desktop, vertical on mobile --}}
-                <div class="hidden md:block absolute top-4 left-4 right-4 h-0.5 bg-gray-200 z-0" style="left: calc(100% / {{ count($steps) * 2 }}); right: calc(100% / {{ count($steps) * 2 }});">
+            {{-- Mobile: Compact Status --}}
+            <div class="md:hidden space-y-2">
+                <div class="flex items-center gap-3 bg-[#1a237e]/5 rounded-xl p-3">
+                    <div class="w-9 h-9 rounded-full bg-[#1a237e] border-4 border-[#1a237e]/20 flex items-center justify-center shadow-md shadow-[#1a237e]/25 shrink-0">
+                        <div class="w-2.5 h-2.5 rounded-full bg-white"></div>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wide">Status Saat Ini</p>
+                        <p class="text-sm font-bold text-[#1a237e] truncate">{{ $currentStep['label'] ?? '-' }}</p>
+                    </div>
+                    <span class="text-[11px] font-bold text-[#1a237e] bg-[#1a237e]/10 px-2 py-0.5 rounded-full">{{ $doneSteps }}/{{ count($steps) }}</span>
+                </div>
+                @if($nextStep)
+                <div class="flex items-center gap-2 text-xs text-gray-500 pl-1">
+                    <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    <span>Selanjutnya: <span class="font-semibold text-gray-700">{{ $nextStep['label'] }}</span></span>
+                </div>
+                @endif
+            </div>
+
+            {{-- Desktop: Full Stepper --}}
+            <div class="hidden md:block relative">
+                <div class="absolute top-4 left-4 right-4 h-0.5 bg-gray-200 z-0" style="left: calc(100% / {{ count($steps) * 2 }}); right: calc(100% / {{ count($steps) * 2 }});">
                     @php $doneCount = collect($steps)->filter(fn($s)=>$s['done'])->count(); @endphp
                     <div class="h-full bg-[#1a237e] transition-all" style="width: {{ max(0, (($doneCount - 1) / (count($steps) - 1)) * 100) }}%"></div>
                 </div>
-                <div class="md:hidden absolute top-0 bottom-0 left-4 w-0.5 bg-gray-200 z-0">
-                    @php $doneCount = collect($steps)->filter(fn($s)=>$s['done'])->count(); @endphp
-                    <div class="w-full bg-[#1a237e] transition-all" style="height: {{ max(0, (($doneCount - 1) / (count($steps) - 1)) * 100) }}%"></div>
-                </div>
-
-                {{-- Steps --}}
-                <div class="relative z-10 flex flex-col md:flex-row w-full md:justify-between gap-4 md:gap-0">
+                <div class="relative z-10 flex w-full justify-between">
                 @foreach($steps as $idx => $step)
-                <div class="flex items-center gap-3 md:flex-col md:items-center" style="{{ null }}">
-                    {{-- Circle --}}
+                <div class="flex flex-col items-center">
                     @if($step['current'])
                     <div class="w-8 h-8 rounded-full bg-[#1a237e] border-4 border-[#1a237e]/20 flex items-center justify-center shadow-md shadow-[#1a237e]/25 shrink-0">
                         <div class="w-2.5 h-2.5 rounded-full bg-white"></div>
                     </div>
                     @elseif($step['done'])
                     <div class="w-8 h-8 rounded-full bg-[#1a237e] flex items-center justify-center shrink-0">
-                        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                        </svg>
+                        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                     </div>
                     @else
                     <div class="w-8 h-8 rounded-full bg-gray-100 border-2 border-gray-300 flex items-center justify-center shrink-0">
                         <div class="w-2 h-2 rounded-full bg-gray-300"></div>
                     </div>
                     @endif
-
-                    {{-- Label + Date --}}
-                    <div class="md:text-center md:px-1">
-                        <p class="text-xs font-semibold leading-tight {{ $step['done'] || $step['current'] ? 'text-gray-800' : 'text-gray-400' }}">
-                            {{ $step['label'] }}
-                        </p>
-                        @if($step['date'])
-                        <p class="text-xs text-gray-400 mt-0.5">{{ $step['date'] }}</p>
-                        @else
-                        <p class="text-xs text-gray-300 mt-0.5">—</p>
-                        @endif
+                    <div class="text-center px-1 mt-2">
+                        <p class="text-xs font-semibold leading-tight {{ $step['done'] || $step['current'] ? 'text-gray-800' : 'text-gray-400' }}">{{ $step['label'] }}</p>
+                        <p class="text-xs text-gray-400 mt-0.5">{{ $step['date'] ?? '—' }}</p>
                     </div>
                 </div>
                 @endforeach
