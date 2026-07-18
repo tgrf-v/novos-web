@@ -339,33 +339,46 @@ if (!empty($order['item_details'])) {
                     </button>
                     @endif
                 </div>
-                <div class="overflow-x-auto rounded-lg border border-gray-200">
-                    <table class="w-full text-sm">
-                        <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
-                            <tr>
-                                <th class="px-3 py-2 text-left font-semibold">No</th>
-                                <th class="px-3 py-2 text-left font-semibold">Nama Punggung</th>
-                                <th class="px-3 py-2 text-left font-semibold">NPG</th>
-                                <th class="px-3 py-2 text-left font-semibold">Size</th>
-                                <th class="px-3 py-2 text-left font-semibold">Keterangan</th>
-                                <th class="px-3 py-2 text-right font-semibold">Harga</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            @foreach($order['item_details'] as $detail)
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-3 py-2 text-gray-800 font-medium">{{ $loop->iteration }}</td>
-                                <td class="px-3 py-2 text-gray-700 font-medium">{{ $detail['nama_punggung'] ?? '-' }}</td>
-                                <td class="px-3 py-2 text-gray-700">{{ $detail['no_punggung'] ?? '-' }}</td>
-                                <td class="px-3 py-2 text-gray-700">{{ $detail['size'] ?? '-' }}</td>
-                                <td class="px-3 py-2 text-gray-700">
-                                    {{ $detail['keterangan_simple'] ?? '-' }}
-                                </td>
-                                <td class="px-3 py-2 text-right font-medium text-gray-900">{{ 'Rp ' . number_format($detail['price'] ?? 0, 0, ',', '.') }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div x-data="{ expandedAll: false }" class="rounded-lg border border-gray-200 overflow-hidden">
+                    @if(count($order['item_details']) > 5)
+                    <button @click="expandedAll = !expandedAll" class="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-[#1a237e] hover:bg-gray-50 transition-colors border-b border-gray-100">
+                        <span x-text="expandedAll ? 'Sembunyikan' : 'Lihat Semua ({{ count($order['item_details']) }})'"></span>
+                        <svg class="w-3 h-3 transition-transform duration-300" :class="expandedAll ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    @endif
+                    <div :style="expandedAll ? 'max-height: 10000px' : 'max-height: 250px'" class="overflow-y-auto transition-all duration-300 ease-in-out relative">
+                        <div class="divide-y divide-gray-100">
+                        @foreach($order['item_details'] as $detail)
+                        <div x-data="{ open: false }">
+                            <button @click="open = !open" class="flex items-center justify-between w-full px-3 py-2.5 text-left hover:bg-gray-50 transition-colors">
+                                <div class="flex items-center gap-2 min-w-0 flex-1">
+                                    <span class="text-xs font-semibold text-gray-800 shrink-0">{{ $detail['no_punggung'] ?? $loop->iteration }}</span>
+                                    <span class="text-xs text-gray-600 truncate">{{ $detail['nama_punggung'] ?? '-' }}</span>
+                                    <span class="text-[11px] text-gray-400 shrink-0">{{ $detail['size'] ? 'Size ' . $detail['size'] : '' }}</span>
+                                </div>
+                                <svg class="w-4 h-4 text-gray-400 transition-transform duration-200 shrink-0 ml-2" :class="open ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div x-show="open" x-cloak x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" class="px-3 pb-3 space-y-1.5">
+                                <div class="flex items-start gap-2 text-xs text-gray-600">
+                                    <span class="text-gray-400 font-medium w-20 shrink-0">Nama</span>
+                                    <span>{{ $detail['nama_punggung'] ?? '-' }}</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-xs text-gray-600">
+                                    <span class="text-gray-400 font-medium w-20 shrink-0">Ket</span>
+                                    <span>{{ $detail['keterangan_simple'] ?? '-' }}</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-xs text-gray-600">
+                                    <span class="text-gray-400 font-medium w-20 shrink-0">Harga</span>
+                                    <span class="font-semibold text-gray-900">{{ 'Rp ' . number_format($detail['price'] ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                        </div>
+                        @if(count($order['item_details']) > 5)
+                        <div x-show="!expandedAll" class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent pointer-events-none z-10"></div>
+                        @endif
+                    </div>
                 </div>
             </div>
             @endif
@@ -715,34 +728,25 @@ if (!empty($order['item_details'])) {
                     Riwayat Status
                 </h3>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
-                        <tr>
-                            <th class="px-6 py-3 text-left font-semibold">Tanggal</th>
-                            <th class="px-6 py-3 text-left font-semibold">Status</th>
-                            <th class="px-6 py-3 text-left font-semibold">Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @forelse($order['status_history'] as $sh)
-                        @php
-                        $st = match($sh['status']) { 'menunggu_pembayaran'=>'orange','tahap_desain'=>'blue','menunggu_acc'=>'orange','siap_cetak'=>'indigo','menunggu_spk'=>'yellow','tahap_produksi'=>'purple','selesai'=>'green','dibatalkan'=>'red',default=>'gray' };
-                        $sl = match($sh['status']) { 'menunggu_pembayaran'=>'Menunggu Pembayaran','tahap_desain'=>'Tahap Desain','menunggu_acc'=>'Menunggu ACC','siap_cetak'=>'Siap Cetak','menunggu_spk'=>'Menunggu SPK','tahap_produksi'=>'Produksi','selesai'=>'Selesai','dibatalkan'=>'Dibatalkan',default=>$sh['status'] };
-                        @endphp
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-3.5 text-gray-700">{{ $sh['date'] }}</td>
-                            <td class="px-6 py-3.5"><x-badge type="{{ $st }}">{{ $sl }}</x-badge></td>
-                            <td class="px-6 py-3.5 text-gray-700">{{ $sh['note'] }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="3" class="px-6 py-8 text-center text-gray-400 text-sm">Belum ada riwayat status.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <div class="divide-y divide-gray-100">
+                @forelse($order['status_history'] as $sh)
+                @php
+                $st = match($sh['status']) { 'menunggu_pembayaran'=>'orange','tahap_desain'=>'blue','menunggu_acc'=>'orange','siap_cetak'=>'indigo','menunggu_spk'=>'yellow','tahap_produksi'=>'purple','selesai'=>'green','dibatalkan'=>'red',default=>'gray' };
+                $sl = match($sh['status']) { 'menunggu_pembayaran'=>'Menunggu Pembayaran','tahap_desain'=>'Tahap Desain','menunggu_acc'=>'Menunggu ACC','siap_cetak'=>'Siap Cetak','menunggu_spk'=>'Menunggu SPK','tahap_produksi'=>'Produksi','selesai'=>'Selesai','dibatalkan'=>'Dibatalkan',default => $sh['status'] };
+                @endphp
+                <div class="px-4 md:px-6 py-3.5">
+                    <div class="flex items-center justify-between gap-3 mb-1">
+                        <x-badge type="{{ $st }}">{{ $sl }}</x-badge>
+                        <span class="text-[11px] text-gray-400 shrink-0">{{ $sh['date'] }}</span>
+                    </div>
+                    @if(!empty($sh['note']))
+                    <p class="text-xs text-gray-600 mt-1.5">{{ $sh['note'] }}</p>
+                    @endif
                 </div>
+                @empty
+                <p class="px-4 py-8 text-center text-gray-400 text-sm">Belum ada riwayat status.</p>
+                @endforelse
+            </div>
             </div>
             </template>
         </div>
@@ -758,9 +762,10 @@ if (!empty($order['item_details'])) {
                     </h3>
                     
                     {{-- SPK Download Button --}}
-                    <a href="{{ route('staf.pesanan.export-spk', $order['order_id']) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition-all cursor-pointer">
+                    <a href="{{ route('staf.pesanan.export-spk', $order['order_id']) }}" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition-all cursor-pointer">
                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                        Export SPK (Excel)
+                        <span class="hidden sm:inline">Export SPK (Excel)</span>
+                        <span class="sm:hidden">Excel</span>
                     </a>
                 </div>
 
@@ -822,27 +827,27 @@ if (!empty($order['item_details'])) {
                     Mockup Jersey Final (Untuk SPK)
                 </h3>
 
-                <div class="flex flex-wrap gap-4">
+                <div class="grid grid-cols-2 gap-4">
                     <template x-if="mockupDepan">
-                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-full sm:w-64 overflow-hidden cursor-zoom-in"
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden cursor-zoom-in"
                              @click="window.openPhotoSwipe?.([{path: mockupDepan.url, name: 'Mockup Depan'}], 0)">
                             <img :src="mockupDepan.url" class="w-full h-full object-cover">
                         </div>
                     </template>
                     <template x-if="!mockupDepan">
-                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-full sm:w-64 aspect-[3/4] flex items-center justify-center">
-                            <p class="text-xs text-gray-400">Belum ada mockup depan</p>
+                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl aspect-[3/4] flex items-center justify-center">
+                            <p class="text-[11px] text-gray-400 text-center">Belum ada mockup depan</p>
                         </div>
                     </template>
                     <template x-if="mockupBelakang">
-                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-full sm:w-64 overflow-hidden cursor-zoom-in"
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden cursor-zoom-in"
                              @click="window.openPhotoSwipe?.([{path: mockupBelakang.url, name: 'Mockup Belakang'}], 0)">
                             <img :src="mockupBelakang.url" class="w-full h-full object-cover">
                         </div>
                     </template>
                     <template x-if="!mockupBelakang">
-                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-full sm:w-64 aspect-[3/4] flex items-center justify-center">
-                            <p class="text-xs text-gray-400">Belum ada mockup belakang</p>
+                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl aspect-[3/4] flex items-center justify-center">
+                            <p class="text-[11px] text-gray-400 text-center">Belum ada mockup belakang</p>
                         </div>
                     </template>
                 </div>
@@ -855,27 +860,27 @@ if (!empty($order['item_details'])) {
                     Detail Tampak Depan & Tampak Belakang Zoom
                 </h3>
 
-                <div class="flex flex-wrap gap-4">
+                <div class="grid grid-cols-2 gap-4">
                     <template x-if="detailDepan">
-                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-full sm:w-64 overflow-hidden cursor-zoom-in"
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden cursor-zoom-in"
                              @click="window.openPhotoSwipe?.([{path: detailDepan.url, name: 'Detail Depan'}], 0)">
                             <img :src="detailDepan.url" class="w-full h-full object-cover">
                         </div>
                     </template>
                     <template x-if="!detailDepan">
-                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-full sm:w-64 aspect-[3/4] flex items-center justify-center">
-                            <p class="text-xs text-gray-400">Belum ada detail depan</p>
+                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl aspect-[3/4] flex items-center justify-center">
+                            <p class="text-[11px] text-gray-400 text-center">Belum ada detail depan</p>
                         </div>
                     </template>
                     <template x-if="detailBelakang">
-                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-full sm:w-64 overflow-hidden cursor-zoom-in"
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl overflow-hidden cursor-zoom-in"
                              @click="window.openPhotoSwipe?.([{path: detailBelakang.url, name: 'Detail Belakang'}], 0)">
                             <img :src="detailBelakang.url" class="w-full h-full object-cover">
                         </div>
                     </template>
                     <template x-if="!detailBelakang">
-                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-full sm:w-64 aspect-[3/4] flex items-center justify-center">
-                            <p class="text-xs text-gray-400">Belum ada detail belakang</p>
+                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl aspect-[3/4] flex items-center justify-center">
+                            <p class="text-[11px] text-gray-400 text-center">Belum ada detail belakang</p>
                         </div>
                     </template>
                 </div>
