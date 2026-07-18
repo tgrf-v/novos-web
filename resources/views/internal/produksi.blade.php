@@ -118,10 +118,18 @@
                         <button @click="open = !open"
                                 class="flex items-center justify-between w-full px-4 py-3.5 text-left transition-colors"
                                 :class="open ? 'bg-[#1a237e]/5' : 'bg-white hover:bg-gray-50'">
-                            <div class="flex items-center gap-2.5 min-w-0 flex-1">
-                                <div class="w-2 h-2 rounded-full shrink-0"
-                                     :class="activeTab === 'printing' ? 'bg-blue-500' : (activeTab === 'press' ? 'bg-orange-500' : (activeTab === 'jahit' ? 'bg-amber-500' : 'bg-emerald-500'))"></div>
-                                <span class="font-bold text-[#1a237e] text-xs tracking-wide" x-text="order.order_id"></span>
+                            <div class="min-w-0 flex-1 mr-2">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <div class="w-2 h-2 rounded-full shrink-0"
+                                         :class="activeTab === 'printing' ? 'bg-blue-500' : (activeTab === 'press' ? 'bg-orange-500' : (activeTab === 'jahit' ? 'bg-amber-500' : 'bg-emerald-500'))"></div>
+                                    <span class="font-bold text-[#1a237e] text-xs tracking-wide" x-text="order.order_id"></span>
+                                    <span class="text-[10px] font-bold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded" x-text="order.total_qty + ' pcs'"></span>
+                                </div>
+                                <div class="flex items-center gap-1.5 ml-4 text-xs text-gray-600">
+                                    <span class="truncate font-medium" x-text="order.customer"></span>
+                                    <span class="text-gray-300 shrink-0">•</span>
+                                    <span class="truncate text-gray-400" x-text="order.team_name"></span>
+                                </div>
                             </div>
                             <div class="flex items-center gap-2 shrink-0">
                                 <span x-show="order.priority === 'super_express'"
@@ -131,6 +139,10 @@
                                 <span x-show="order.priority === 'express'"
                                       class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-orange-50 text-orange-600 text-[10px] font-bold border border-orange-200">
                                     <i data-lucide="zap" class="w-2.5 h-2.5"></i> Express
+                                </span>
+                                <span x-show="order.priority === 'normal'"
+                                      class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 text-[10px] font-bold border border-gray-200">
+                                    Normal
                                 </span>
                                 <div class="w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300"
                                      :class="open ? 'bg-[#1a237e] rotate-180' : 'bg-gray-100'">
@@ -202,14 +214,9 @@
                             <div class="mx-4 mt-3 border-t border-gray-100"></div>
 
                             {{-- Action Buttons --}}
-                            <div class="px-4 py-3 flex gap-2">
-                                <button @click="open = false"
-                                        class="flex-1 py-2 text-xs font-semibold rounded-xl border border-gray-300 text-gray-600 bg-white hover:bg-gray-50 transition-colors flex items-center justify-center gap-1.5">
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                                    Tutup
-                                </button>
+                            <div class="px-4 py-3">
                                 <button @click.stop="openDetail(order)"
-                                        class="flex-1 py-2 text-xs font-bold rounded-xl bg-[#1a237e] text-white hover:bg-[#283593] transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-[#1a237e]/20">
+                                        class="w-full py-2.5 text-xs font-bold rounded-xl bg-[#1a237e] text-white hover:bg-[#283593] transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-[#1a237e]/20">
                                     Lihat Detail
                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                                 </button>

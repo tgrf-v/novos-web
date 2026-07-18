@@ -11,8 +11,8 @@ $canValidate = in_array($role, ['Admin', 'Manager', 'Super Admin']);
 
 @section('topbar-left')
     <div>
-        <div class="flex items-center gap-3">
-            <h1 class="text-xl font-bold text-[#1a237e]">{{ $order['order_id'] }}</h1>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-1.5 sm:gap-3">
+            <h1 class="text-lg sm:text-xl font-bold text-[#1a237e] whitespace-nowrap">{{ $order['order_id'] }}</h1>
             <x-badge type="{{ $badgeType }}">{{ $badgeLabel }}</x-badge>
         </div>
         <p class="text-sm text-gray-500 mt-0.5">{{ $order['last_update'] }}</p>
@@ -121,7 +121,8 @@ if (!empty($order['item_details'])) {
 </div>
 
 {{-- Tabs Navigation --}}
-<div class="flex max-w-2xl gap-1 bg-white rounded-2xl p-1.5 shadow-sm border border-gray-200 mb-8">
+{{-- Desktop --}}
+<div class="hidden lg:flex max-w-2xl gap-1 bg-white rounded-2xl p-1.5 shadow-sm border border-gray-200 mb-8">
     <button @click="activeTab = 'detail'"
         :class="activeTab === 'detail' ? 'bg-[#1a237e] text-white shadow-sm font-semibold' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-semibold'"
         class="flex-1 px-5 py-2.5 rounded-xl text-sm transition-all flex items-center justify-center gap-2">
@@ -135,61 +136,87 @@ if (!empty($order['item_details'])) {
         Surat Perintah Kerja (SPK)
     </button>
 </div>
+{{-- Mobile --}}
+<div class="lg:hidden flex gap-1 bg-white rounded-xl p-1 shadow-sm border border-gray-200 mb-4">
+    <button @click="activeTab = 'detail'"
+        :class="activeTab === 'detail' ? 'bg-[#1a237e] text-white shadow-sm font-semibold' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-semibold'"
+        class="flex-1 px-3 py-2 rounded-lg text-xs transition-all flex items-center justify-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Detail
+    </button>
+    <button @click="activeTab = 'spk'"
+        :class="activeTab === 'spk' ? 'bg-[#1a237e] text-white shadow-sm font-semibold' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 font-semibold'"
+        class="flex-1 px-3 py-2 rounded-lg text-xs transition-all flex items-center justify-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        SPK
+    </button>
+</div>
 
 {{-- 2-COLUMN LAYOUT --}}
-<div class="flex gap-6 items-start">
+<div class="flex flex-col lg:flex-row gap-4 lg:gap-6 items-start">
 
     {{-- ── KOLOM KIRI ─────────────────────────────────────────────── --}}
-    <div class="flex-1 min-w-0">
+    <div class="flex-1 min-w-0 overflow-hidden w-full">
         <div x-show="activeTab === 'detail'" class="space-y-5">
-            {{-- Info Pesanan (Stepper) --}}
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <h3 class="font-semibold text-gray-900 mb-6 flex items-center gap-2 text-sm">
+            {{-- Info Pesanan --}}
+        @php
+            $currentStep = collect($steps)->firstWhere('current', true);
+            $nextStep = collect($steps)->filter(fn($s) => !$s['done'] && !$s['current'])->first();
+            $doneSteps = collect($steps)->filter(fn($s) => $s['done'])->count();
+        @endphp
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 md:p-6">
+            <h3 class="font-semibold text-gray-900 mb-4 md:mb-6 flex items-center gap-2 text-sm">
                 <svg class="w-4 h-4 text-[#1a237e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                 </svg>
                 Info Pesanan
             </h3>
 
-            {{-- Stepper --}}
-            <div class="relative flex items-start">
-                {{-- Connector line (behind circles) --}}
+            {{-- Mobile: Compact Status --}}
+            <div class="md:hidden space-y-2">
+                <div class="flex items-center gap-3 bg-[#1a237e]/5 rounded-xl p-3">
+                    <div class="w-9 h-9 rounded-full bg-[#1a237e] border-4 border-[#1a237e]/20 flex items-center justify-center shadow-md shadow-[#1a237e]/25 shrink-0">
+                        <div class="w-2.5 h-2.5 rounded-full bg-white"></div>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[10px] text-gray-500 uppercase tracking-wide">Status Saat Ini</p>
+                        <p class="text-sm font-bold text-[#1a237e] truncate">{{ $currentStep['label'] ?? '-' }}</p>
+                    </div>
+                    <span class="text-[11px] font-bold text-[#1a237e] bg-[#1a237e]/10 px-2 py-0.5 rounded-full">{{ $doneSteps }}/{{ count($steps) }}</span>
+                </div>
+                @if($nextStep)
+                <div class="flex items-center gap-2 text-xs text-gray-500 pl-1">
+                    <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    <span>Selanjutnya: <span class="font-semibold text-gray-700">{{ $nextStep['label'] }}</span></span>
+                </div>
+                @endif
+            </div>
+
+            {{-- Desktop: Full Stepper --}}
+            <div class="hidden md:block relative">
                 <div class="absolute top-4 left-4 right-4 h-0.5 bg-gray-200 z-0" style="left: calc(100% / {{ count($steps) * 2 }}); right: calc(100% / {{ count($steps) * 2 }});">
                     @php $doneCount = collect($steps)->filter(fn($s)=>$s['done'])->count(); @endphp
                     <div class="h-full bg-[#1a237e] transition-all" style="width: {{ max(0, (($doneCount - 1) / (count($steps) - 1)) * 100) }}%"></div>
                 </div>
-
-                {{-- Steps --}}
                 <div class="relative z-10 flex w-full justify-between">
                 @foreach($steps as $idx => $step)
-                <div class="flex flex-col items-center" style="width: {{ 100 / count($steps) }}%">
-                    {{-- Circle --}}
+                <div class="flex flex-col items-center">
                     @if($step['current'])
-                    <div class="w-8 h-8 rounded-full bg-[#1a237e] border-4 border-[#1a237e]/20 flex items-center justify-center shadow-md shadow-[#1a237e]/25">
+                    <div class="w-8 h-8 rounded-full bg-[#1a237e] border-4 border-[#1a237e]/20 flex items-center justify-center shadow-md shadow-[#1a237e]/25 shrink-0">
                         <div class="w-2.5 h-2.5 rounded-full bg-white"></div>
                     </div>
                     @elseif($step['done'])
-                    <div class="w-8 h-8 rounded-full bg-[#1a237e] flex items-center justify-center">
-                        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                        </svg>
+                    <div class="w-8 h-8 rounded-full bg-[#1a237e] flex items-center justify-center shrink-0">
+                        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                     </div>
                     @else
-                    <div class="w-8 h-8 rounded-full bg-gray-100 border-2 border-gray-300 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-full bg-gray-100 border-2 border-gray-300 flex items-center justify-center shrink-0">
                         <div class="w-2 h-2 rounded-full bg-gray-300"></div>
                     </div>
                     @endif
-
-                    {{-- Label + Date --}}
-                    <div class="mt-3 text-center px-1">
-                        <p class="text-xs font-semibold leading-tight {{ $step['done'] || $step['current'] ? 'text-gray-800' : 'text-gray-400' }}">
-                            {{ $step['label'] }}
-                        </p>
-                        @if($step['date'])
-                        <p class="text-xs text-gray-400 mt-0.5">{{ $step['date'] }}</p>
-                        @else
-                        <p class="text-xs text-gray-300 mt-0.5">—</p>
-                        @endif
+                    <div class="text-center px-1 mt-2">
+                        <p class="text-xs font-semibold leading-tight {{ $step['done'] || $step['current'] ? 'text-gray-800' : 'text-gray-400' }}">{{ $step['label'] }}</p>
+                        <p class="text-xs text-gray-400 mt-0.5">{{ $step['date'] ?? '—' }}</p>
                     </div>
                 </div>
                 @endforeach
@@ -255,7 +282,7 @@ if (!empty($order['item_details'])) {
                     </button>
                 </div>
             </h3>
-            <div class="grid grid-cols-3 gap-x-8 gap-y-2.5 text-sm mb-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 md:gap-x-8 gap-y-2.5 text-sm mb-4">
                 <div><span class="text-gray-500 text-xs">Jenis</span><div class="font-medium text-gray-900">{{ $order['product']['type'] }}</div></div>
                 <div><span class="text-gray-500 text-xs">Nama Tim</span><div class="font-medium text-gray-900" x-text="form.team_name || 'Jersey Custom'">{{ $order['product']['team_name'] ?? 'Jersey Custom' }}</div></div>
                 <div><span class="text-gray-500 text-xs">Nama Artikel</span><div class="font-medium text-gray-900" :class="{ 'text-gray-400 italic': !form.nama_artikel }" x-text="form.nama_artikel || 'Belum diisi'">{{ $order['product']['nama_artikel'] ?? '-' }}</div></div>
@@ -583,7 +610,7 @@ if (!empty($order['item_details'])) {
                 <svg class="w-4 h-4 text-[#1a237e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 Logo Tim
             </h3>
-            <div class="grid grid-cols-4 gap-4 mb-8">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
                 @php $logoIdx = 0; @endphp
                 @forelse(collect($order['design_files'])->where('type', 'logo')->reject(fn($f) => in_array($f['role'] ?? '', $spkRoles)) as $f)
                 @php
@@ -620,7 +647,7 @@ if (!empty($order['item_details'])) {
                 <svg class="w-4 h-4 text-[#1a237e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 Referensi Desain
             </h3>
-            <div class="grid grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 @php $desainIdx = 0; @endphp
                 @forelse(collect($order['design_files'])->where('type', 'design')->reject(fn($f) => in_array($f['role'] ?? '', $spkRoles)) as $f)
 
@@ -738,7 +765,7 @@ if (!empty($order['item_details'])) {
                 </div>
 
                 {{-- Specs Grid --}}
-                <div class="grid grid-cols-3 gap-x-8 gap-y-3.5 text-sm">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 sm:gap-x-8 gap-y-3.5 text-sm">
                     <div><span class="text-gray-500 text-xs">Jenis</span><div class="font-semibold text-gray-900">Jersey Custom</div></div>
                     <div><span class="text-gray-500 text-xs">Nama Tim</span><div class="font-semibold text-gray-900">{{ $order['product']['team_name'] ?? 'Jersey Custom' }}</div></div>
                     <div><span class="text-gray-500 text-xs">Nama Artikel</span><div class="font-semibold text-gray-900">{{ $order['product']['nama_artikel'] ?? '-' }}</div></div>
@@ -797,24 +824,24 @@ if (!empty($order['item_details'])) {
 
                 <div class="flex flex-wrap gap-4">
                     <template x-if="mockupDepan">
-                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-64 overflow-hidden cursor-zoom-in"
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-full sm:w-64 overflow-hidden cursor-zoom-in"
                              @click="window.openPhotoSwipe?.([{path: mockupDepan.url, name: 'Mockup Depan'}], 0)">
                             <img :src="mockupDepan.url" class="w-full h-full object-cover">
                         </div>
                     </template>
                     <template x-if="!mockupDepan">
-                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-64 aspect-[3/4] flex items-center justify-center">
+                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-full sm:w-64 aspect-[3/4] flex items-center justify-center">
                             <p class="text-xs text-gray-400">Belum ada mockup depan</p>
                         </div>
                     </template>
                     <template x-if="mockupBelakang">
-                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-64 overflow-hidden cursor-zoom-in"
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-full sm:w-64 overflow-hidden cursor-zoom-in"
                              @click="window.openPhotoSwipe?.([{path: mockupBelakang.url, name: 'Mockup Belakang'}], 0)">
                             <img :src="mockupBelakang.url" class="w-full h-full object-cover">
                         </div>
                     </template>
                     <template x-if="!mockupBelakang">
-                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-64 aspect-[3/4] flex items-center justify-center">
+                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-full sm:w-64 aspect-[3/4] flex items-center justify-center">
                             <p class="text-xs text-gray-400">Belum ada mockup belakang</p>
                         </div>
                     </template>
@@ -830,24 +857,24 @@ if (!empty($order['item_details'])) {
 
                 <div class="flex flex-wrap gap-4">
                     <template x-if="detailDepan">
-                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-64 overflow-hidden cursor-zoom-in"
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-full sm:w-64 overflow-hidden cursor-zoom-in"
                              @click="window.openPhotoSwipe?.([{path: detailDepan.url, name: 'Detail Depan'}], 0)">
                             <img :src="detailDepan.url" class="w-full h-full object-cover">
                         </div>
                     </template>
                     <template x-if="!detailDepan">
-                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-64 aspect-[3/4] flex items-center justify-center">
+                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-full sm:w-64 aspect-[3/4] flex items-center justify-center">
                             <p class="text-xs text-gray-400">Belum ada detail depan</p>
                         </div>
                     </template>
                     <template x-if="detailBelakang">
-                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-64 overflow-hidden cursor-zoom-in"
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl w-full sm:w-64 overflow-hidden cursor-zoom-in"
                              @click="window.openPhotoSwipe?.([{path: detailBelakang.url, name: 'Detail Belakang'}], 0)">
                             <img :src="detailBelakang.url" class="w-full h-full object-cover">
                         </div>
                     </template>
                     <template x-if="!detailBelakang">
-                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-64 aspect-[3/4] flex items-center justify-center">
+                        <div class="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl w-full sm:w-64 aspect-[3/4] flex items-center justify-center">
                             <p class="text-xs text-gray-400">Belum ada detail belakang</p>
                         </div>
                     </template>
@@ -862,7 +889,7 @@ if (!empty($order['item_details'])) {
                 </h3>
                 
                 <template x-if="sponsorFiles.length > 0">
-                    <div class="grid grid-cols-4 gap-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <template x-for="(file, idx) in sponsorFiles" :key="file.path">
                             <div class="bg-gray-50 border border-gray-200 rounded-xl aspect-square overflow-hidden cursor-zoom-in"
                                  @click="window.openPhotoSwipe?.(sponsorFiles, idx)">
@@ -883,7 +910,7 @@ if (!empty($order['item_details'])) {
     </div>
 
     {{-- ── KOLOM KANAN ─────────────────────────────────────────────── --}}
-    <div class="w-80 shrink-0 space-y-5">
+    <div class="w-full lg:w-80 shrink-0 space-y-5">
 
         {{-- Pembayaran --}}
         @php
