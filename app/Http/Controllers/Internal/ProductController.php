@@ -16,11 +16,24 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $categories = Category::all()->map(function ($cat) {
+        $allCategories = Category::with('parent')->get();
+        $categories = $allCategories->map(function ($cat) {
+            $mySchema = $cat->attributes_schema ? (is_string($cat->attributes_schema) ? json_decode($cat->attributes_schema, true) : $cat->attributes_schema) : [];
+            
+            if ($cat->parent) {
+                $parentSchema = $cat->parent->attributes_schema ? (is_string($cat->parent->attributes_schema) ? json_decode($cat->parent->attributes_schema, true) : $cat->parent->attributes_schema) : [];
+                // Filter parent schema: only keep attributes where apply_to_catalog is true (or undefined, for backward compatibility)
+                $parentFiltered = array_filter($parentSchema, function($attr) {
+                    return !isset($attr['apply_to_catalog']) || $attr['apply_to_catalog'] === true;
+                });
+                // Merge: parent first, then child (so child can override if ID is same, though usually they don't)
+                $mySchema = array_merge(array_values($parentFiltered), $mySchema);
+            }
+
             return [
                 'id'   => $cat->id,
                 'name' => $cat->name,
-                'attributes_schema' => $cat->attributes_schema ? (is_string($cat->attributes_schema) ? json_decode($cat->attributes_schema, true) : $cat->attributes_schema) : [],
+                'attributes_schema' => $mySchema,
             ];
         })->values()->toArray();
 

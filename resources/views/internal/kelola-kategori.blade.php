@@ -241,19 +241,37 @@
                                                 placeholder="contoh: Jenis Kerah">
                                         </div>
                                     </div>
-
                                     <div class="grid grid-cols-3 gap-3 mb-3">
-                                        <div>
+                                        <div class="col-span-3 sm:col-span-1">
                                             <label class="block text-xs font-medium text-gray-500 mb-1">Tipe</label>
                                             <select x-model="attr.type" class="w-full rounded-lg border-gray-300 text-xs px-3 py-2 focus:ring-purple-500 focus:border-purple-500">
                                                 <option value="select">Select (Dropdown)</option>
                                             </select>
                                         </div>
-                                        <div class="flex items-end pb-2">
-                                            <label class="flex items-center gap-2 cursor-pointer">
-                                                <input type="checkbox" x-model="attr.required" class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
-                                                <span class="text-xs text-gray-600">Wajib diisi</span>
-                                            </label>
+                                        <div class="flex items-center gap-2 col-span-3 sm:col-span-1 mt-6">
+                                            <input type="checkbox" x-model="attr.required" class="rounded border-purple-500 text-purple-600 focus:ring-purple-500 h-4 w-4">
+                                            <span class="text-xs font-medium text-gray-700">Wajib Diisi</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 col-span-3 sm:col-span-1 mt-6">
+                                            <input type="checkbox" x-model="attr.apply_to_catalog" class="rounded border-blue-500 text-blue-600 focus:ring-blue-500 h-4 w-4">
+                                            <span class="text-xs font-medium text-gray-700" title="Terapkan atribut ini ke produk Katalog (Sub-kategori)">Terapkan ke Katalog</span>
+                                        </div>
+                                    </div>
+
+                                    {{-- Row 2: Depends On & Reference Image --}}
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3 rounded-lg border border-gray-200 bg-white">
+                                        {{-- System Tag --}}
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-500 mb-1">Tag</label>
+                                            <select x-model="attr.system_tag"
+                                                class="w-full rounded-lg border-gray-300 text-xs px-3 py-2 focus:ring-purple-500 focus:border-purple-500">
+                                                <option value="">— Tidak ada —</option>
+                                                <option value="is_fabric_type">Bahan</option>
+                                                <option value="is_collar_type">Kerah</option>
+                                                <option value="is_cut_type">Potongan</option>
+                                                <option value="is_sleeve_joint_type">Lengan Jahitan</option>
+                                                <option value="is_sleeve_type">Lengan</option>
+                                            </select>
                                         </div>
                                         <div class="flex items-end justify-end pb-1">
                                             <button @click="removeAttr(idx)"
@@ -264,19 +282,6 @@
                                         </div>
                                     </div>
 
-                                    {{-- System Tag --}}
-                                    <div class="mb-3">
-                                        <label class="block text-xs font-medium text-gray-500 mb-1">Tag</label>
-                                        <select x-model="attr.system_tag"
-                                            class="rounded-lg border-gray-300 text-xs px-3 py-2 focus:ring-purple-500 focus:border-purple-500">
-                                            <option value="">— Tidak ada —</option>
-                                            <option value="is_fabric_type">Bahan</option>
-                                            <option value="is_collar_type">Kerah</option>
-                                            <option value="is_cut_type">Potongan</option>
-                                            <option value="is_sleeve_joint_type">Lengan Jahitan</option>
-                                            <option value="is_sleeve_type">Lengan</option>
-                                        </select>
-                                    </div>
 
                                     {{-- Depends On --}}
                                     <div class="mb-3">
@@ -575,6 +580,7 @@ function kategoriApp() {
                     name:             attr.name || '',
                     type:             attr.type || 'select',
                     required:         attr.required !== false,
+                    apply_to_catalog: attr.apply_to_catalog !== false,
                     reference_image:  attr.reference_image || '',
                     system_tag:       attr.system_tag || '',
                     options:          (attr.options || []).map(o => ({ 
@@ -601,6 +607,7 @@ function kategoriApp() {
                 name: '',
                 type: 'select',
                 required: true,
+                apply_to_catalog: true,
                 reference_image: '',
                 system_tag: '',
                 options: [{ value: '', price_modifier: 0, sleeve: '' }],
@@ -666,6 +673,7 @@ function kategoriApp() {
                     name:           attr.name.trim(),
                     type:           attr.type,
                     required:       !!attr.required,
+                    apply_to_catalog: !!attr.apply_to_catalog,
                     reference_image: attr.reference_image || '',
                     system_tag:     attr.system_tag || '',
                     options:        (attr.options || []).filter(o => o.value.trim()).map(o => ({ 

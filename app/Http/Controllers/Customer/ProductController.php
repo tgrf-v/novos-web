@@ -84,12 +84,20 @@ class ProductController extends Controller
         ];
 
         $attributesSchema = [];
-        if ($product->category && $product->category->attributes_schema) {
-            $schema = is_string($product->category->attributes_schema) 
-                ? json_decode($product->category->attributes_schema, true) 
-                : $product->category->attributes_schema;
-            if (is_array($schema)) {
-                foreach ($schema as $attr) {
+        if ($product->category) {
+            $cat = $product->category;
+            $mySchema = $cat->attributes_schema ? (is_string($cat->attributes_schema) ? json_decode($cat->attributes_schema, true) : $cat->attributes_schema) : [];
+            
+            if ($cat->parent) {
+                $parentSchema = $cat->parent->attributes_schema ? (is_string($cat->parent->attributes_schema) ? json_decode($cat->parent->attributes_schema, true) : $cat->parent->attributes_schema) : [];
+                $parentFiltered = array_filter($parentSchema, function($attr) {
+                    return !isset($attr['apply_to_catalog']) || $attr['apply_to_catalog'] === true;
+                });
+                $mySchema = array_merge(array_values($parentFiltered), $mySchema);
+            }
+
+            if (is_array($mySchema)) {
+                foreach ($mySchema as $attr) {
                     $attributesSchema[$attr['id']] = $attr;
                 }
             }
