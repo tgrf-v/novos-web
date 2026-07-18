@@ -364,7 +364,7 @@ function timCarouselData(team) {
                     </div>
                     <div class="mt-3 text-center">
                         <h3 class="text-gray-900 text-sm font-bold">{{ $t->fullname ?? $t->name }}</h3>
-                        <p class="text-gray-500 text-xs mt-0.5">{{ $t->role->name }}</p>
+                        <p class="text-gray-500 text-xs mt-0.5">{{ $t->public_title ?? $t->role->name }}</p>
                     </div>
                 </div>
                 @empty
@@ -376,7 +376,7 @@ function timCarouselData(team) {
         </div>
 
         {{-- Mobile: Center Mode Carousel --}}
-        <div x-data="timCarouselData({{ json_encode($tim->map(fn($t) => ['name' => $t->fullname ?? $t->name, 'role' => $t->role->name, 'avatar' => $t->avatar ? asset('storage/' . $t->avatar) : null])->values()->toArray()) }})" x-init="initCarousel()" class="md:hidden">
+        <div x-data="timCarouselData({{ json_encode($tim->map(fn($t) => ['name' => $t->fullname ?? $t->name, 'role' => $t->public_title ?? $t->role->name, 'avatar' => $t->avatar ? asset('storage/' . $t->avatar) : null])->values()->toArray()) }})" x-init="initCarousel()" class="md:hidden">
             <div x-ref="carouselWrap" class="relative overflow-hidden px-2" style="touch-action: pan-y; cursor: grab;">
                 <div class="flex transition-transform duration-500 ease-out" :style="'transform: translateX(' + (22.5 - (currentSlide * 55)) + '%)'">
                     <template x-for="(t, i) in team" :key="i">

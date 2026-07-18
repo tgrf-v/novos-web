@@ -167,6 +167,10 @@
                     </div>
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Jabatan Publik <span class="text-gray-400 text-xs">(Opsional)</span></label>
+                    <input type="text" name="public_title" id="tambahPublicTitle" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all" placeholder="Contoh: Owner, Founder, Head of Design">
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Foto Profil</label>
                     <input type="file" class="filepond" name="avatar" accept="image/png,image/jpeg" data-max-file-size="5MB" data-allow-multiple="false">
                     <p class="text-xs text-gray-400 mt-1">PNG/JPG max 5MB</p>
@@ -236,6 +240,10 @@
                     </div>
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Jabatan Publik <span class="text-gray-400 text-xs">(Opsional)</span></label>
+                    <input type="text" name="public_title" id="editPublicTitle" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:border-[#1a237e] transition-all" placeholder="Contoh: Owner, Founder, Head of Design">
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Foto Profil</label>
                     <div class="flex items-center gap-4 mb-3">
                         <div id="editAvatarPreview" class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-xs overflow-hidden shrink-0 border border-gray-200">
@@ -282,6 +290,10 @@
                 <div class="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-xl">
                     <span class="text-sm text-gray-500">Role</span>
                     <span id="detailRole"><x-badge type="blue">Admin</x-badge></span>
+                </div>
+                <div class="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-xl">
+                    <span class="text-sm text-gray-500">Jabatan Publik</span>
+                    <span class="text-sm font-medium text-gray-900" id="detailPublicTitle">-</span>
                 </div>
                 <div class="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-xl">
                     <span class="text-sm text-gray-500">Status</span>
@@ -479,6 +491,7 @@
             document.getElementById('detailEmail').textContent = user.email;
             document.getElementById('detailUsername').textContent = '@' + user.username;
             document.getElementById('detailRole').innerHTML = `<x-badge type="${roleBadgeColor(user.role)}">${user.role}</x-badge>`;
+            document.getElementById('detailPublicTitle').textContent = user.public_title || '-';
             document.getElementById('detailStatus').innerHTML = `<x-badge type="${user.status === 'Nonaktif' ? 'red' : 'green'}">${user.status}</x-badge>`;
             document.getElementById('detailTanggal').textContent = user.created_at;
             openModal('modalDetail');
@@ -486,6 +499,7 @@
 
         function resetTambahForm() {
             document.getElementById('formTambah').reset();
+            document.getElementById('tambahPublicTitle').value = '';
             const pond = FilePond.find(document.querySelector('#formTambah .filepond'));
             if (pond) pond.removeFiles();
         }
@@ -496,6 +510,7 @@
             document.getElementById('editId').value = user.id;
             document.getElementById('editNama').value = user.name;
             document.getElementById('editEmail').value = user.email;
+            document.getElementById('editPublicTitle').value = user.public_title || '';
             document.getElementById('editPassword').value = '';
             document.getElementById('editPasswordConfirmation').value = '';
             const roleSelect = document.getElementById('editRole');

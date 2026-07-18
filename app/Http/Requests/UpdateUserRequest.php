@@ -21,6 +21,7 @@ class UpdateUserRequest extends FormRequest
             'password' => 'nullable|string|min:6|confirmed',
             'role'     => 'required|string|in:Super Admin,Manager,Admin,Design,Produksi',
             'avatar'   => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'public_title' => 'nullable|string|max:100',
             'status'   => 'nullable|string|in:Aktif,Nonaktif',
         ];
     }
