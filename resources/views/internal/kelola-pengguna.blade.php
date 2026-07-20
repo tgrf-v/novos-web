@@ -388,7 +388,7 @@
             renderTable(filteredUsers);
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        function initKelolaPengguna() {
             renderStats();
             renderTable(__users);
             document.getElementById('searchInput').addEventListener('input', applyFilters);
@@ -451,7 +451,13 @@
                     }
                 });
             }
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initKelolaPengguna);
+        } else {
+            initKelolaPengguna();
+        }
 
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
