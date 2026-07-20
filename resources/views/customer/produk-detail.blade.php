@@ -734,7 +734,7 @@ function produkDetail() {
             if (!this.validate()) return;
             const state = {
                 mode: 'katalog_direct',
-                step: 3,
+                step: 2,
                 subStep: 1,
                 jenis: 'katalog',
                 prioritas: 'normal',
