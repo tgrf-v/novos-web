@@ -317,8 +317,8 @@
 
     {{-- Scripts --}}
     <script>
-        const __users = @json($users);
-        let filteredUsers = [...__users];
+        var __users = @json($users);
+        var filteredUsers = [...__users];
 
         function renderStats() {
             document.getElementById('totalUsers').textContent = __users.length;
