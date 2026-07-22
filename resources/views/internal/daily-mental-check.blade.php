@@ -242,10 +242,10 @@
                                     </div>
                                 </div>
 
-                                {{-- Card List Pertanyaan (Mobile Only) --}}
-                                <div class="block md:hidden space-y-3">
+                                {{-- Single Master Card Container Pertanyaan (Mobile Only) --}}
+                                <div class="block md:hidden bg-white rounded-2xl shadow-sm border border-gray-200/80 overflow-hidden divide-y divide-gray-100">
                                     <template x-for="(q, i) in questions" :key="q.id">
-                                        <div class="bg-white rounded-2xl shadow-sm p-4 border border-gray-100 space-y-3">
+                                        <div class="p-4 space-y-3">
                                             <div class="flex items-start gap-2.5">
                                                 <span class="w-6 h-6 rounded-full bg-[#1a237e]/10 text-[#1a237e] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5" x-text="q.id"></span>
                                                 <p class="text-sm font-semibold text-gray-800 leading-snug" x-text="q.text"></p>
@@ -569,38 +569,42 @@
                     </div>
                 </div>
 
-                {{-- Mobile Card List View for Checklist --}}
-                <div class="block md:hidden space-y-4">
-                    <div class="px-1 pt-1">
+                {{-- Single Master Card Container Checklist (Mobile Only) --}}
+                <div class="block md:hidden bg-white rounded-2xl shadow-sm border border-gray-200/80 overflow-hidden">
+                    <div class="px-4 py-3.5 bg-gray-50/80 border-b border-gray-100">
                         <h3 class="font-bold text-gray-900 text-sm">Checklist Pelaksanaan SMART-WORK</h3>
                     </div>
-                    <template x-for="stageName in ['STOP', 'TAKE A BREATH', 'OBSERVE', 'PROCEED', 'AKTIVITAS PENDUKUNG']" :key="stageName">
-                        <div class="space-y-2">
-                            <div class="px-1 pt-2">
-                                <span class="text-xs font-bold text-[#1a237e] uppercase tracking-wider" x-text="stageName === 'AKTIVITAS PENDUKUNG' ? 'Tahap 5 – Aktivitas Pendukung' : 'Tahap – ' + stageName"></span>
-                            </div>
-                            <template x-for="q in microChecklist.filter(c => c.stage === stageName)" :key="q.id">
-                                <div class="bg-white rounded-2xl shadow-sm p-3.5 border border-gray-100 flex items-center justify-between gap-3">
-                                    <div class="flex items-start gap-2 flex-1 min-w-0">
-                                        <span class="w-5 h-5 rounded-full bg-[#1a237e]/10 text-[#1a237e] text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5" x-text="q.id"></span>
-                                        <p class="text-xs font-semibold text-gray-800 leading-snug" x-text="q.text"></p>
-                                    </div>
-                                    <div class="flex items-center gap-1.5 shrink-0">
-                                        <button type="button" @click="microForm.checklist[q.id] = 1"
-                                            :class="microForm.checklist[q.id] === 1 ? 'bg-emerald-600 text-white shadow-sm font-bold' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 font-medium'"
-                                            class="px-3 py-1.5 rounded-lg text-xs transition-all">
-                                            Ya
-                                        </button>
-                                        <button type="button" @click="microForm.checklist[q.id] = 0"
-                                            :class="microForm.checklist[q.id] === 0 ? 'bg-rose-500 text-white shadow-sm font-bold' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 font-medium'"
-                                            class="px-3 py-1.5 rounded-lg text-xs transition-all">
-                                            Tidak
-                                        </button>
-                                    </div>
+                    <div class="divide-y divide-gray-100">
+                        <template x-for="stageName in ['STOP', 'TAKE A BREATH', 'OBSERVE', 'PROCEED', 'AKTIVITAS PENDUKUNG']" :key="stageName">
+                            <div>
+                                <div class="px-4 py-2 bg-indigo-50/40 border-y border-indigo-100/50">
+                                    <span class="text-[11px] font-bold text-[#1a237e] uppercase tracking-wider" x-text="stageName === 'AKTIVITAS PENDUKUNG' ? 'Tahap 5 – Aktivitas Pendukung' : 'Tahap – ' + stageName"></span>
                                 </div>
-                            </template>
-                        </div>
-                    </template>
+                                <div class="divide-y divide-gray-100">
+                                    <template x-for="q in microChecklist.filter(c => c.stage === stageName)" :key="q.id">
+                                        <div class="p-3.5 flex items-center justify-between gap-3">
+                                            <div class="flex items-start gap-2 flex-1 min-w-0">
+                                                <span class="w-5 h-5 rounded-full bg-[#1a237e]/10 text-[#1a237e] text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5" x-text="q.id"></span>
+                                                <p class="text-xs font-semibold text-gray-800 leading-snug" x-text="q.text"></p>
+                                            </div>
+                                            <div class="flex items-center gap-1.5 shrink-0">
+                                                <button type="button" @click="microForm.checklist[q.id] = 1"
+                                                    :class="microForm.checklist[q.id] === 1 ? 'bg-emerald-600 text-white shadow-sm font-bold' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 font-medium'"
+                                                    class="px-3 py-1.5 rounded-lg text-xs transition-all">
+                                                    Ya
+                                                </button>
+                                                <button type="button" @click="microForm.checklist[q.id] = 0"
+                                                    :class="microForm.checklist[q.id] === 0 ? 'bg-rose-500 text-white shadow-sm font-bold' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 font-medium'"
+                                                    class="px-3 py-1.5 rounded-lg text-xs transition-all">
+                                                    Tidak
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
                 </div>
 
                 {{-- D. Evaluasi Manfaat (Desktop Table) --}}
@@ -667,76 +671,77 @@
                     </div>
                 </div>
 
-                {{-- Mobile Card View for Evaluasi Manfaat --}}
-                <div class="block md:hidden space-y-3">
-                    <div class="px-1 pt-2">
+                {{-- Single Master Card Container Evaluasi (Mobile Only) --}}
+                <div class="block md:hidden bg-white rounded-2xl shadow-sm border border-gray-200/80 overflow-hidden">
+                    <div class="px-4 py-3 bg-gray-50/80 border-b border-gray-100">
                         <h4 class="font-bold text-gray-900 text-sm">Evaluasi Manfaat Setelah Micro-Break</h4>
                         <p class="text-xs text-gray-500 mt-0.5">Bagaimana kondisi Anda setelah melakukan micro-break?</p>
                     </div>
-                    
-                    {{-- Item 1: Stres --}}
-                    <div class="bg-white rounded-2xl shadow-sm p-4 border border-gray-100 space-y-2.5">
-                        <p class="text-xs font-bold text-gray-800">1. Tingkat stres saya</p>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button type="button" @click="microForm.eval.stres = 'lebih_baik'"
-                                :class="microForm.eval.stres === 'lebih_baik' ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
-                                class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
-                                Lebih Baik
-                            </button>
-                            <button type="button" @click="microForm.eval.stres = 'sama'"
-                                :class="microForm.eval.stres === 'sama' ? 'bg-blue-600 text-white shadow-sm ring-2 ring-blue-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
-                                class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
-                                Sama
-                            </button>
-                            <button type="button" @click="microForm.eval.stres = 'lebih_buruk'"
-                                :class="microForm.eval.stres === 'lebih_buruk' ? 'bg-rose-500 text-white shadow-sm ring-2 ring-rose-500 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
-                                class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
-                                Lebih Buruk
-                            </button>
+                    <div class="divide-y divide-gray-100">
+                        {{-- Item 1: Stres --}}
+                        <div class="p-4 space-y-2.5">
+                            <p class="text-xs font-bold text-gray-800">1. Tingkat stres saya</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" @click="microForm.eval.stres = 'lebih_baik'"
+                                    :class="microForm.eval.stres === 'lebih_baik' ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
+                                    class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
+                                    Lebih Baik
+                                </button>
+                                <button type="button" @click="microForm.eval.stres = 'sama'"
+                                    :class="microForm.eval.stres === 'sama' ? 'bg-blue-600 text-white shadow-sm ring-2 ring-blue-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
+                                    class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
+                                    Sama
+                                </button>
+                                <button type="button" @click="microForm.eval.stres = 'lebih_buruk'"
+                                    :class="microForm.eval.stres === 'lebih_buruk' ? 'bg-rose-500 text-white shadow-sm ring-2 ring-rose-500 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
+                                    class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
+                                    Lebih Buruk
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- Item 2: Fokus --}}
-                    <div class="bg-white rounded-2xl shadow-sm p-4 border border-gray-100 space-y-2.5">
-                        <p class="text-xs font-bold text-gray-800">2. Tingkat fokus saya</p>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button type="button" @click="microForm.eval.fokus = 'lebih_baik'"
-                                :class="microForm.eval.fokus === 'lebih_baik' ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
-                                class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
-                                Lebih Baik
-                            </button>
-                            <button type="button" @click="microForm.eval.fokus = 'sama'"
-                                :class="microForm.eval.fokus === 'sama' ? 'bg-blue-600 text-white shadow-sm ring-2 ring-blue-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
-                                class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
-                                Sama
-                            </button>
-                            <button type="button" @click="microForm.eval.fokus = 'lebih_buruk'"
-                                :class="microForm.eval.fokus === 'lebih_buruk' ? 'bg-rose-500 text-white shadow-sm ring-2 ring-rose-500 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
-                                class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
-                                Lebih Buruk
-                            </button>
+                        {{-- Item 2: Fokus --}}
+                        <div class="p-4 space-y-2.5">
+                            <p class="text-xs font-bold text-gray-800">2. Tingkat fokus saya</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" @click="microForm.eval.fokus = 'lebih_baik'"
+                                    :class="microForm.eval.fokus === 'lebih_baik' ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
+                                    class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
+                                    Lebih Baik
+                                </button>
+                                <button type="button" @click="microForm.eval.fokus = 'sama'"
+                                    :class="microForm.eval.fokus === 'sama' ? 'bg-blue-600 text-white shadow-sm ring-2 ring-blue-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
+                                    class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
+                                    Sama
+                                </button>
+                                <button type="button" @click="microForm.eval.fokus = 'lebih_buruk'"
+                                    :class="microForm.eval.fokus === 'lebih_buruk' ? 'bg-rose-500 text-white shadow-sm ring-2 ring-rose-500 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
+                                    class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
+                                    Lebih Buruk
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- Item 3: Kenyamanan --}}
-                    <div class="bg-white rounded-2xl shadow-sm p-4 border border-gray-100 space-y-2.5">
-                        <p class="text-xs font-bold text-gray-800">3. Tingkat kenyamanan bekerja saya</p>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button type="button" @click="microForm.eval.kenyamanan = 'lebih_baik'"
-                                :class="microForm.eval.kenyamanan === 'lebih_baik' ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
-                                class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
-                                Lebih Baik
-                            </button>
-                            <button type="button" @click="microForm.eval.kenyamanan = 'sama'"
-                                :class="microForm.eval.kenyamanan === 'sama' ? 'bg-blue-600 text-white shadow-sm ring-2 ring-blue-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
-                                class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
-                                Sama
-                            </button>
-                            <button type="button" @click="microForm.eval.kenyamanan = 'lebih_buruk'"
-                                :class="microForm.eval.kenyamanan === 'lebih_buruk' ? 'bg-rose-500 text-white shadow-sm ring-2 ring-rose-500 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
-                                class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
-                                Lebih Buruk
-                            </button>
+                        {{-- Item 3: Kenyamanan --}}
+                        <div class="p-4 space-y-2.5">
+                            <p class="text-xs font-bold text-gray-800">3. Tingkat kenyamanan bekerja saya</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" @click="microForm.eval.kenyamanan = 'lebih_baik'"
+                                    :class="microForm.eval.kenyamanan === 'lebih_baik' ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
+                                    class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
+                                    Lebih Baik
+                                </button>
+                                <button type="button" @click="microForm.eval.kenyamanan = 'sama'"
+                                    :class="microForm.eval.kenyamanan === 'sama' ? 'bg-blue-600 text-white shadow-sm ring-2 ring-blue-600 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
+                                    class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
+                                    Sama
+                                </button>
+                                <button type="button" @click="microForm.eval.kenyamanan = 'lebih_buruk'"
+                                    :class="microForm.eval.kenyamanan === 'lebih_buruk' ? 'bg-rose-500 text-white shadow-sm ring-2 ring-rose-500 font-bold' : 'bg-gray-50 text-gray-700 border border-gray-200 font-medium'"
+                                    class="py-2.5 px-1 rounded-xl text-xs text-center transition-all">
+                                    Lebih Buruk
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
