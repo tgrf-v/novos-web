@@ -170,21 +170,36 @@
                         </div>
                     </div>
                 </template>
-                <div class="flex items-center justify-end gap-2.5">
+                <div class="flex items-center justify-end gap-3">
                     <button type="button" @click="modalOpen = false" class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-xl transition-colors">Batal</button>
-                    <template x-if="!editId">
-                        <button type="button" @click="simpan(true)" :disabled="submitting" title="Simpan & Tambah Lagi" class="px-3 py-2 bg-indigo-50 border border-indigo-200 text-[#1a237e] rounded-xl hover:bg-indigo-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
-                            <svg x-show="submittingAndAddAnother" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                            <svg x-show="!submittingAndAddAnother" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
+
+                    {{-- Split Button Group --}}
+                    <div class="inline-flex rounded-xl shadow-sm bg-[#1a237e] text-white">
+                        <button type="submit" @click="simpan(false)" :disabled="submitting" 
+                                class="px-4 py-2 text-sm font-semibold hover:bg-[#283593] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                :class="!editId ? 'rounded-l-xl' : 'rounded-xl'">
+                            <svg x-show="submitting && !submittingAndAddAnother" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                            <span x-text="submitting && !submittingAndAddAnother ? 'Menyimpan...' : 'Simpan'"></span>
                         </button>
-                    </template>
-                    <button type="submit" @click="simpan(false)" :disabled="submitting" class="px-4 py-2 bg-[#1a237e] text-white text-sm font-semibold rounded-xl hover:bg-[#283593] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-                        <svg x-show="submitting && !submittingAndAddAnother" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                        <span x-text="submitting && !submittingAndAddAnother ? 'Menyimpan...' : 'Simpan'"></span>
-                    </button>
+
+                        <template x-if="!editId">
+                            <button type="button" @click="simpan(true)" :disabled="submitting" 
+                                    title="Simpan & Tambah Lagi" 
+                                    class="px-2.5 py-2 border-l border-white/20 rounded-r-xl hover:bg-[#283593] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center group">
+                                <svg x-show="submittingAndAddAnother" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                                <template x-if="!submittingAndAddAnother">
+                                    <div class="flex items-center gap-0.5">
+                                        <svg class="w-3.5 h-3.5 text-blue-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M20 6L9 17l-5-5"/>
+                                        </svg>
+                                        <svg class="w-3.5 h-3.5 -ml-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 5v14M5 12h14"/>
+                                        </svg>
+                                    </div>
+                                </template>
+                            </button>
+                        </template>
+                    </div>
                 </div>
             </form>
         </div>
