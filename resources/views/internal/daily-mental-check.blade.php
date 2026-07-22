@@ -32,6 +32,8 @@
         </template>
     </div>
 
+
+
     {{-- ========== TAB 1: DASHBOARD ========== --}}
     <div x-show="activeTab === 0" x-cloak x-transition:enter.duration.300 class="space-y-6">
         {{-- Row 1: Poster + Pesan Motivasi --}}
@@ -203,7 +205,7 @@
 
                         {{-- Form --}}
                         <template x-if="!submitted">
-                            <div class="space-y-6 pb-20 md:pb-0">
+                            <div class="space-y-6">
                                 {{-- Tabel Pertanyaan (Desktop Only) --}}
                                 <div class="hidden md:block bg-white rounded-2xl shadow-sm overflow-hidden">
                                     <div class="overflow-x-auto">
@@ -291,23 +293,13 @@
                                     </template>
                                 </div>
 
-                                {{-- Submit (Desktop Inline) --}}
-                                <div class="hidden md:block text-center">
+                                {{-- Submit --}}
+                                <div class="text-center pt-2">
                                     <button @click="submitForm()" :disabled="!allAnswered || loading"
                                         :class="allAnswered && !loading ? 'bg-[#1a237e] hover:bg-[#283593] cursor-pointer' : 'bg-gray-300 cursor-not-allowed'"
-                                        class="px-8 py-3 text-white rounded-xl font-semibold transition-colors shadow-sm inline-flex items-center gap-2">
+                                        class="w-full sm:w-auto px-8 py-3 text-white rounded-xl font-semibold transition-colors shadow-sm inline-flex items-center justify-center gap-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                                         Kirim Jawaban
-                                    </button>
-                                </div>
-
-                                {{-- Submit (Mobile Sticky Bottom Bar) --}}
-                                <div class="fixed bottom-0 left-0 right-0 p-3 bg-white/95 backdrop-blur-md border-t border-gray-200 z-30 block md:hidden shadow-lg">
-                                    <button @click="submitForm()" :disabled="!allAnswered || loading"
-                                        :class="allAnswered && !loading ? 'bg-[#1a237e] hover:bg-[#283593] cursor-pointer' : 'bg-gray-300 cursor-not-allowed'"
-                                        class="w-full py-3 text-white rounded-xl font-bold transition-colors shadow-sm inline-flex items-center justify-center gap-2 text-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                                        <span>Kirim Jawaban</span>
                                     </button>
                                 </div>
                             </div>
@@ -401,7 +393,7 @@
 
         {{-- Form --}}
         <template x-if="!microSubmitted">
-            <div class="space-y-6 pb-20 md:pb-0">
+            <div class="space-y-6">
                 {{-- A. Checklist Pelaksanaan SMART-WORK Micro-Break (Desktop Table) --}}
                 <div class="hidden md:block bg-white rounded-2xl shadow-sm overflow-hidden">
                     <div class="px-6 pt-5 pb-2">
@@ -767,23 +759,13 @@
             </div>
     </div>
 
-                {{-- Submit (Desktop Inline) --}}
-                <div class="hidden md:block text-center">
+                {{-- Submit --}}
+                <div class="text-center pt-2">
                     <button @click="submitMicroForm()" :disabled="!allChecklistAnswered || !allEvalAnswered || loading"
                         :class="allChecklistAnswered && allEvalAnswered && !loading ? 'bg-[#1a237e] hover:bg-[#283593] cursor-pointer' : 'bg-gray-300 cursor-not-allowed'"
-                        class="px-8 py-3 text-white rounded-xl font-semibold transition-colors shadow-sm inline-flex items-center gap-2">
+                        class="w-full sm:w-auto px-8 py-3 text-white rounded-xl font-semibold transition-colors shadow-sm inline-flex items-center justify-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                         Kirim Jawaban
-                    </button>
-                </div>
-
-                {{-- Submit (Mobile Sticky Bottom Bar) --}}
-                <div class="fixed bottom-0 left-0 right-0 p-3 bg-white/95 backdrop-blur-md border-t border-gray-200 z-30 block md:hidden shadow-lg">
-                    <button @click="submitMicroForm()" :disabled="!allChecklistAnswered || !allEvalAnswered || loading"
-                        :class="allChecklistAnswered && allEvalAnswered && !loading ? 'bg-[#1a237e] hover:bg-[#283593] cursor-pointer' : 'bg-gray-300 cursor-not-allowed'"
-                        class="w-full py-3 text-white rounded-xl font-bold transition-colors shadow-sm inline-flex items-center justify-center gap-2 text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                        <span>Kirim Jawaban</span>
                     </button>
                 </div>
             </div>
