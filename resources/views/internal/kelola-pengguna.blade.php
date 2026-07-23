@@ -89,14 +89,14 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-gray-50/50 border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wider">
-                        <th class="px-4 py-4 font-semibold text-center w-28">Urutan</th>
-                        <th class="px-6 py-4 font-semibold">Nama</th>
-                        <th class="px-6 py-4 font-semibold">Username</th>
-                        <th class="px-6 py-4 font-semibold">Email</th>
-                        <th class="px-6 py-4 font-semibold">Role</th>
-                        <th class="px-6 py-4 font-semibold">Status</th>
-                        <th class="px-6 py-4 font-semibold">Tanggal Dibuat</th>
-                        <th class="px-6 py-4 font-semibold text-center">Aksi</th>
+                        <th class="px-3 py-4 font-semibold text-center w-16">Urutan</th>
+                        <th class="px-4 py-4 font-semibold">Nama</th>
+                        <th class="px-4 py-4 font-semibold">Username</th>
+                        <th class="px-4 py-4 font-semibold">Email</th>
+                        <th class="px-4 py-4 font-semibold whitespace-nowrap">Role</th>
+                        <th class="px-4 py-4 font-semibold">Status</th>
+                        <th class="px-4 py-4 font-semibold whitespace-nowrap">Tanggal Dibuat</th>
+                        <th class="px-3 py-4 font-semibold text-center whitespace-nowrap w-24">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-sm text-gray-700" id="userTableBody">
@@ -408,7 +408,7 @@
                     ? `<img src="/storage/${u.avatar}" alt="${u.name}" class="w-9 h-9 rounded-full object-cover shrink-0">`
                     : `<div class="w-9 h-9 rounded-full bg-[#1a237e] flex items-center justify-center text-white text-xs font-bold shrink-0">${initials}</div>`;
                 return `<tr data-id="${u.id}" class="hover:bg-gray-50/80 transition-colors">
-                    <td class="px-4 py-4 text-center">
+                    <td class="px-3 py-4 text-center">
                         <div class="flex items-center justify-center gap-2">
                             <span class="handle p-1.5 rounded-lg text-gray-400 hover:text-[#1a237e] hover:bg-gray-100 transition-colors ${isFiltered ? 'opacity-30 cursor-not-allowed' : 'cursor-grab active:cursor-grabbing'}" title="${isFiltered ? 'Reset filter untuk mengubah urutan' : 'Tahan & geser untuk mengubah urutan'}">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -418,18 +418,18 @@
                             <span class="text-xs font-semibold text-gray-500 w-4 text-center user-index-num">${index + 1}</span>
                         </div>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-4 py-4">
                         <div class="flex items-center gap-3">
                             ${avatarHtml}
                             <span class="font-medium text-gray-900">${u.name}</span>
                         </div>
                     </td>
-                    <td class="px-6 py-4 text-gray-500">${u.username}</td>
-                    <td class="px-6 py-4 text-gray-600">${u.email}</td>
-                    <td class="px-6 py-4"><x-badge type="${roleBadge}">${u.role}</x-badge></td>
-                    <td class="px-6 py-4"><x-badge type="${u.status === 'Nonaktif' ? 'red' : 'green'}">${u.status}</x-badge></td>
-                    <td class="px-6 py-4 text-gray-500">${u.created_at}</td>
-                    <td class="px-6 py-4 text-center">
+                    <td class="px-4 py-4 text-gray-500">${u.username}</td>
+                    <td class="px-4 py-4 text-gray-600">${u.email}</td>
+                    <td class="px-4 py-4 whitespace-nowrap"><x-badge type="${roleBadge}">${u.role}</x-badge></td>
+                    <td class="px-4 py-4"><x-badge type="${u.status === 'Nonaktif' ? 'red' : 'green'}">${u.status}</x-badge></td>
+                    <td class="px-4 py-4 text-gray-500 whitespace-nowrap">${u.created_at}</td>
+                    <td class="px-3 py-4 text-center whitespace-nowrap">
                         <div class="flex items-center justify-center gap-2">
                             <button onclick="openDetail(${u.id})" class="p-1.5 rounded-lg text-gray-400 hover:text-[#1a237e] hover:bg-gray-100 transition-colors" title="Detail">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
