@@ -2203,6 +2203,16 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             return null;
         },
 
+        getGuideImageSrc(img) {
+            if (!img) return '';
+            if (img.startsWith('http://') || img.startsWith('https://')) return img;
+            if (img.startsWith('/storage/')) return img;
+            if (img.startsWith('storage/')) return '/' + img;
+            if (img.startsWith('/images/')) return img;
+            if (img.startsWith('images/')) return '/' + img;
+            return '/storage/' + img.replace(/^\//, '');
+        },
+
         showAttrGuide(attr) {
             const guideImg = this.getAttrGuideImage(attr);
             this.showGuideAttr = {
@@ -3074,7 +3084,7 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             </div>
             <div class="px-6 py-5 overflow-y-auto max-h-[70vh] flex items-center justify-center bg-gray-50/50">
                 <template x-if="showGuideAttr && showGuideAttr.reference_image">
-                    <img :src="showGuideAttr.reference_image.startsWith('http') || showGuideAttr.reference_image.startsWith('images/') ? '/' + showGuideAttr.reference_image.replace(/^\//, '') : '/storage/' + showGuideAttr.reference_image" class="max-h-[60vh] w-auto object-contain rounded-xl border border-gray-200 shadow-sm">
+                    <img :src="getGuideImageSrc(showGuideAttr.reference_image)" class="max-h-[60vh] w-auto object-contain rounded-xl border border-gray-200 shadow-sm">
                 </template>
             </div>
             <div class="px-6 py-4 border-t border-gray-100 flex justify-end">
