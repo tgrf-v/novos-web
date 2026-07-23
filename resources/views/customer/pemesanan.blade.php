@@ -641,7 +641,7 @@
                 </template>
 
                 {{-- Tabel Data Produksi Dinamis --}}
-                <div class="mt-4 bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                <div x-show="showPlayerListField" class="mt-4 bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
                     <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center flex-wrap gap-2">
                         <h4 class="text-sm font-bold text-gray-800">Daftar Pemain & Ukuran</h4>
                         <div class="text-xs text-gray-500 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5 animate-pulse">
@@ -2203,6 +2203,11 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
             if (!this.selectedCategoryId) return true;
             const cat = this.selectedCategory;
             return cat && cat.form_config ? !!cat.form_config.show_detail_sponsor : true;
+        },
+        get showPlayerListField() {
+            if (!this.selectedCategoryId) return true;
+            const cat = this.selectedCategory;
+            return cat && cat.form_config ? (cat.form_config.show_player_list !== false && cat.form_config.show_player_list !== 0 && cat.form_config.show_player_list !== '0') : true;
         },
         get formFieldsGridClass() {
             const hasRightCol = this.showTeamNameField || this.showDetailSponsorField;

@@ -225,6 +225,10 @@
                                     <input type="checkbox" x-model="form_config.show_detail_sponsor" class="rounded border-gray-300 text-[#1a237e] focus:ring-[#1a237e] h-4 w-4">
                                     <span>Tampilkan kolom <strong>Detail Sponsor</strong></span>
                                 </label>
+                                <label class="flex items-center gap-2 text-xs font-medium text-gray-600 cursor-pointer">
+                                    <input type="checkbox" x-model="form_config.show_player_list" class="rounded border-gray-300 text-[#1a237e] focus:ring-[#1a237e] h-4 w-4">
+                                    <span>Tampilkan <strong>Tabel Daftar Pemain & Ukuran</strong></span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -479,7 +483,8 @@ function kategoriApp() {
         form_config: {
             show_team_name: true,
             show_nama_artikel: true,
-            show_detail_sponsor: true
+            show_detail_sponsor: true,
+            show_player_list: true
         },
         submitting: false,
         submittingAndAddAnother: false,
@@ -590,7 +595,8 @@ function kategoriApp() {
                 this.form_config = Object.assign({
                     show_team_name: true,
                     show_nama_artikel: true,
-                    show_detail_sponsor: true
+                    show_detail_sponsor: true,
+                    show_player_list: true
                 }, cat.form_config || {});
             } else {
                 this.editId = null;
@@ -602,7 +608,8 @@ function kategoriApp() {
                 this.form_config = {
                     show_team_name: true,
                     show_nama_artikel: true,
-                    show_detail_sponsor: true
+                    show_detail_sponsor: true,
+                    show_player_list: true
                 };
             }
             this.modalOpen = true;
@@ -636,6 +643,7 @@ function kategoriApp() {
                 formData.append('form_config[show_team_name]', this.form_config.show_team_name ? '1' : '0');
                 formData.append('form_config[show_nama_artikel]', this.form_config.show_nama_artikel ? '1' : '0');
                 formData.append('form_config[show_detail_sponsor]', this.form_config.show_detail_sponsor ? '1' : '0');
+                formData.append('form_config[show_player_list]', this.form_config.show_player_list ? '1' : '0');
 
                 if (this.editId) {
                     formData.append('_method', 'PUT');
@@ -670,7 +678,8 @@ function kategoriApp() {
                         this.form_config = {
                             show_team_name: true,
                             show_nama_artikel: true,
-                            show_detail_sponsor: true
+                            show_detail_sponsor: true,
+                            show_player_list: true
                         };
                         this.parent_id = currentParentId;
                         if (pond) {
