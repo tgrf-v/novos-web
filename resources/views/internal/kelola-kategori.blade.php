@@ -367,10 +367,10 @@
                                         {{-- Gambar Panduan / Referensi --}}
                                         <div class="flex items-center gap-2">
                                             <div class="flex-1">
-                                                <label class="block text-xs font-medium text-gray-500 mb-1">Gambar Panduan / Referensi (URL/Path)</label>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">Gambar Panduan</label>
                                                 <input type="text" x-model="attr.reference_image"
                                                     class="w-full rounded-lg border-gray-300 text-xs px-3 py-2 focus:ring-purple-500 focus:border-purple-500"
-                                                    placeholder="Contoh: images/panduan-kerah.png">
+                                                    placeholder="Path/URL gambar...">
                                             </div>
                                             <div class="pt-5">
                                                 <button @click="removeAttr(idx)"
