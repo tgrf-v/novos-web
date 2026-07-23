@@ -83,9 +83,13 @@
         </div>
     </div>
 
-    {{-- Table --}}
+    {{-- Table (Desktop) & Cards (Mobile) --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="overflow-x-auto max-h-[70vh]">
+        {{-- Mobile View Cards --}}
+        <div class="md:hidden divide-y divide-gray-100 p-4 space-y-3 bg-gray-50/50" id="userCardList"></div>
+
+        {{-- Desktop View Table --}}
+        <div class="hidden md:block overflow-x-auto max-h-[70vh]">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-gray-50/50 border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wider">
@@ -333,116 +337,192 @@
             return ({ 'Super Admin': 'red', 'Manager': 'purple', 'Admin': 'blue', 'Design': 'orange', 'Produksi': 'green' })[role] || 'gray';
         }
 
-        function initSortable() {
-            const el = document.getElementById('userTableBody');
-            if (!el || typeof Sortable === 'undefined') return;
+        var sortableDesktopInstance = null;
+        var sortableMobileInstance = null;
 
-            if (sortableInstance) {
-                sortableInstance.destroy();
-                sortableInstance = null;
-            }
+        function initSortable() {
+            if (typeof Sortable === 'undefined') return;
 
             const isFiltered = filteredUsers.length !== __users.length;
-            if (isFiltered) return;
 
-            sortableInstance = new Sortable(el, {
-                handle: '.handle',
-                animation: 200,
-                ghostClass: 'bg-[#1a237e]/10',
-                chosenClass: 'bg-blue-50',
-                onEnd: async function () {
-                    const rows = Array.from(el.querySelectorAll('tr[data-id]'));
-                    const newOrderIds = rows.map(r => parseInt(r.getAttribute('data-id')));
-
-                    rows.forEach((r, idx) => {
-                        const numEl = r.querySelector('.user-index-num');
-                        if (numEl) numEl.textContent = idx + 1;
-                    });
-
-                    __users.sort((a, b) => newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id));
-                    filteredUsers = [...__users];
-
-                    try {
-                        const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-                        const res = await fetch("{{ route('staf.kelola-pengguna.reorder') }}", {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': csrf,
-                                'X-Requested-With': 'XMLHttpRequest'
-                            },
-                            body: JSON.stringify({ order: newOrderIds })
-                        });
-                        const data = await res.json();
-                        if (!res.ok || !data.success) {
-                            Notify.error(data.message || 'Gagal memperbarui urutan');
-                        } else {
-                            Notify.success('Urutan berhasil diperbarui');
-                        }
-                    } catch (err) {
-                        console.error(err);
-                        Notify.error('Koneksi terputus');
-                    }
+            const tableEl = document.getElementById('userTableBody');
+            if (tableEl) {
+                if (sortableDesktopInstance) {
+                    sortableDesktopInstance.destroy();
+                    sortableDesktopInstance = null;
                 }
-            });
+                if (!isFiltered) {
+                    sortableDesktopInstance = new Sortable(tableEl, {
+                        handle: '.handle',
+                        animation: 200,
+                        ghostClass: 'bg-[#1a237e]/10',
+                        chosenClass: 'bg-blue-50',
+                        onEnd: function () {
+                            const rows = Array.from(tableEl.querySelectorAll('tr[data-id]'));
+                            handleReorderEnd(rows);
+                        }
+                    });
+                }
+            }
+
+            const cardEl = document.getElementById('userCardList');
+            if (cardEl) {
+                if (sortableMobileInstance) {
+                    sortableMobileInstance.destroy();
+                    sortableMobileInstance = null;
+                }
+                if (!isFiltered) {
+                    sortableMobileInstance = new Sortable(cardEl, {
+                        handle: '.handle',
+                        animation: 200,
+                        ghostClass: 'bg-[#1a237e]/10',
+                        chosenClass: 'bg-blue-50',
+                        onEnd: function () {
+                            const cards = Array.from(cardEl.querySelectorAll('div[data-id]'));
+                            handleReorderEnd(cards);
+                        }
+                    });
+                }
+            }
+        }
+
+        async function handleReorderEnd(elements) {
+            const newOrderIds = elements.map(el => parseInt(el.getAttribute('data-id')));
+
+            __users.sort((a, b) => newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id));
+            filteredUsers = [...__users];
+
+            renderTable(filteredUsers);
+
+            try {
+                const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                const res = await fetch("{{ route('staf.kelola-pengguna.reorder') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrf,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ order: newOrderIds })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    if (window.Notify) Notify.error(data.message || 'Gagal memperbarui urutan');
+                } else {
+                    if (window.Notify) Notify.success('Urutan berhasil diperbarui');
+                }
+            } catch (err) {
+                console.error(err);
+                if (window.Notify) Notify.error('Koneksi terputus');
+            }
         }
 
         function renderTable(data) {
             const tbody = document.getElementById('userTableBody');
+            const cardList = document.getElementById('userCardList');
             const total = document.getElementById('totalDisplay');
             if (!data.length) {
-                tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-10 text-center text-gray-500">Tidak ada pengguna ditemukan.</td></tr>';
+                if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-10 text-center text-gray-500">Tidak ada pengguna ditemukan.</td></tr>';
+                if (cardList) cardList.innerHTML = '<div class="p-6 text-center text-gray-500 bg-white rounded-xl border border-gray-200">Tidak ada pengguna ditemukan.</div>';
                 total.textContent = '0';
                 document.getElementById('infoDisplay').textContent = 'Menampilkan 0 dari 0 pengguna';
                 return;
             }
             const isFiltered = data.length !== __users.length;
-            tbody.innerHTML = data.map((u, index) => {
-                const roleBadge = {
-                    'Super Admin': 'red', 'Manager': 'purple', 'Admin': 'blue', 'Design': 'orange', 'Produksi': 'green'
-                }[u.role] || 'gray';
-                const initials = u.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-                const avatarHtml = u.avatar
-                    ? `<img src="/storage/${u.avatar}" alt="${u.name}" class="w-9 h-9 rounded-full object-cover shrink-0">`
-                    : `<div class="w-9 h-9 rounded-full bg-[#1a237e] flex items-center justify-center text-white text-xs font-bold shrink-0">${initials}</div>`;
-                return `<tr data-id="${u.id}" class="hover:bg-gray-50/80 transition-colors">
-                    <td class="px-3 py-4 text-center">
-                        <div class="flex items-center justify-center gap-2">
-                            <span class="handle p-1.5 rounded-lg text-gray-400 hover:text-[#1a237e] hover:bg-gray-100 transition-colors ${isFiltered ? 'opacity-30 cursor-not-allowed' : 'cursor-grab active:cursor-grabbing'}" title="${isFiltered ? 'Reset filter untuk mengubah urutan' : 'Tahan & geser untuk mengubah urutan'}">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
-                            </span>
-                            <span class="text-xs font-semibold text-gray-500 w-4 text-center user-index-num">${index + 1}</span>
+            if (tbody) {
+                tbody.innerHTML = data.map((u, index) => {
+                    const roleBadge = {
+                        'Super Admin': 'red', 'Manager': 'purple', 'Admin': 'blue', 'Design': 'orange', 'Produksi': 'green'
+                    }[u.role] || 'gray';
+                    const initials = u.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                    const avatarHtml = u.avatar
+                        ? `<img src="/storage/${u.avatar}" alt="${u.name}" class="w-9 h-9 rounded-full object-cover shrink-0">`
+                        : `<div class="w-9 h-9 rounded-full bg-[#1a237e] flex items-center justify-center text-white text-xs font-bold shrink-0">${initials}</div>`;
+                    return `<tr data-id="${u.id}" class="hover:bg-gray-50/80 transition-colors">
+                        <td class="px-3 py-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <span class="handle p-1.5 rounded-lg text-gray-400 hover:text-[#1a237e] hover:bg-gray-100 transition-colors ${isFiltered ? 'opacity-30 cursor-not-allowed' : 'cursor-grab active:cursor-grabbing'}" title="${isFiltered ? 'Reset filter untuk mengubah urutan' : 'Tahan & geser untuk mengubah urutan'}">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                                    </svg>
+                                </span>
+                                <span class="text-xs font-semibold text-gray-500 w-4 text-center user-index-num">${index + 1}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-4">
+                            <div class="flex items-center gap-3">
+                                ${avatarHtml}
+                                <span class="font-medium text-gray-900">${u.name}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-4 text-gray-500">${u.username}</td>
+                        <td class="px-4 py-4 text-gray-600">${u.email}</td>
+                        <td class="px-4 py-4 whitespace-nowrap"><x-badge type="${roleBadge}">${u.role}</x-badge></td>
+                        <td class="px-4 py-4"><x-badge type="${u.status === 'Nonaktif' ? 'red' : 'green'}">${u.status}</x-badge></td>
+                        <td class="px-4 py-4 text-gray-500 whitespace-nowrap">${u.created_at}</td>
+                        <td class="px-3 py-4 text-center whitespace-nowrap">
+                            <div class="flex items-center justify-center gap-2">
+                                <button onclick="openDetail(${u.id})" class="p-1.5 rounded-lg text-gray-400 hover:text-[#1a237e] hover:bg-gray-100 transition-colors" title="Detail">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                </button>
+                                <button onclick="openEdit(${u.id})" class="p-1.5 rounded-lg text-gray-400 hover:text-[#1a237e] hover:bg-gray-100 transition-colors" title="Edit">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                </button>
+                                <button onclick="confirmHapus(${u.id}, '${u.name}')" class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="Hapus">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
+
+            if (cardList) {
+                cardList.innerHTML = data.map((u, index) => {
+                    const roleBadge = {
+                        'Super Admin': 'red', 'Manager': 'purple', 'Admin': 'blue', 'Design': 'orange', 'Produksi': 'green'
+                    }[u.role] || 'gray';
+                    const initials = u.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                    const avatarHtml = u.avatar
+                        ? `<img src="/storage/${u.avatar}" alt="${u.name}" class="w-10 h-10 rounded-full object-cover shrink-0">`
+                        : `<div class="w-10 h-10 rounded-full bg-[#1a237e] flex items-center justify-center text-white text-xs font-bold shrink-0">${initials}</div>`;
+                    return `<div data-id="${u.id}" class="bg-white rounded-xl border border-gray-200 shadow-sm p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <span class="handle p-1.5 rounded-lg text-gray-400 hover:text-[#1a237e] hover:bg-gray-100 transition-colors ${isFiltered ? 'opacity-30 cursor-not-allowed' : 'cursor-grab active:cursor-grabbing'}" title="${isFiltered ? 'Reset filter untuk mengubah urutan' : 'Tahan & geser untuk mengubah urutan'}">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                                    </svg>
+                                </span>
+                                ${avatarHtml}
+                                <div>
+                                    <h4 class="font-semibold text-gray-900 text-sm">${u.name}</h4>
+                                    <p class="text-xs text-gray-500">${u.email}</p>
+                                </div>
+                            </div>
+                            <x-badge type="${roleBadge}">${u.role}</x-badge>
                         </div>
-                    </td>
-                    <td class="px-4 py-4">
-                        <div class="flex items-center gap-3">
-                            ${avatarHtml}
-                            <span class="font-medium text-gray-900">${u.name}</span>
+                        <div class="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-100">
+                            <div>
+                                <span class="text-gray-400">Status:</span> <x-badge type="${u.status === 'Nonaktif' ? 'red' : 'green'}">${u.status}</x-badge>
+                            </div>
+                            <div>
+                                <span class="text-gray-400">Dibuat:</span> ${u.created_at}
+                            </div>
                         </div>
-                    </td>
-                    <td class="px-4 py-4 text-gray-500">${u.username}</td>
-                    <td class="px-4 py-4 text-gray-600">${u.email}</td>
-                    <td class="px-4 py-4 whitespace-nowrap"><x-badge type="${roleBadge}">${u.role}</x-badge></td>
-                    <td class="px-4 py-4"><x-badge type="${u.status === 'Nonaktif' ? 'red' : 'green'}">${u.status}</x-badge></td>
-                    <td class="px-4 py-4 text-gray-500 whitespace-nowrap">${u.created_at}</td>
-                    <td class="px-3 py-4 text-center whitespace-nowrap">
-                        <div class="flex items-center justify-center gap-2">
-                            <button onclick="openDetail(${u.id})" class="p-1.5 rounded-lg text-gray-400 hover:text-[#1a237e] hover:bg-gray-100 transition-colors" title="Detail">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                            </button>
-                            <button onclick="openEdit(${u.id})" class="p-1.5 rounded-lg text-gray-400 hover:text-[#1a237e] hover:bg-gray-100 transition-colors" title="Edit">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                            </button>
-                            <button onclick="confirmHapus(${u.id}, '${u.name}')" class="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="Hapus">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
+                        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                            <span class="text-xs font-semibold text-gray-400 user-index-num">Urutan #${index + 1}</span>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="openDetail(${u.id})" class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors">Detail</button>
+                                <button onclick="openEdit(${u.id})" class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium text-[#1a237e] hover:bg-blue-50 transition-colors">Edit</button>
+                                <button onclick="confirmHapus(${u.id}, '${u.name}')" class="px-3 py-1.5 rounded-lg border border-red-200 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors">Hapus</button>
+                            </div>
                         </div>
-                    </td>
-                </tr>`;
-            }).join('');
+                    </div>`;
+                }).join('');
+            }
+
             total.textContent = data.length;
             document.getElementById('infoDisplay').textContent = `Menampilkan ${data.length} dari ${__users.length} pengguna`;
 
