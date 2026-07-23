@@ -357,6 +357,11 @@
                         animation: 200,
                         ghostClass: 'bg-[#1a237e]/10',
                         chosenClass: 'bg-blue-50',
+                        forceFallback: true,
+                        fallbackOnBody: true,
+                        fallbackTolerance: 3,
+                        scroll: document.querySelector('main') || true,
+                        scrollSensitivity: 50,
                         onEnd: function () {
                             const rows = Array.from(tableEl.querySelectorAll('tr[data-id]'));
                             handleReorderEnd(rows);
@@ -375,8 +380,13 @@
                     sortableMobileInstance = new Sortable(cardEl, {
                         handle: '.handle',
                         animation: 200,
-                        ghostClass: 'bg-[#1a237e]/10',
+                        ghostClass: 'opacity-40',
                         chosenClass: 'bg-blue-50',
+                        forceFallback: true,
+                        fallbackOnBody: true,
+                        fallbackTolerance: 3,
+                        scroll: document.querySelector('main') || true,
+                        scrollSensitivity: 50,
                         onEnd: function () {
                             const cards = Array.from(cardEl.querySelectorAll('div[data-id]'));
                             handleReorderEnd(cards);
