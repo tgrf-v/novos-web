@@ -2195,12 +2195,7 @@ function pemesananForm(catalogProduct = null, userAddresses = [], hasOrders = tr
 
         getAttrGuideImage(attr) {
             if (!attr) return null;
-            if (attr.reference_image) return attr.reference_image;
-            const name = (attr.name || '').toLowerCase();
-            if (name.includes('kerah')) return '{{ $collarImageUrl }}';
-            if (name.includes('bahan')) return '{{ $bahanImageUrl }}';
-            if (name.includes('pola') || name.includes('potongan')) return '{{ $potonganImageUrl }}';
-            return null;
+            return attr.reference_image || null;
         },
 
         getGuideImageSrc(img) {
